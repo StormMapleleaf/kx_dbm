@@ -43,7 +43,7 @@ export default {
   },
   data () {
     return {
-      title: "DBSwitch",
+      title: "DBM",
       isCollapse: null
     };
   },
