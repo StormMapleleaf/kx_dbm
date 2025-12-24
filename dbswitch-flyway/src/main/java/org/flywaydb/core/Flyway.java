@@ -90,7 +90,7 @@ public class Flyway {
       ) {
         if (configuration.isValidateOnMigrate()) {
           doValidate(database, migrationResolver, schemaHistory, schemas, callbackExecutor,
-              true 
+              true
           );
         }
 
@@ -106,6 +106,7 @@ public class Flyway {
             if (configuration.isBaselineOnMigrate()) {
               doBaseline(schemaHistory, callbackExecutor);
             } else {
+              // Second check for MySQL which is sometimes flaky otherwise
               if (!schemaHistory.exists()) {
                 throw new FlywayException("Found non-empty schema(s) "
                     + StringUtils.collectionToCommaDelimitedString(nonEmptySchemas)
@@ -224,7 +225,198 @@ public class Flyway {
         sqlScriptExecutorFactory, sqlScriptFactory, parsingContext, configuration.getResolvers());
   }
 
-          T execute(MigrationResolver migrationResolver, SchemaHistory schemaHistory,
+    <T> T execute(Command<T> command, boolean scannerRequired) {
+    T result;
+    VersionPrinter.printVersion();
+
+    configurationValidator.validate(configuration);
+
+    final ResourceProvider resourceProvider;
+    ClassProvider<JavaMigration> classProvider;
+    if (!scannerRequired && configuration.isSkipDefaultResolvers() && configuration.isSkipDefaultCallbacks()) {
+      resourceProvider = NoopResourceProvider.INSTANCE;
+      classProvider = NoopClassProvider.INSTANCE;
+    } else {
+      Scanner<JavaMigration> scanner = new Scanner<>(
+          JavaMigration.class,
+          Arrays.asList(configuration.getLocations()),
+          configuration.getClassLoader(),
+          configuration.getEncoding()
+
+          , resourceNameCache
+          , locationScannerCache
+      );
+      resourceProvider = scanner;
+      classProvider = scanner;
+    }
+
+    if (configuration.isValidateMigrationNaming()) {
+      resourceNameValidator.validateSQLMigrationNaming(resourceProvider, configuration);
+    }
+
+    JdbcConnectionFactory jdbcConnectionFactory = new JdbcConnectionFactory(configuration.getDataSource(),
+        configuration.getConnectRetries()
+
+    );
+
+    final ParsingContext parsingContext = new ParsingContext();
+    final SqlScriptFactory sqlScriptFactory =
+        DatabaseFactory.createSqlScriptFactory(jdbcConnectionFactory, configuration, parsingContext);
+
+    final SqlScriptExecutorFactory noCallbackSqlScriptExecutorFactory = DatabaseFactory
+        .createSqlScriptExecutorFactory(jdbcConnectionFactory);
+
+    jdbcConnectionFactory.setConnectionInitializer(new JdbcConnectionFactory.ConnectionInitializer() {
+      @Override
+      public void initialize(JdbcConnectionFactory jdbcConnectionFactory, Connection connection) {
+        if (configuration.getInitSql() == null) {
+          return;
+        }
+        StringResource resource = new StringResource(configuration.getInitSql());
+
+        SqlScript sqlScript = sqlScriptFactory.createSqlScript(resource, true, resourceProvider);
+        noCallbackSqlScriptExecutorFactory.createSqlScriptExecutor(connection
+
+        ).execute(sqlScript);
+      }
+    });
+
+    Database database = null;
+    try {
+      database = DatabaseFactory.createDatabase(configuration, !dbConnectionInfoPrinted, jdbcConnectionFactory);
+
+      dbConnectionInfoPrinted = true;
+      LOG.debug("DDL Transactions Supported: " + database.supportsDdlTransactions());
+
+      Pair<Schema, List<Schema>> schemas = prepareSchemas(database);
+      Schema defaultSchema = schemas.getLeft();
+
+      parsingContext.populate(database, configuration);
+
+      database.ensureSupported();
+
+      DefaultCallbackExecutor callbackExecutor = new DefaultCallbackExecutor(configuration, database, defaultSchema,
+          prepareCallbacks(database, resourceProvider, jdbcConnectionFactory, sqlScriptFactory
+
+          ));
+
+      SqlScriptExecutorFactory sqlScriptExecutorFactory = DatabaseFactory
+          .createSqlScriptExecutorFactory(jdbcConnectionFactory
+
+          );
+
+      result = command.execute(
+          createMigrationResolver(resourceProvider, classProvider, sqlScriptExecutorFactory, sqlScriptFactory,
+              parsingContext),
+          SchemaHistoryFactory.getSchemaHistory(configuration, noCallbackSqlScriptExecutorFactory, sqlScriptFactory,
+              database, defaultSchema
+
+          ),
+          database,
+          schemas.getRight().toArray(new Schema[0]),
+          callbackExecutor
+
+      );
+    } finally {
+      IOUtils.close(database);
+
+      showMemoryUsage();
+    }
+    return result;
+  }
+
+  private void showMemoryUsage() {
+    Runtime runtime = Runtime.getRuntime();
+    long free = runtime.freeMemory();
+    long total = runtime.totalMemory();
+    long used = total - free;
+
+    long totalMB = total / (1024 * 1024);
+    long usedMB = used / (1024 * 1024);
+    LOG.debug("Memory usage: " + usedMB + " of " + totalMB + "M");
+  }
+
+  private Pair<Schema, List<Schema>> prepareSchemas(Database database) {
+    String defaultSchemaName = configuration.getDefaultSchema();
+    String[] schemaNames = configuration.getSchemas();
+
+    if (!isDefaultSchemaValid(defaultSchemaName, schemaNames)) {
+      throw new FlywayException("The defaultSchema property is specified but is not a member of the schemas property");
+    }
+
+    LOG.debug("Schemas: " + StringUtils.arrayToCommaDelimitedString(schemaNames));
+    LOG.debug("Default schema: " + defaultSchemaName);
+
+    List<Schema> schemas = new ArrayList<>();
+
+    if (schemaNames.length == 0) {
+      Schema currentSchema = database.getMainConnection().getCurrentSchema();
+      if (currentSchema == null) {
+        throw new FlywayException("Unable to determine schema for the schema history table." +
+            " Set a default schema for the connection or specify one using the defaultSchema property!");
+      }
+      schemas.add(currentSchema);
+    } else {
+      for (String schemaName : schemaNames) {
+        schemas.add(database.getMainConnection().getSchema(schemaName));
+      }
+    }
+
+    if (defaultSchemaName == null && schemaNames.length > 0) {
+      defaultSchemaName = schemaNames[0];
+    }
+
+    Schema defaultSchema = (defaultSchemaName != null)
+        ? database.getMainConnection().getSchema(defaultSchemaName)
+        : database.getMainConnection().getCurrentSchema();
+
+    return Pair.of(defaultSchema, schemas);
+  }
+
+  private boolean isDefaultSchemaValid(String defaultSchema, String[] schemas) {
+    // No default schema specified
+    if (defaultSchema == null) {
+      return true;
+    }
+    // Default schema is one of those Flyway is managing
+    for (String schema : schemas) {
+      if (defaultSchema.equals(schema)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private List<Callback> prepareCallbacks(Database database, ResourceProvider resourceProvider,
+      JdbcConnectionFactory jdbcConnectionFactory,
+      SqlScriptFactory sqlScriptFactory
+
+  ) {
+    List<Callback> effectiveCallbacks = new ArrayList<>();
+
+    effectiveCallbacks.addAll(Arrays.asList(configuration.getCallbacks()));
+
+    if (!configuration.isSkipDefaultCallbacks()) {
+      SqlScriptExecutorFactory sqlScriptExecutorFactory =
+          DatabaseFactory.createSqlScriptExecutorFactory(jdbcConnectionFactory
+
+          );
+
+      effectiveCallbacks.addAll(
+          new SqlScriptCallbackFactory(
+              resourceProvider,
+              sqlScriptExecutorFactory,
+              sqlScriptFactory,
+              configuration
+          ).getCallbacks());
+    }
+
+    return effectiveCallbacks;
+  }
+
+    interface Command<T> {
+
+        T execute(MigrationResolver migrationResolver, SchemaHistory schemaHistory,
         Database database, Schema[] schemas, CallbackExecutor callbackExecutor);
   }
 }

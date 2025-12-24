@@ -454,7 +454,80 @@ public abstract class Parser {
             reader.swallowUntilExcluding('\n', '\r');
             return new Token(TokenType.COMMENT, pos, line, col, null, null, context.getParensDepth());
         }
-        if (peek.startsWith("    protected boolean isKeyword(String text) {
+        if (peek.startsWith("/*")) {
+            reader.swallow(2);
+            reader.swallowUntilExcluding("*/");
+            reader.swallow(2);
+            return new Token(TokenType.COMMENT, pos, line, col, null, null, context.getParensDepth());
+        }
+        if (isDigit(c)) {
+            String text = reader.readNumeric();
+            return new Token(TokenType.NUMERIC, pos, line, col, text, text, context.getParensDepth());
+        }
+        if (peek.startsWith("B'") || peek.startsWith("E'") || peek.startsWith("X'")) {
+            reader.swallow(2);
+            reader.swallowUntilExcludingWithEscape('\'', true, '\\');
+            return new Token(TokenType.STRING, pos, line, col, null, null, context.getParensDepth());
+        }
+        if (peek.startsWith("U&'")) {
+            reader.swallow(3);
+            reader.swallowUntilExcludingWithEscape('\'', true);
+            return new Token(TokenType.STRING, pos, line, col, null, null, context.getParensDepth());
+        }
+        if (isDelimiter(peek, context, col)) {
+            return handleDelimiter(reader, context, pos, line, col);
+        }
+        if (c == '_' || context.isLetter(c)) {
+            String text = readKeyword(reader, context.getDelimiter(), context);
+            if (reader.peek('.')) {
+                text += readAdditionalIdentifierParts(reader, identifierQuote, context.getDelimiter(), context);
+            }
+            if (!isKeyword(text)) {
+                return new Token(TokenType.IDENTIFIER, pos, line, col, text, text, context.getParensDepth());
+            }
+            return handleKeyword(reader, context, pos, line, col, text);
+        }
+        if (c == ' ' || c == '\r' || c == '\u00A0' /* Non-linebreaking space */) {
+            reader.swallow();
+            return null;
+        }
+        if (Character.isWhitespace(c)) {
+            String text = reader.readWhitespace();
+            if (containsAtLeast(text, '\n', 2)) {
+                return new Token(TokenType.BLANK_LINES, pos, line, col, null, null, context.getParensDepth());
+            }
+            return null;
+        }
+
+        String text = "" + (char) reader.read();
+        return new Token(TokenType.SYMBOL, pos, line, col, text, text, context.getParensDepth());
+    }
+
+    protected String readKeyword(PeekingReader reader, Delimiter delimiter, ParserContext context) throws IOException {
+        return "" + (char) reader.read() + reader.readKeywordPart(delimiter, context);
+    }
+
+    protected Token handleDelimiter(PeekingReader reader, ParserContext context, int pos, int line, int col) throws IOException {
+        Delimiter delimiter = context.getDelimiter();
+        String text = delimiter.getDelimiter();
+        reader.swallow(text.length());
+        return new Token(TokenType.DELIMITER, pos, line, col, text, text, context.getParensDepth());
+    }
+
+    protected boolean isAlternativeStringLiteral(String peek) {
+        return alternativeStringLiteralQuote != 0 && peek.charAt(0) == alternativeStringLiteralQuote;
+    }
+
+    protected boolean isDelimiter(String peek, ParserContext context, int col) {
+        Delimiter delimiter = context.getDelimiter();
+        return peek.startsWith(delimiter.getDelimiter());
+    }
+
+    protected boolean isSingleLineComment(String peek, ParserContext context, int col) {
+        return peek.startsWith("--");
+    }
+
+    protected boolean isKeyword(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')) {
