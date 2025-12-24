@@ -1,11 +1,4 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/benbenyezi/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: Li Zemin
-// Date : 2024/4/23 16:12
-/////////////////////////////////////////////////////////////
+
 package org.dromara.dbswitch.admin.util;
 
 import com.alibaba.excel.EasyExcel;
@@ -16,12 +9,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * excel工具类
- *
- * @author Li Zemin
- * @since 2024/4/23 16:12
- */
+
 public final class ExcelUtils {
 
   public static <T> void write(HttpServletResponse response, Class<T> clazz, List<T> list, String fileName,

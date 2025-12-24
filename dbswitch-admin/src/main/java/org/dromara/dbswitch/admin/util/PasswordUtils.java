@@ -1,19 +1,8 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.util;
 
 import cn.hutool.crypto.digest.BCrypt;
 
-/**
- * 密码工具类
- */
+
 public final class PasswordUtils {
 
   public static String encryptPassword(String password, String credentialsSalt) {

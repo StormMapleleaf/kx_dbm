@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.util;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-/**
- * 获取Servlet服务器的HTTP参数相关工具类
- */
+
 @Slf4j
 public final class ServletUtils {
 
@@ -47,15 +36,7 @@ public final class ServletUtils {
   }
 
 
-  /**
-   * 获取IP地址
-   * <p>
-   * 使用Nginx等反向代理软件， 则不能通过request.getRemoteAddr()获取IP地址
-   * </p>
-   * <p>
-   * 如果使用了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP地址，X-Forwarded-For中 第一个非unknown的有效IP字符串，则为真实IP地址.
-   * </p>
-   */
+
   public static String getIpAddr() {
     HttpServletRequest request = getHttpServletRequest();
     String ip = "0.0.0.0";

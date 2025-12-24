@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.util;
 
 import com.google.common.cache.Cache;
@@ -19,7 +10,7 @@ public final class LockUtils {
 
   private static final Cache<String, ReentrantLock> mutexes = CacheBuilder
       .newBuilder()
-      .expireAfterWrite(24 * 60L, TimeUnit.MINUTES) // 缓存时间
+      .expireAfterWrite(24 * 60L, TimeUnit.MINUTES) 
       .build();
 
   public static <T> T runInLock(String key, int timeout, TimeUnit timeUnit, Callable<T> callable) {

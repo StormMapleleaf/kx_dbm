@@ -7,10 +7,7 @@ import org.dromara.dbswitch.common.converter.AbstractConverter;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 
-/**
- * @author Li Zemin
- * @since 2024/4/22 9:44
- */
+
 public class AssignmentsConverter extends
     AbstractConverter<AssignmentTaskEntity, AssignmentsDataResponse> {
 

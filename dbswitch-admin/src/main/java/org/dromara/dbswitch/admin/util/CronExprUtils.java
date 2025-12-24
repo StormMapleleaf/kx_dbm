@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.util;
 
 import java.text.ParseException;
@@ -17,19 +8,12 @@ import org.dromara.dbswitch.admin.common.exception.DbswitchException;
 import org.dromara.dbswitch.admin.common.response.ResultCode;
 import org.quartz.CronExpression;
 
-/**
- * CRON表达式工具类
- */
+
 public final class CronExprUtils {
 
   public static final int MIN_INTERVAL_SECONDS = 120;
 
-  /**
-   * 检查CRON表达式的有效性
-   *
-   * @param cronExpression     CRON表达式
-   * @param minIntervalSeconds 最小间隔时间（单位：秒）
-   */
+
   public static void checkCronExpressionValid(String cronExpression, int minIntervalSeconds) {
     if (StringUtils.isNotBlank(cronExpression)) {
       CronExpression expression;

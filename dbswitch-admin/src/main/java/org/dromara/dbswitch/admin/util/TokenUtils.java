@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.util;
 
 import java.security.MessageDigest;
@@ -15,16 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-/**
- * Token工具类
- */
+
 @Slf4j
 public final class TokenUtils {
 
   private static final char[] hexCode = "0123456789abcdefgh".toCharArray();
 
   public static String getRequestToken(HttpServletRequest httpRequest) {
-    // 从header中获取token
     String authorization = httpRequest.getHeader("Authorization");
     if (!StringUtils.isEmpty(authorization)) {
       String[] splitString = authorization.split(" ");
@@ -33,7 +21,6 @@ public final class TokenUtils {
       }
     }
 
-    // 如果header中不存在token，则从参数中获取token
     if (StringUtils.isEmpty(authorization)) {
       return httpRequest.getParameter("token");
     }

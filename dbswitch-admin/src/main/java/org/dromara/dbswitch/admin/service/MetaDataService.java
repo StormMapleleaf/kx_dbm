@@ -189,7 +189,6 @@ public class MetaDataService {
     }
   }
 
-  // el-table问题：https://www.cnblogs.com/LanTianYou/p/9649735.html
   private String specialReplace(String str) {
     if (null == str || str.isEmpty()) {
       return str;

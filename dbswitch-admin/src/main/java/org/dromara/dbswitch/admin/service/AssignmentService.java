@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.service;
 
 import com.google.common.collect.Lists;
@@ -248,7 +239,6 @@ public class AssignmentService {
       AssignmentConfigEntity assignmentConfigEntity = assignmentConfigDAO.getByAssignmentTaskId(id);
       Long sourceConnectionId = assignmentConfigEntity.getSourceConnectionId();
       Long targetConnectionId = assignmentConfigEntity.getTargetConnectionId();
-      // 检查任务对应的源端和目标端连接是否还存在
       List<Long> connectionIds = Lists.newArrayList(sourceConnectionId, targetConnectionId);
       if (databaseConnectionDAO.getByIds(connectionIds).size() != connectionIds.size()) {
         throw new DbswitchException(ResultCode.ERROR_RESOURCE_NOT_EXISTS,

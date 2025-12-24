@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.execution;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
@@ -40,7 +31,6 @@ public class ExecuteJobTaskRunnable implements Runnable {
 
   private final static String MDC_KEY = LogbackAppenderRegister.LOG_MDC_KEY_NAME;
 
-  // 相同taskId的任务限制并发执行的粒度锁缓存对象
   private static Cache<String, ReentrantLock> mutexes = CacheBuilder.newBuilder()
       .expireAfterWrite(24 * 60L, TimeUnit.MINUTES)
       .build();
@@ -119,15 +109,7 @@ public class ExecuteJobTaskRunnable implements Runnable {
           DbswichPropertiesConfiguration properties = JsonUtils.toBeanObject(
               task.getContent(), DbswichPropertiesConfiguration.class);
 
-          /**
-           * 下面通过一个三元组来控制同步的方式
-           * <targetDrop,onlyCreate,changeDataSync>
-           *   <ul>
-           *     <li>目标端建表并同步数据：false,false,true</li>
-           *     <li>目标端只创建物理表：true,true,false</li>
-           *     <li>目标端只同步表里数据：false,false,true</li>
-           *   </ul>
-           */
+
           if (!assignmentConfigEntity.getTargetDropTable() && !assignmentConfigEntity.getTargetOnlyCreate()) {
             properties.getTarget().setTargetDrop(false);
             properties.getTarget().setOnlyCreate(false);
@@ -139,12 +121,10 @@ public class ExecuteJobTaskRunnable implements Runnable {
               properties.getTarget().setChangeDataSync(false);
             } else {
               if (assignmentConfigEntity.getFirstFlag()) {
-                // 首次同步，需要自动建表，然后全量加载数据同步
                 properties.getTarget().setTargetDrop(true);
                 properties.getTarget().setOnlyCreate(false);
                 properties.getTarget().setChangeDataSync(false);
               } else {
-                // 非首次，可能无需建表了，后续执行变化数据同步
                 properties.getTarget().setTargetDrop(false);
                 properties.getTarget().setOnlyCreate(false);
                 properties.getTarget().setChangeDataSync(true);
@@ -158,7 +138,6 @@ public class ExecuteJobTaskRunnable implements Runnable {
             return;
           }
 
-          // 实际执行JOB
           migrationService.setMdcKeyValue(mdcKeyValue);
           migrationService.run();
 
@@ -180,7 +159,6 @@ public class ExecuteJobTaskRunnable implements Runnable {
         } finally {
           AssignmentJobEntity latestJobEntity = assignmentJobDAO.getById(assignmentJobEntity.getId());
           if (Objects.nonNull(latestJobEntity)) {
-            // 注意，这里有可能用户手动取消任务后，直接删除了任务和这个作业，导致查询不到了
             latestJobEntity.setFinishTime(new Timestamp(System.currentTimeMillis()));
             latestJobEntity.setErrorLog(assignmentJobEntity.getErrorLog());
             if (JobStatusEnum.CANCEL.getValue() != latestJobEntity.getStatus()) {
