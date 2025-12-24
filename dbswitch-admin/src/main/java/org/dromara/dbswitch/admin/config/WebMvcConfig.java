@@ -11,7 +11,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/index.html").addResourceLocations("classpath:/index.html");
-    registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/favicon.ico");
     registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
   }
 
