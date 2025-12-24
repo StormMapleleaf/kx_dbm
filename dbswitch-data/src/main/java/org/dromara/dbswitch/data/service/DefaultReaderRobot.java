@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.service;
 
 import cn.hutool.core.stream.StreamUtil;
@@ -40,11 +31,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.AsyncTaskExecutor;
 
-/**
- * 源端数据库表并发读取控制
- *
- * @author tang
- */
+
 @Slf4j
 public class DefaultReaderRobot extends RobotReader<ReaderTaskResult> {
 
@@ -108,7 +95,6 @@ public class DefaultReaderRobot extends RobotReader<ReaderTaskResult> {
     SourceDataSourceProperties sourceProperties = configuration.getSource();
     MetadataService sourceMetaDataService = new DefaultMetadataService(sourceDataSource, sourceProperties.getType());
 
-    // 判断处理的策略：是排除还是包含
     List<String> includes =
         StreamUtil.of(StrUtil.split(sourceProperties.getSourceIncludes(), StrPool.COMMA))
             .collect(Collectors.toList());
@@ -137,7 +123,6 @@ public class DefaultReaderRobot extends RobotReader<ReaderTaskResult> {
       } else {
         String allTableType = sourceProperties.getTableType();
         for (TableDescription td : tableList) {
-          // 当没有配置迁移的表名时，默认为根据类型同步所有
           if (includes.isEmpty()) {
             if (null != allTableType && !allTableType.equals(td.getTableType())) {
               continue;

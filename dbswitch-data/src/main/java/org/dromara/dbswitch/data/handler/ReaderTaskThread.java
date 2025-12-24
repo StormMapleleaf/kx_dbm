@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.handler;
 
 import cn.hutool.core.io.unit.DataSizeUtil;
@@ -63,11 +54,7 @@ import org.dromara.dbswitch.data.entity.SourceDataSourceProperties;
 import org.dromara.dbswitch.data.entity.TargetDataSourceProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/**
- * 数据读取线程体（一个表的读）
- *
- * @author tang
- */
+
 @Slf4j
 public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
 
@@ -80,7 +67,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
   private TableDescription tableDescription;
   private MemChannel memChannel;
 
-  // 来源端
   private final CloseableDataSource sourceDataSource;
   private MetadataService sourceMetaDataService;
   private ProductTypeEnum sourceProductType;
@@ -91,7 +77,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
   private List<String> sourcePrimaryKeys;
   private Map<String, String> incrTableColumns;
 
-  // 目的端
   private final CloseableDataSource targetDataSource;
   private ProductTypeEnum targetProductType;
   private Set<String> targetExistTables;
@@ -100,10 +85,8 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
   private List<ColumnDescription> targetColumnDescriptions;
   private List<String> targetPrimaryKeys;
 
-  // 日志输出字符串使用
   private String tableNameMapString;
 
-  // 统计信息
   private AtomicLong totalBytes = new AtomicLong(0);
   private AtomicLong totalCount = new AtomicLong(0);
 
@@ -133,12 +116,10 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
     }
 
     if (this.targetProductType.isLikeHive()) {
-      // !! hive does not support upper table name and upper column name
       properties.getTarget().setTableNameCase(CaseConvertEnum.LOWER);
       properties.getTarget().setColumnNameCase(CaseConvertEnum.LOWER);
     }
 
-    // 获取映射转换后新的表名
     this.targetSchemaName = properties.getTarget().getTargetSchema();
     this.targetTableName = properties.getTarget()
         .getTableNameCase()
@@ -164,7 +145,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
 
     this.sourceMetaDataService = new DefaultMetadataService(sourceDataSource, sourceProductType);
 
-    // 读取源表的表及字段元数据
     this.sourceTableRemarks = sourceMetaDataService
         .getTableRemark(sourceSchemaName, sourceTableName);
     checkInterrupt();
@@ -175,7 +155,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         .queryTablePrimaryKeys(sourceSchemaName, sourceTableName);
     checkInterrupt();
 
-    // 根据表的列名映射转换准备目标端表的字段信息
     this.targetColumnDescriptions = sourceColumnDescriptions.stream()
         .map(column -> {
           String newName = properties.getTarget().getColumnNameCase()
@@ -199,7 +178,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
                 )
         ).collect(Collectors.toList());
 
-    // 打印表名与字段名的映射关系
     List<String> columnMapperPairs = new ArrayList<>();
     Map<String, String> mapChecker = new HashMap<>();
     for (int i = 0; i < sourceColumnDescriptions.size(); ++i) {
@@ -257,11 +235,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
       }
       return doFullCoverSynchronize(targetWriter, targetTableManager, sourceQuerier, transformProvider);
     } else if (properties.getTarget().getTargetDrop() || targetProductType.isLikeHive()) {
-      /*
-        如果配置了dbswitch.target.datasource-target-drop=true时，
-        <p>
-        先执行drop table语句，然后执行create table语句
-       */
 
       try {
         targetFactoryProvider.createTableManageProvider()
@@ -271,7 +244,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         log.info("Target Table {}.{} is not exits, create it!", targetSchemaName, targetTableName);
       }
 
-      // 生成建表语句并创建
       List<String> sqlCreateTable = sourceMetaDataService.getDDLCreateTableSQL(
           targetMetaProvider,
           targetColumnDescriptions.stream()
@@ -292,7 +264,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         targetJdbcTemplate.execute(sql);
       }
 
-      // 如果只想创建表，这里直接返回
       if (null != properties.getTarget().getOnlyCreate()
           && properties.getTarget().getOnlyCreate()) {
         return ReaderTaskResult.builder()
@@ -309,7 +280,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
       checkInterrupt();
       return doFullCoverSynchronize(targetWriter, targetTableManager, sourceQuerier, transformProvider);
     } else {
-      // 对于只想创建表的情况，不提供后续的变化量数据同步功能
       if (null != properties.getTarget().getOnlyCreate()
           && properties.getTarget().getOnlyCreate()) {
         return ReaderTaskResult.builder()
@@ -320,7 +290,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
       checkInterrupt();
 
       if (!targetExistTables.contains(targetTableName)) {
-        // 当目标端不存在该表时，则生成建表语句并创建
         List<String> sqlCreateTable = sourceMetaDataService.getDDLCreateTableSQL(
             targetMetaProvider,
             targetColumnDescriptions.stream()
@@ -345,7 +314,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
       }
 
       if (incrTableColumns.containsKey(sourceTableName)) {
-        // 处理指定增量字段的增量同步
         String incrSourceColumnName = this.incrTableColumns.get(sourceTableName);
         String incrTargetColumnName = mapChecker.get(incrSourceColumnName);
         if (org.apache.commons.lang3.StringUtils.isBlank(incrTargetColumnName)) {
@@ -368,8 +336,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         return doFullCoverSynchronize(targetWriter, targetTableManager, sourceQuerier, transformProvider, incrPoint);
       } else if (properties.getTarget().getChangeDataSync()) {
         log.info("Check table: {}.{} can whether use change data sync", sourceSchemaName, sourceTableName);
-        // 判断是否具备变化量同步的条件：（1）两端表结构一致，且都有一样的主键字段；(2)MySQL使用Innodb引擎；
-        // 根据主键情况判断同步的方式：变化量同步或覆盖同步
         MetadataService metaDataByDatasourceService =
             new DefaultMetadataService(targetDataSource, targetProductType);
         List<String> dbTargetPks = metaDataByDatasourceService.queryTablePrimaryKeys(
@@ -395,30 +361,13 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
     }
   }
 
-  /**
-   * 执行覆盖同步
-   *
-   * @param tableWriter
-   * @param tableManager
-   * @param sourceQuerier
-   * @param transformer
-   * @return ReaderTaskResult
-   */
+
   private ReaderTaskResult doFullCoverSynchronize(TableDataWriteProvider tableWriter, TableManageProvider tableManager,
       TableDataQueryProvider sourceQuerier, RecordTransformProvider transformer) {
     return doFullCoverSynchronize(tableWriter, tableManager, sourceQuerier, transformer, IncrementPoint.EMPTY);
   }
 
-  /**
-   * 执行覆盖同步
-   *
-   * @param tableWriter
-   * @param tableManager
-   * @param sourceQuerier
-   * @param transformer
-   * @param incrementPoint
-   * @return ReaderTaskResult
-   */
+
   private ReaderTaskResult doFullCoverSynchronize(TableDataWriteProvider tableWriter, TableManageProvider tableManager,
       TableDataQueryProvider sourceQuerier, RecordTransformProvider transformer, IncrementPoint incrementPoint) {
     final int BATCH_SIZE = fetchSize;
@@ -433,16 +382,12 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         targetFields.add(tcd.getFieldName());
       }
     }
-    // 准备目的端的数据写入操作
     tableWriter.prepareWrite(targetSchemaName, targetTableName, targetFields);
 
-    // 增量模式不能清空目标表的数据
     if (IncrementPoint.EMPTY == incrementPoint) {
-      // 清空目的端表的数据
       tableManager.truncateTableData(targetSchemaName, targetTableName);
     }
 
-    // 查询源端数据并写入目的端
     sourceQuerier.setQueryFetchSize(BATCH_SIZE);
 
     ResultSetWrapper srs = sourceQuerier.queryTableData(
@@ -525,7 +470,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
       }
       throw new RuntimeException(e);
     } finally {
-      // 如果正在读取大表数据的话，这里的close()会很慢
       srs.close();
     }
 
@@ -539,13 +483,7 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         .build();
   }
 
-  /**
-   * 变化量同步
-   *
-   * @param synchronizer
-   * @param transformer
-   * @return ReaderTaskResult
-   */
+
   private ReaderTaskResult doChangeSynchronize(TableDataSynchronizeProvider synchronizer,
       RecordTransformProvider transformer) {
     final int BATCH_SIZE = fetchSize;
@@ -586,7 +524,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
     calculator.setRecordIdentical(false);
     calculator.setCheckJdbcType(false);
 
-    // 执行实际的变化同步过程
     log.info("[ChangeSync] Handle table by compare [{}] data now ... ", tableNameMapString);
     calculator.executeCalculate(param, new RecordRowHandler() {
 
@@ -636,11 +573,6 @@ public class ReaderTaskThread extends TaskProcessor<ReaderTaskResult> {
         checkFull(fields);
       }
 
-      /**
-       * 检测缓存是否已满，如果已满执行同步操作
-       *
-       * @param fields 同步的字段列表
-       */
       private void checkFull(List<String> fields) {
         checkInterrupt();
         if (cacheInsert.size() >= BATCH_SIZE || cacheUpdate.size() >= BATCH_SIZE

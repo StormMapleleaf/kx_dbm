@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.util;
 
 import cn.hutool.core.util.ClassLoaderUtil;
@@ -28,11 +19,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * DataSource工具类
- *
- * @author tang
- */
+
 @Slf4j
 @UtilityClass
 public final class DataSourceUtils {
@@ -42,12 +29,7 @@ public final class DataSourceUtils {
 
   private static final Map<String, URLClassLoader> classLoaderMap = new ConcurrentHashMap<>();
 
-  /**
-   * 创建于指定数据库连接描述符的连接池
-   *
-   * @param properties 数据库连接描述符
-   * @return HikariDataSource连接池
-   */
+
   public static CloseableDataSource createSourceDataSource(
       SourceDataSourceProperties properties) {
     Properties parameters = new Properties();
@@ -56,9 +38,7 @@ public final class DataSourceUtils {
     ds.setJdbcUrl(properties.getUrl());
     if (properties.getDriverClassName().contains("oracle")) {
       ds.setConnectionTestQuery("SELECT 'Hello' from DUAL");
-      // https://blog.csdn.net/qq_20960159/article/details/78593936
       System.getProperties().setProperty("oracle.jdbc.J2EE13Compliant", "true");
-      // Oracle在通过jdbc连接的时候需要添加一个参数来设置是否获取注释
       parameters.put("remarksReporting", "true");
     } else if (properties.getDriverClassName().contains("db2")) {
       ds.setConnectionTestQuery("SELECT 1 FROM SYSIBM.SYSDUMMY1");
@@ -87,12 +67,6 @@ public final class DataSourceUtils {
     return new WrapHikariDataSource(ds, urlClassLoader);
   }
 
-  /**
-   * 创建于指定数据库连接描述符的连接池
-   *
-   * @param properties 数据库连接描述符
-   * @return HikariDataSource连接池
-   */
   public static CloseableDataSource createTargetDataSource(
       TargetDataSourceProperties properties) {
     HikariDataSource ds = new HikariDataSource();
@@ -123,7 +97,6 @@ public final class DataSourceUtils {
         new Properties()
     );
 
-    // 如果是Greenplum数据库，这里需要关闭会话的查询优化器
     if (ProductTypeEnum.GREENPLUM == properties.getType()) {
       ds.setConnectionInitSql("set optimizer to 'off'");
       log.info("Greenplum: Close Optimizer now: set optimizer to 'off'");

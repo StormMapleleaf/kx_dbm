@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.config;
 
 import org.dromara.dbswitch.data.util.DataSourceUtils;
@@ -16,22 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-/**
- * DBSwitch自用线程池定义
- *
- * @author tang
- */
 @Configuration("dbswitchTaskExecutorConfig")
 public class DbswitchTaskExecutorConfig {
 
   public final static String TASK_EXECUTOR_READ_NAME = "tableReadExecutor";
   public final static String TASK_EXECUTOR_WRITE_NAME = "tableWriteExecutor";
 
-  /**
-   * 创建一个异步读任务执行线程池
-   *
-   * @return ThreadPoolTaskExecutor
-   */
   @Bean(TASK_EXECUTOR_READ_NAME)
   public AsyncTaskExecutor createTaskReadeExecutor() {
     ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
@@ -48,11 +29,6 @@ public class DbswitchTaskExecutorConfig {
     return taskExecutor;
   }
 
-  /**
-   * 创建一个异步写任务执行线程池
-   *
-   * @return ThreadPoolTaskExecutor
-   */
   @Bean(TASK_EXECUTOR_WRITE_NAME)
   public AsyncTaskExecutor createTaskWriteExecutor() {
     ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();

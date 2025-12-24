@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.config;
 
 import java.io.IOException;
@@ -17,11 +8,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.EncodedResource;
 
-/**
- * 同时支持.properties和.yaml两种配置类型
- *
- * @author tang
- */
+
 public class DbswitchPropertySourceFactory extends DefaultPropertySourceFactory {
 
   private static final String suffixYml = ".yml";

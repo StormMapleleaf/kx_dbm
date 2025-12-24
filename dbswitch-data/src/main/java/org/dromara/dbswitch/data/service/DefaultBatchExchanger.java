@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.service;
 
 import org.dromara.dbswitch.common.entity.PrintablePerfStat;
@@ -24,11 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.core.task.AsyncTaskExecutor;
 
-/**
- * 连接读取和写入的交换器
- *
- * @author tang
- */
 public class DefaultBatchExchanger extends AbstractBatchExchanger {
 
   private List<PrintablePerfStat> perfStats;

@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.data.service;
 
 import java.sql.Connection;
@@ -32,23 +23,12 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-/**
- * 数据迁移主逻辑类
- *
- * @author tang
- */
 @Slf4j
 @Service
 public class MigrationService implements Runnable {
 
-  /**
-   * 性能统计记录表
-   */
   private final List<PrintablePerfStat> perfStats = new ArrayList<>();
 
-  /**
-   * 配置参数
-   */
   private final DbswichPropertiesConfiguration configuration;
   private final AsyncTaskExecutor readExecutor;
   private final AsyncTaskExecutor writeExecutor;
@@ -56,16 +36,9 @@ public class MigrationService implements Runnable {
   private RobotReader robotReader;
   private RobotWriter robotWriter;
 
-  /**
-   * 任务执行实时记录MDC
-   */
+
   private MdcKeyValue mdcKeyValue;
 
-  /**
-   * 构造函数
-   *
-   * @param properties 配置信息
-   */
   public MigrationService(DbswichPropertiesConfiguration properties,
       AsyncTaskExecutor tableReadExecutor,
       AsyncTaskExecutor tableWriteExecutor) {
@@ -77,10 +50,6 @@ public class MigrationService implements Runnable {
   public void setMdcKeyValue(MdcKeyValue mdcKeyValue) {
     this.mdcKeyValue = Objects.requireNonNull(mdcKeyValue, "mdcKeyValue is null");
   }
-
-  /**
-   * 中断执行中的任务
-   */
   synchronized public void interrupt() {
     if (null != robotReader) {
       robotReader.interrupt();
@@ -90,9 +59,6 @@ public class MigrationService implements Runnable {
     }
   }
 
-  /**
-   * 执行入口
-   */
   @Override
   public void run() {
     if (Objects.nonNull(mdcKeyValue)) {
@@ -103,13 +69,10 @@ public class MigrationService implements Runnable {
     }
   }
 
-  /**
-   * 执行主逻辑
-   */
+
   private void doRun() {
     log.info("dbswitch data service is started....");
     log.info("Task run environment information:\n{}", MachineUtils.getPrintInformation());
-    //log.info("input configuration \n{}", JsonUtils.toJsonString(configuration));
 
     GlobalParamConfigProperties globalParam = configuration.getConfig();
     int maxQueueSize = globalParam.getChannelQueueSize();
