@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.dromara.dbswitch</groupId>
+    <artifactId>dbswitch-parent</artifactId>
+    <version>2.0.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>dbswitch-product</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>dbswitch-register-product</module>
+    <module>dbswitch-product-mysql</module>
+    <module>dbswitch-product-oracle</module>
+    <module>dbswitch-product-postgresql</module>
+    <module>dbswitch-product-sqlserver</module>
+    <module>dbswitch-product-db2</module>
+    <module>dbswitch-product-dm</module>
+    <module>dbswitch-product-sybase</module>
+    <module>dbswitch-product-kingbase</module>
+    <module>dbswitch-product-oscar</module>
+    <module>dbswitch-product-sqlite</module>
+    <module>dbswitch-product-mariadb</module>
+    <module>dbswitch-product-hive</module>
+    <module>dbswitch-product-gbase</module>
+    <module>dbswitch-product-openguass</module>
+    <module>dbswitch-product-mongodb</module>
+    <module>dbswitch-product-clickhouse</module>
+    <module>dbswitch-product-elasticsearch</module>
+    <module>dbswitch-product-highgo</module>
+    <module>dbswitch-product-starrocks</module>
+    <module>dbswitch-product-greenplum</module>
+    <module>dbswitch-product-doris</module>
+    <module>dbswitch-product-oceanbase</module>
+    <module>dbswitch-product-tdengine</module>
+  </modules>
+
+</project>

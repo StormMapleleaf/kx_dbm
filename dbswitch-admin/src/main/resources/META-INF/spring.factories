@@ -1,0 +1,1 @@
+org.springframework.context.ApplicationListener=org.dromara.dbswitch.admin.listener.DbswitchAdminStartedEventListener

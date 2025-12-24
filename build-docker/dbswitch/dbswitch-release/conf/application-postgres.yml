@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${PGDB_HOST}:${PGDB_PORT:5432}/${PGDB_NAME:dbswitch}?currentSchema=public
+    username: ${PGDB_USERNAME}
+    password: ${PGDB_PASSWORD}
+    validation-query: SELECT 1
+    test-on-borrow: true
+  flyway:
+    locations: classpath:db/postgres
+    baseline-on-migrate: true
+    table: dbswitch_schema_history
+    enabled: true

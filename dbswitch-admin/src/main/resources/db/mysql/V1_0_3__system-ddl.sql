@@ -1,0 +1,3 @@
+ALTER TABLE `DBSWITCH_ASSIGNMENT_CONFIG` ADD COLUMN `table_incr_columns`  longtext NULL COMMENT '增量同步表的增量字段配置' AFTER `source_tables`;
+ALTER TABLE `DBSWITCH_ASSIGNMENT_CONFIG` ADD COLUMN `pre_sql_scripts`  longtext NULL COMMENT '源端查询的前置执行sql脚本' AFTER `excluded_flag`;
+ALTER TABLE `DBSWITCH_ASSIGNMENT_CONFIG` ADD COLUMN `post_sql_scripts`  longtext NULL COMMENT '源端查询的后置执行sql脚本' AFTER `pre_sql_scripts`;

@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.31.57:3306/dbswitch?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF8&autoReconnect=true&useSSL=false&allowMultiQueries=true&failOverReadOnly=false&connectTimeout=30000
+    username: root
+    password: 123456
+    validation-query: SELECT 1
+    test-on-borrow: true
+  flyway:
+    locations: classpath:db/mysql
+    baseline-on-migrate: true
+    table: DBSWITCH_SCHEMA_HISTORY
+    enabled: true
