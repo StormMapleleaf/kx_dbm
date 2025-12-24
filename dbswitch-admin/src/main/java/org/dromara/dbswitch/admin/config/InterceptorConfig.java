@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.config;
 
 import org.dromara.dbswitch.admin.common.annotation.TokenCheck;
@@ -45,9 +36,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
       @Resource
       private SystemUserDAO systemUserDAO;
 
-      /**
-       * 只拦截带有@TokenCheck注解且needCheck属性为true的接口
-       */
+
       @Override
       public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
           Object handler) {
@@ -76,7 +65,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
           throw new DbswitchException(ResultCode.ERROR_ACCESS_FORBIDDEN, "token不存在或已经失效，请重新登录!");
         }
 
-        //判断数据库中的User实体对象的有效性
+        
         SystemUserEntity systemUserEntity = (SystemUserEntity) cache;
         SystemUserEntity user = systemUserDAO.findByUsername(systemUserEntity.getUsername());
         if (null == user) {

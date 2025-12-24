@@ -13,11 +13,7 @@ public class ExecutorConfig {
   public final static String TASK_READ_EXECUTOR_BEAN_NAME = "readerTaskExecutor";
   public final static String TASK_WRITE_EXECUTOR_BEAN_NAME = "writerTaskExecutor";
 
-  /**
-   * 创建一个异步读取任务线程池
-   *
-   * @return ThreadPoolTaskExecutor
-   */
+
   @Bean(TASK_READ_EXECUTOR_BEAN_NAME)
   public AsyncTaskExecutor createReaderTaskExecutor() {
     ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
@@ -34,11 +30,6 @@ public class ExecutorConfig {
     return taskExecutor;
   }
 
-  /**
-   * 创建一个异步写入任务线程池
-   *
-   * @return ThreadPoolTaskExecutor
-   */
   @Bean(TASK_WRITE_EXECUTOR_BEAN_NAME)
   public AsyncTaskExecutor createWriterTaskExecutor() {
     ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();

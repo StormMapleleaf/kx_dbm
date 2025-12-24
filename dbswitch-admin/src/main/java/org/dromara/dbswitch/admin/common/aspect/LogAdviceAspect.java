@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.admin.common.aspect;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
@@ -56,7 +47,6 @@ public class LogAdviceAspect {
   }
 
   private EvaluationContext getEvaluationContext(ProceedingJoinPoint joinPoint) {
-    // 将方法的参数名和参数值一一对应的放入上下文中
     MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
     List<String> paramNameList = Arrays.asList(methodSignature.getParameterNames());
     List<Object> paramList = Arrays.asList(joinPoint.getArgs());
@@ -123,7 +113,6 @@ public class LogAdviceAspect {
     }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
   @Pointcut("@annotation(org.dromara.dbswitch.admin.common.annotation.LogOperate)")
   public void operatorPointCut() {
