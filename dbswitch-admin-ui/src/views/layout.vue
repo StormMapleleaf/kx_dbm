@@ -1,18 +1,15 @@
 <template>
   <el-container class="index-container">
     <el-aside :width="isCollapse?'64px':'250px'">
-      <!-- 左侧LOGO -->
       <div class="title">
         <img src="../assets/logo.png" />
         <span class="title-text"
               v-if="!isCollapse">{{title}}</span>
       </div>
-      <!-- 左侧导航菜单 -->
       <asideBar ref="asideBar"></asideBar>
     </el-aside>
     <el-main>
       <el-header>
-        <!-- 折叠图标 -->
         <div @click="handleToggleCollapse"
              class="collapse">
           <i class="el-icon-s-unfold"
@@ -21,12 +18,10 @@
              v-else></i>
         </div>
 
-        <!-- 面包屑导航 -->
         <breadcrumb></breadcrumb>
         <userDropdown></userDropdown>
       </el-header>
 
-      <!-- 右侧显示区域 -->
       <viewMain></viewMain>
     </el-main>
   </el-container>

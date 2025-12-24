@@ -63,7 +63,6 @@ export default {
     };
   },
   created () {
-    //按enter键提交功能参考：https://www.cnblogs.com/cristina-guan/p/9440035.html
     var lett = this;
     document.onkeydown = function (e) {
       var key = window.event.keyCode;

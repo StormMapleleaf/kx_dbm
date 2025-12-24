@@ -9,7 +9,6 @@
   </el-breadcrumb>
 </template>
 
-<!-- 参考教程：https://www.cnblogs.com/yangguoe/p/9406032.html -->
 <script>
 export default {
   name: "breadcrumb",
@@ -28,8 +27,7 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      let matched = this.$route.matched.filter(item => item.name); //$route.matched 将会是一个包含从上到下的所有对象 (副本)。
-      this.levelList = matched;
+      let matched = this.$route.matched.filter(item => item.name); 
     }
   }
 };

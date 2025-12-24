@@ -351,10 +351,8 @@ export default {
   methods: {
     initEditor (editor) {
       require('brace/ext/language_tools')
-      // 设置语言
       require('brace/mode/sql')
       require('brace/snippets/sql')
-      // 设置主题 按需加载
       require('brace/theme/monokai')
       require('brace/theme/chrome')
       require('brace/theme/crimson_editor')
@@ -468,7 +466,6 @@ export default {
       );
     },
     renderContent (h, { node, data, store }) {
-      // https://www.cnblogs.com/zhoushuang0426/p/11059989.html
       if (node.level === 1) {
         return (
           <div class="custom-tree-node">
@@ -480,7 +477,6 @@ export default {
           </div>
         );
       } else if (node.level === 2) {
-        // var icon_pic = "iconfont icon-shitu_biaoge";
         var icon_pic = <img style="width:16px" src="data:image/image/png;base64,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" />
         if (data.type === 'VIEW') {
           icon_pic = <i class='iconfont icon-viewList'></i>
@@ -566,7 +562,6 @@ export default {
       }).then(
         res => {
           if (0 === res.data.code) {
-            //console.log("list4:" + JSON.stringify(res.data.data))
             this.tableMeta = res.data.data;
             this.currentNode.tableName = table;
             this.currentNode.schemaName = schema;
@@ -584,7 +579,6 @@ export default {
         res => {
           if (0 === res.data.code) {
             this.sampleData = res.data.data;
-            //console.log(this.sampleData)
           } else {
             this.$alert("加载失败，原因：" + res.data.message, '数据加载失败');
           }
@@ -592,7 +586,6 @@ export default {
       );
     },
     loadColumnList (resolve, id, schema, table) {
-      //console.log("id=" + id);
       this.$http({
         method: "GET",
         url: "/dbswitch/admin/api/v1/metadata/columns/" + id + "/1/0?schema=" + urlencode(schema) + "&table=" + urlencode(table)

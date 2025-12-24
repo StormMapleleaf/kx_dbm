@@ -307,7 +307,7 @@ export default {
           if (1 === res.data.data.status) {
             this.timer = setInterval(() => {
               this.timerRefreshLogs();
-            }, 1000);// 每隔1s定时刷新
+            }, 1000);
           }
         } else {
           if (res.data.message) {
@@ -327,7 +327,6 @@ export default {
           this.status = res.data.data.status;
           this.scrollMaxheight();
           if (1 !== res.data.data.status) {
-            // 如果不是运行中，则需要关闭定时器
             clearInterval(this.timer);
             this.timer = null;
           }
@@ -402,7 +401,7 @@ export default {
 }
 
 .container > * {
-  float: left; /* 水平排列 */
+  float: left; 
 }
 
 .container .el-card {
@@ -427,7 +426,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrop;
-  cursor: pointer; /*鼠标悬停变小手*/
+  cursor: pointer; 
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
   width: 100%;
