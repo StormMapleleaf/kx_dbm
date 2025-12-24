@@ -1,20 +1,11 @@
-#!/usr/bin/env bash
-#
-# Author : tang
-# Date :2019-12-16
-#
-#############################################
-# !!!!!! Modify here please
 
 APP_MAIN="org.dromara.dbswitch.admin.AdminApplication"
 
-#############################################
 
 APP_HOME="${BASH_SOURCE-$0}"
 APP_HOME="$(dirname "${APP_HOME}")"
 APP_HOME="$(cd "${APP_HOME}"; pwd)"
 APP_HOME="$(cd "$(dirname ${APP_HOME})"; pwd)"
-#echo "Base Directory:${APP_HOME}"
 
 APP_BIN_PATH=$APP_HOME/bin
 APP_LIB_PATH=$APP_HOME/lib

@@ -18,7 +18,6 @@
     </dependencySet>
   </dependencySets>
 
-  <!-- 打包assembly中的bin目录到 打包目录/bin 下 -->
   <files>
     <file>
       <source>src/main/assembly/bin/startup.sh</source>
@@ -54,7 +53,6 @@
 
   <fileSets>
 
-    <!-- 打包assembly中的upgrade目录到 打包目录/upgrade 下 -->
     <fileSet>
       <directory>src/main/assembly/upgrade</directory>
       <outputDirectory>upgrade</outputDirectory>
@@ -62,7 +60,6 @@
       <fileMode>0755</fileMode>
     </fileSet>
 
-    <!-- 创建logs目录文件夹 -->
     <fileSet>
       <directory>${project.basedir}</directory>
       <outputDirectory>logs</outputDirectory>
@@ -71,7 +68,6 @@
       </excludes>
     </fileSet>
 
-    <!-- 创建ext目录文件夹 -->
     <fileSet>
       <directory>${project.basedir}</directory>
       <outputDirectory>ext</outputDirectory>
@@ -80,7 +76,6 @@
       </excludes>
     </fileSet>
 
-    <!-- 打包dbswitch-admin中的配置文件到打包目录/conf 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-admin/src/main/resources/
       </directory>
@@ -91,7 +86,6 @@
       </includes>
     </fileSet>
 
-    <!-- 打包dbswitch-data中的配置文件到打包目录/conf 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-data/src/main/resources
       </directory>
@@ -102,9 +96,6 @@
       </includes>
     </fileSet>
 
-    <!-- 不写就是不打包 dbswitch-core和dbswitch-common 中的配置文件到打包目录/conf 下 -->
-
-    <!-- 将模块dbswitch-common的jar文件放到打包目录/lib 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-common/target
       </directory>
@@ -114,7 +105,6 @@
       </includes>
     </fileSet>
 
-    <!-- 将模块dbswitch-core的jar文件放到打包目录/lib 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-core/target</directory>
       <outputDirectory>lib</outputDirectory>
@@ -123,7 +113,6 @@
       </includes>
     </fileSet>
 
-    <!-- 将模块dbswitch-data的jar文件放到打包目录/lib 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-data/target</directory>
       <outputDirectory>lib</outputDirectory>
@@ -132,7 +121,6 @@
       </includes>
     </fileSet>
 
-    <!-- 将模块dbswitch-admin的jar文件放到打包目录/lib 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-admin/target
       </directory>
@@ -145,7 +133,6 @@
       </includes>
     </fileSet>
 
-    <!-- 将模块dbswitch-admin的jar文件单独移动到目录/ext 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-admin/target
       </directory>
@@ -155,7 +142,6 @@
       </includes>
     </fileSet>
 
-    <!-- 将模块dbswitch-product下的jar文件放到打包目录/lib 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/dbswitch-product/dbswitch-register-product/target
       </directory>
@@ -165,7 +151,6 @@
       </includes>
     </fileSet>
 
-    <!-- 将模块drivers驱动等打包目录/drivers 下 -->
     <fileSet>
       <directory>${project.parent.basedir}/drivers/
       </directory>
