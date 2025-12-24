@@ -4,11 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dromara.dbswitch</groupId>
   <artifactId>dbswitch-parent</artifactId>
-  <version>2.0.1</version>
-  <packaging>pom</packaging>
-  <name>dbswitch</name>
-  <description>database switch project</description>
-  <url>https://gitee.com/inrgihc/dbswitch</url>
+  <version>1.0.0</version>
 
   <properties>
     <java.version>1.8</java.version>
@@ -21,36 +17,6 @@
   </properties>
 
   <developers>
-    <developer>
-      <name>tang</name>
-      <email>inrgihc@126.com</email>
-      <url>https://gitee.com/inrgihc</url>
-    </developer>
-    <developer>
-      <name>lizemin</name>
-      <email>lizemin@chinasofti.com</email>
-      <url>https://gitee.com/benbenyezi</url>
-    </developer>
-    <developer>
-      <name>geekyouth</name>
-      <email>keliang@algolaser.cn</email>
-      <url>https://gitee.com/geekyouth</url>
-    </developer>
-    <developer>
-      <name>wewelove</name>
-      <email>wewelove88@gmail.com</email>
-      <url>https://gitee.com/wewelove</url>
-    </developer>
-    <developer>
-      <name>xiaomizhou2</name>
-      <email>937031323@qq.com</email>
-      <url>https://gitee.com/xiaomizhou2</url>
-    </developer>
-    <developer>
-      <name>Kingkazuma</name>
-      <email>1991377542@qq.com</email>
-      <url>https://gitee.com/Kingkazuma111</url>
-    </developer>
   </developers>
 
   <modules>
@@ -197,7 +163,6 @@
           </excludes>
         </configuration>
       </plugin>
-      <!-- 将依赖的jar包拷贝到target目录下 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

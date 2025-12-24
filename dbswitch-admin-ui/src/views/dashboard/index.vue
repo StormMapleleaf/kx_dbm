@@ -67,7 +67,7 @@
             <p class="cardItem_p1">执行中&nbsp;&nbsp;&nbsp;</p>
           </div>
           <div class="cardItem_icon">
-            <i class="el-icon-loading color-running"></i>
+            <i class="el-icon-loading color-running no-spin"></i>
           </div>
         </div>
       </el-col>
@@ -403,5 +403,8 @@ export default {
 #myChart {
   width: 95%;
   height: 400px;
+}
+.no-spin {
+  animation: none !important;
 }
 </style>

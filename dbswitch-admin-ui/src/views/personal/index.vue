@@ -3,8 +3,7 @@
     <el-card class="box-card">
       <el-tabs v-model="activeName"
                @tab-click="handleClick">
-        <image style="width: 100px; height: 100px"
-               src="../../assets/logo.png" />
+
         <el-tab-pane label="账号信息"
                      name="userinfo">
           <el-card>

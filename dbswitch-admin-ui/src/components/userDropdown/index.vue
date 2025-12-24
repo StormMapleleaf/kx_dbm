@@ -6,8 +6,7 @@
           {{username}}
           <i class="el-icon-caret-bottom"></i>
         </span>
-        <img src="../../assets/user.jpg"
-             alt="user" />
+        <span class="user-avatar-text">用户</span>
       </div>
       <el-dropdown-menu solt="dropdown">
         <el-dropdown-item>
@@ -61,12 +60,28 @@ export default {
   color: #606266;
 }
 
+.user-dropdown-wrap .user-dropdown-photo {
+  display: flex;
+  align-items: center;
+}
+
 .user-dropdown-wrap .user-dropdown-photo img {
+  display: none; /* 隐藏原头像图片 */
+}
+
+.user-avatar-text {
   width: 30px;
   height: 30px;
-  vertical-align: middle;
+  background: #ffffff;
+  color: #606266;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
   margin-right: 10px;
   cursor: pointer;
+  user-select: none;
 }
 
 .user-dropdown-text {

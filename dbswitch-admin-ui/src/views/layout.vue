@@ -2,7 +2,6 @@
   <el-container class="index-container">
     <el-aside :width="isCollapse?'64px':'250px'">
       <div class="title">
-        <img src="../assets/logo.png" />
         <span class="title-text"
               v-if="!isCollapse">{{title}}</span>
       </div>
@@ -43,7 +42,7 @@ export default {
   },
   data () {
     return {
-      title: "DBM",
+      title: "迁移工具",
       isCollapse: null
     };
   },
