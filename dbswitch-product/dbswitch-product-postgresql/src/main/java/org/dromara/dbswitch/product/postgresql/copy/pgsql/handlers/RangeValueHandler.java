@@ -12,8 +12,7 @@ public class RangeValueHandler<TElementType> extends BaseValueHandler<Range<TEle
     this.valueHandler = valueHandler;
   }
 
-  @SuppressWarnings("NullAway") // infinite bound checks only pass when bound value is not null
-  @Override
+  @SuppressWarnings("NullAway")   @Override
   protected void internalHandle(DataOutputStream buffer, Range<TElementType> value)
       throws IOException {
     buffer.writeInt(getLength(value));
@@ -32,8 +31,7 @@ public class RangeValueHandler<TElementType> extends BaseValueHandler<Range<TEle
     }
   }
 
-  @SuppressWarnings("NullAway") // infinite bound checks only pass when bound value is not null
-  @Override
+  @SuppressWarnings("NullAway")   @Override
   public int getLength(Range<TElementType> value) {
     int totalLen = 1;
 

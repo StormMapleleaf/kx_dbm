@@ -90,8 +90,7 @@ public abstract class AbstractMapping<TEntity> {
     });
   }
 
-  // region Numeric
-
+  
   protected void mapBoolean(String columnName, Function<TEntity, Boolean> propertyGetter) {
     map(columnName, DataType.Boolean, propertyGetter);
   }
@@ -166,10 +165,8 @@ public abstract class AbstractMapping<TEntity> {
     });
   }
 
-  // endregion
-
-  // region Network
-  protected void mapInet4Addr(String columnName, Function<TEntity, Inet4Address> propertyGetter) {
+  
+    protected void mapInet4Addr(String columnName, Function<TEntity, Inet4Address> propertyGetter) {
     map(columnName, DataType.Inet4, propertyGetter);
   }
 
@@ -181,10 +178,8 @@ public abstract class AbstractMapping<TEntity> {
     map(columnName, DataType.MacAddress, propertyGetter);
   }
 
-  // endregion
-
-  // region Temporal
-
+  
+  
   protected void mapDate(String columnName, Function<TEntity, LocalDate> propertyGetter) {
     map(columnName, DataType.Date, propertyGetter);
   }
@@ -202,10 +197,8 @@ public abstract class AbstractMapping<TEntity> {
     map(columnName, DataType.TimestampTz, propertyGetter);
   }
 
-  // endregion
-
-  // region Text
-
+  
+  
   protected void mapText(String columnName, Function<TEntity, String> propertyGetter) {
     map(columnName, DataType.Text, propertyGetter);
   }
@@ -214,35 +207,27 @@ public abstract class AbstractMapping<TEntity> {
     map(columnName, DataType.Text, propertyGetter);
   }
 
-  // engregion
-
-  // region UUID
-
+  
+  
   protected void mapUUID(String columnName, Function<TEntity, UUID> propertyGetter) {
     map(columnName, DataType.Uuid, propertyGetter);
   }
 
-  // endregion
-
-  // region JSON
-
+  
+  
   protected void mapJsonb(String columnName, Function<TEntity, String> propertyGetter) {
     map(columnName, DataType.Jsonb, propertyGetter);
   }
 
-  // endregion
-
-  // region hstore
-
+  
+  
   protected void mapHstore(String columnName,
       Function<TEntity, Map<String, String>> propertyGetter) {
     map(columnName, DataType.Hstore, propertyGetter);
   }
 
-  // endregion
-
-  // region Geo
-
+  
+  
   protected void mapPoint(String columnName, Function<TEntity, Point> propertyGetter) {
     map(columnName, DataType.Point, propertyGetter);
   }
@@ -271,10 +256,8 @@ public abstract class AbstractMapping<TEntity> {
     map(columnName, DataType.Circle, propertyGetter);
   }
 
-  // endregion
-
-  // region Arrays
-
+  
+  
   protected void mapBooleanArray(String columnName,
       Function<TEntity, Collection<Boolean>> propertyGetter) {
     mapCollection(columnName, DataType.Boolean, propertyGetter);
@@ -339,10 +322,8 @@ public abstract class AbstractMapping<TEntity> {
     mapCollection(columnName, DataType.Inet6, propertyGetter);
   }
 
-  // endregion
-
-  // region Ranges
-
+  
+  
   protected <TElementType> void mapRange(String columnName, DataType dataType,
       Function<TEntity, Range<TElementType>> propertyGetter) {
     final IValueHandler<TElementType> valueHandler = provider.resolve(dataType);
@@ -377,8 +358,7 @@ public abstract class AbstractMapping<TEntity> {
     map(columnName, DataType.DateRange, propertyGetter);
   }
 
-  // endregion
-
+  
   private void addColumn(String columnName, BiConsumer<PgBinaryWriter, TEntity> action) {
     columns.add(new ColumnDefinition<>(columnName, action));
   }

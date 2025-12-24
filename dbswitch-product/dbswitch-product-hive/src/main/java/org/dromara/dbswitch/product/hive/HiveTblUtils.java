@@ -13,16 +13,11 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class HiveTblUtils {
 
-  // hive.sql.database.type: MYSQL, POSTGRES, ORACLE, DERBY, DB2
-  private final static List<ProductTypeEnum> supportedProductTypes =
+    private final static List<ProductTypeEnum> supportedProductTypes =
       Arrays.asList(ProductTypeEnum.MYSQL, ProductTypeEnum.ORACLE,
           ProductTypeEnum.DB2, ProductTypeEnum.POSTGRESQL);
 
-  /**
-   * https://cwiki.apache.org/confluence/display/Hive/JDBC+Storage+Handler
-   *
-   * @return Map<String, String>
-   */
+
   public static Map<String, String> getTblProperties(SourceProperties tblProperties) {
     ProductTypeEnum sourceProductType = tblProperties.getProductType();
     String sourceSchemaName = tblProperties.getSchemaName();

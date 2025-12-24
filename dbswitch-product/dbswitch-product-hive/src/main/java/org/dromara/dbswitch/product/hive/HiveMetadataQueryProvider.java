@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.hive;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -178,8 +169,7 @@ public class HiveMetadataQueryProvider extends AbstractMetadataProvider {
 
   @Override
   public void appendPrimaryKeyForCreateTableSql(StringBuilder builder, List<String> primaryKeys) {
-    // HIVE表没有主键
-  }
+      }
 
   @Override
   public void postAppendCreateTableSql(StringBuilder builder, String tblComment, List<String> primaryKeys,

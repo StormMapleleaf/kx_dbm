@@ -1,6 +1,6 @@
 @echo off
 
-set APP_VERSION=2.0.1
+set APP_VERSION=1.0.0
 
 echo "Clean Project ..."
 call mvn clean -f pom.xml

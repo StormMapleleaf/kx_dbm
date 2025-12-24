@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.kingbase;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -52,8 +43,7 @@ public class KingbaseMetadataQueryProvider extends AbstractMetadataProvider {
         }
       }
     } catch (SQLException e) {
-      //throw new RuntimeException(e);
-    }
+          }
 
     return PostgresUtils.getTableDDL(this, connection, schemaName, tableName);
   }
@@ -70,8 +60,7 @@ public class KingbaseMetadataQueryProvider extends AbstractMetadataProvider {
         }
       }
     } catch (SQLException e) {
-      // throw new RuntimeException(e);
-    }
+          }
 
     return null;
   }
@@ -131,8 +120,7 @@ public class KingbaseMetadataQueryProvider extends AbstractMetadataProvider {
           if (length > 0) {
             if (precision > 0 || length > 18) {
               if ((length + precision) > 0 && precision > 0) {
-                // Numeric(Precision, Scale): Precision = total length; Scale = decimal places
-                retval += "NUMERIC(" + (length + precision) + ", " + precision + ")";
+                                retval += "NUMERIC(" + (length + precision) + ", " + precision + ")";
               } else {
                 retval += "DOUBLE PRECISION";
               }

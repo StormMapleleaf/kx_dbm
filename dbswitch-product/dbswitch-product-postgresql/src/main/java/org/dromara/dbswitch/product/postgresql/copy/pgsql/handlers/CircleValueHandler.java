@@ -10,10 +10,8 @@ public class CircleValueHandler extends BaseValueHandler<Circle> {
   @Override
   protected void internalHandle(DataOutputStream buffer, final Circle value) throws IOException {
     buffer.writeInt(24);
-    // First encode the Center Point:
-    GeometricUtils.writePoint(buffer, value.getCenter());
-    // ... and then the Radius:
-    buffer.writeDouble(value.getRadius());
+        GeometricUtils.writePoint(buffer, value.getCenter());
+        buffer.writeDouble(value.getRadius());
   }
 
   @Override

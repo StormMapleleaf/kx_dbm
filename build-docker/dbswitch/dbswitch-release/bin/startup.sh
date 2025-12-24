@@ -1,20 +1,10 @@
-#!/bin/sh
-#
-# Author : tang
-# Date :2021-07-31
-#
-#############################################
-# !!!!!! Modify here please
-
 APP_MAIN="org.dromara.dbswitch.admin.AdminApplication"
 
-#############################################
 
 APP_HOME="${BASH_SOURCE-$0}"
 APP_HOME="$(dirname "${APP_HOME}")"
 APP_HOME="$(cd "${APP_HOME}"; pwd)"
 APP_HOME="$(cd "$(dirname ${APP_HOME})"; pwd)"
-#echo "Base Directory:${APP_HOME}"
 
 APP_BIN_PATH=$APP_HOME/bin
 APP_LIB_PATH=$APP_HOME/lib
@@ -31,7 +21,6 @@ cd ${APP_HOME}
 echo -n `date +'%Y-%m-%d %H:%M:%S'`              >>${APP_RUN_LOG}
 echo "---- Start service [${APP_MAIN}] process. ">>${APP_RUN_LOG}
 
-# JVMFLAGS JVM参数可以在这里设置
 JVMFLAGS="-Dfile.encoding=UTF-8 -XX:+DisableExplicitGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:./gc.log"
 
 if [ "$JAVA_HOME" != "" ]; then
@@ -40,7 +29,6 @@ else
   JAVA=java
 fi
 
-#把lib下的所有jar都加入到classpath中
 CLASSPATH=$APP_CONF_PATH
 for i in $APP_LIB_PATH/*.jar
 do

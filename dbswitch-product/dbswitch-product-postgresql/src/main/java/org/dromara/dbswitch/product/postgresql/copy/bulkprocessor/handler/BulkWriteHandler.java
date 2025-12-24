@@ -20,12 +20,9 @@ public class BulkWriteHandler<TEntity> implements IBulkWriteHandler<TEntity> {
 
   @Override
   public void write(List<TEntity> entities) throws Exception {
-    // Obtain a new Connection and execute it in a try with resources block, so it gets closed properly:
-    try (Connection connection = connectionFactory.get()) {
-      // Now get the underlying PGConnection for the COPY API wrapping:
-      final PGConnection pgConnection = PostgreSqlUtils.getPGConnection(connection);
-      // And finally save all entities by using the COPY API:
-      client.saveAll(pgConnection, entities.stream());
+        try (Connection connection = connectionFactory.get()) {
+            final PGConnection pgConnection = PostgreSqlUtils.getPGConnection(connection);
+            client.saveAll(pgConnection, entities.stream());
     }
   }
 }

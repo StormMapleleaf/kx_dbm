@@ -1,6 +1,5 @@
 package org.dromara.dbswitch.product.postgresql.copy.pgsql.model.range;
 
-// https://github.com/npgsql/npgsql/blob/d4132d0d546594629bcef658bcb1418b4a8624cc/src/Npgsql/NpgsqlTypes/NpgsqlRange.cs
 public class RangeFlags {
 
   public static final int None = 0;

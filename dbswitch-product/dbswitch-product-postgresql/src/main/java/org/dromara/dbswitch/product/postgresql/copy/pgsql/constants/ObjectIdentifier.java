@@ -3,192 +3,124 @@ package org.dromara.dbswitch.product.postgresql.copy.pgsql.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-// https://github.com/postgres/postgres/blob/master/src/include/catalog/pg_type.h
 public class ObjectIdentifier {
 
-  // region OID 1 - 99
+  
+    public static int Boolean = 16;
 
-  // boolean, 'true'/'false'
-  public static int Boolean = 16;
+    public static int Bytea = 17;
 
-  // variable-length string, binary values escaped
-  public static int Bytea = 17;
+    public static int Char = 18;
 
-  // single character
-  public static int Char = 18;
+    public static int Name = 19;
 
-  // 63-byte type for storing system identifiers
-  public static int Name = 19;
+    public static int Int8 = 20;
 
-  // ~18 digit integer, 8-byte storage
-  public static int Int8 = 20;
+    public static int Int2 = 21;
 
-  // -32 thousand to 32 thousand, 2-byte storage
-  public static int Int2 = 21;
+    public static int Int4 = 23;
 
-  // -2 billion to 2 billion integer, 4-byte storage
-  public static int Int4 = 23;
+    public static int Text = 25;
 
-  // variable-length string, no limit specified
-  public static int Text = 25;
+    public static int Oid = 26;
 
-  // object identifier(oid), maximum 4 billion
-  public static int Oid = 26;
+    public static int Tid = 27;
 
-  // (block, offset), physical location of tuple
-  public static int Tid = 27;
+    public static int Xid = 28;
 
-  // transaction id
-  public static int Xid = 28;
+    public static int Cid = 29;
 
-  // command identifier type, sequence in transaction id
-  public static int Cid = 29;
+  
+  
+    public static int Jsonb = 114;
 
-  // endregion
+    public static int Xml = 115;
 
-  // region OID 100 - 199
+  
+  
+    public static int Point = 600;
 
-  // JSON
-  public static int Jsonb = 114;
+    public static int LineSegment = 601;
 
-  // XML content
-  public static int Xml = 115;
+    public static int Path = 602;
 
-  // endregion
+    public static int Box = 603;
 
-  // region OID 600 - 699
+    public static int Polygon = 604;
 
-  // geometric point '(x, y)'
-  public static int Point = 600;
+    public static int Line = 628;
 
-  // geometric line segment '(pt1, pt2)'
-  public static int LineSegment = 601;
+  
+  
+    public static int SinglePrecision = 700;
 
-  // geometric path '(pt1,...)'
-  public static int Path = 602;
+    public static int DoublePrecision = 701;
 
-  // geometric box '(lower left, upper right)'
-  public static int Box = 603;
+    public static int AbsTime = 702;
 
-  // geometric polygon '(pt1, ...)'
-  public static int Polygon = 604;
+    public static int RelTime = 703;
 
-  // geometric line
-  public static int Line = 628;
+    public static int TInterval = 704;
 
-  // endregion
+    public static int Unknown = 705;
 
-  // region OID 700 - 799
+    public static int Circle = 705;
 
-  // single-precision floating point number, 4-byte storage
-  public static int SinglePrecision = 700;
+    public static int Cash = 790;
 
-  // double-precision floating point number, 8-byte storage
-  public static int DoublePrecision = 701;
+    public static int Money = 791;
 
-  // absolute, limited-range date and time (Unix system time)
-  public static int AbsTime = 702;
+  
+  
+    public static int MacAddress = 829;
 
-  // relative, limited-range time interval (Unix delta time)
-  public static int RelTime = 703;
+    public static int Inet = 869;
 
-  // (abstime, abstime), time interval
-  public static int TInterval = 704;
+    public static int Cidr = 650;
 
-  // unknown
-  public static int Unknown = 705;
+    public static int MacAddress8 = 774;
 
-  // geometric circle '(center, radius)'
-  public static int Circle = 705;
+  
+  
+    public static int CharLength = 1042;
 
-  // monetary amounts, $d,ddd.cc
-  public static int Cash = 790;
+    public static int VarCharLength = 1043;
 
-  // money
-  public static int Money = 791;
+    public static int Date = 1082;
 
-  // endregion
+    public static int Time = 1082;
 
-  // region OID 800 - 899
+  
+  
+    public static int Timestamp = 1114;
 
-  // XX:XX:XX:XX:XX:XX, MAC address
-  public static int MacAddress = 829;
+    public static int TimestampTz = 1184;
 
-  // IP address/netmask, host address, netmask optional
-  public static int Inet = 869;
+    public static int Interval = 1186;
 
-  // network IP address/netmask, network address
-  public static int Cidr = 650;
+  
+  
+    public static int TimeTz = 1266;
 
-  // XX:XX:XX:XX:XX:XX:XX:XX, MAC address
-  public static int MacAddress8 = 774;
+  
+  
+    public static int Bit = 1560;
 
-  // endregion
+    public static int VarBit = 1562;
 
-  // region OIDS 1000 - 1099
-
-  // char(length), blank-padded string, fixed storage length
-  public static int CharLength = 1042;
-
-  // varchar(length), non-blank-padded string, variable storage length
-  public static int VarCharLength = 1043;
-
-  // Date
-  public static int Date = 1082;
-
-  // Time Of Day
-  public static int Time = 1082;
-
-  // endregion
-
-  // region OIDS 1100 - 1199
-
-  // date and time
-  public static int Timestamp = 1114;
-
-  // date and time with time zone
-  public static int TimestampTz = 1184;
-
-  // Interval
-  public static int Interval = 1186;
-
-  // endregion
-
-  // region OIDS 1200 - 1299
-
-  // time of day with time zone
-  public static int TimeTz = 1266;
-
-  // endregion
-
-  // region OIDS 1500 - 1599
-
-  // fixed-length bit string
-  public static int Bit = 1560;
-
-  // variable-length bit string
-  public static int VarBit = 1562;
-
-  // endregion
-
-  // region OIDS 1700 - 1799
-
+  
+  
   public static int Numeric = 1700;
 
-  // endregion
-
-  // region UUID
-
+  
+  
   public static int Uuid = 2950;
 
-  // endregion
-
-  // region Pseudo-Types
-
+  
+  
   public static int Record = 2249;
 
-  // endregion
-
+  
   private static Map<DataType, Integer> mapping = buildLookupTable();
 
   private static Map<DataType, Integer> buildLookupTable() {

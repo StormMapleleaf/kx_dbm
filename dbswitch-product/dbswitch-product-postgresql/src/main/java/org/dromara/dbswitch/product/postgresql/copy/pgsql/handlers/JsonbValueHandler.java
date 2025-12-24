@@ -20,12 +20,9 @@ public class JsonbValueHandler extends BaseValueHandler<String> {
 
     byte[] utf8Bytes = value.getBytes("UTF-8");
 
-    // Write the Length of the Data to Copy:
-    buffer.writeInt(utf8Bytes.length + 1);
-    // Write the Jsonb Protocol Version:
-    buffer.writeByte(jsonbProtocolVersion);
-    // Copy the Data:
-    buffer.write(utf8Bytes);
+        buffer.writeInt(utf8Bytes.length + 1);
+        buffer.writeByte(jsonbProtocolVersion);
+        buffer.write(utf8Bytes);
   }
 
   @Override

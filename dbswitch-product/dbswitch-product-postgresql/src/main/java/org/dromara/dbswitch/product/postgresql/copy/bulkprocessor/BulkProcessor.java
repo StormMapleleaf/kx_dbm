@@ -32,12 +32,10 @@ public class BulkProcessor<TEntity> implements AutoCloseable {
     this.handler = handler;
     this.bulkSize = bulkSize;
 
-    // Start with an empty List of batched entities:
-    this.batchedEntities = new ArrayList<>();
+        this.batchedEntities = new ArrayList<>();
 
     if (flushInterval != null) {
-      // Create a Scheduler for the time-based Flush Interval:
-      this.scheduler = new ScheduledThreadPoolExecutor(1);
+            this.scheduler = new ScheduledThreadPoolExecutor(1);
       this.scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
       this.scheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
       this.scheduledFuture = this.scheduler
@@ -57,18 +55,15 @@ public class BulkProcessor<TEntity> implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    // If the Processor has already been closed, do not proceed:
-    if (closed) {
+        if (closed) {
       return;
     }
     closed = true;
 
-    // Quit the Scheduled FlushInterval Future:
-    Optional.ofNullable(this.scheduledFuture).ifPresent(future -> future.cancel(false));
+        Optional.ofNullable(this.scheduledFuture).ifPresent(future -> future.cancel(false));
     Optional.ofNullable(this.scheduler).ifPresent(ScheduledThreadPoolExecutor::shutdown);
 
-    // Are there any entities left to write?
-    if (batchedEntities.size() > 0) {
+        if (batchedEntities.size() > 0) {
       execute();
     }
   }
@@ -79,14 +74,10 @@ public class BulkProcessor<TEntity> implements AutoCloseable {
     }
   }
 
-  // (currently) needs to be executed under a lock
-  private void execute() {
-    // Assign to a new List:
-    final List<TEntity> entities = batchedEntities;
-    // We can restart batching entities:
-    batchedEntities = new ArrayList<>();
-    // Write the previously batched entities to PostgreSQL:
-    write(entities);
+    private void execute() {
+        final List<TEntity> entities = batchedEntities;
+        batchedEntities = new ArrayList<>();
+        write(entities);
   }
 
   private void write(List<TEntity> entities) {

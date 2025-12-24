@@ -87,8 +87,7 @@ public class SimpleRow {
   public void writeRow(PgBinaryWriter writer) {
     for (int ordinalIdx = 0; ordinalIdx < lookup.keySet().size(); ordinalIdx++) {
 
-      // If this Ordinal wasn't set, we assume a NULL:
-      final Consumer<PgBinaryWriter> action = actions.get(ordinalIdx);
+            final Consumer<PgBinaryWriter> action = actions.get(ordinalIdx);
       if (action == null) {
         writer.writeNull();
       } else {
@@ -97,8 +96,7 @@ public class SimpleRow {
     }
   }
 
-  // region Numeric
-
+  
   public void setBoolean(String columnName, Boolean value) {
     setValue(columnName, DataType.Boolean, value);
   }
@@ -163,10 +161,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.DoublePrecision, value);
   }
 
-  // endregion
-
-  // region Temporal
-
+  
+  
   public void setDate(String columnName, LocalDate value) {
     setValue(columnName, DataType.Date, value);
   }
@@ -200,10 +196,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.TimestampTz, value);
   }
 
-  // endregion
-
-  // region Network
-
+  
+  
   public void setInet6Addr(String columnName, Inet6Address value) {
     setValue(columnName, DataType.Inet6, value);
   }
@@ -228,10 +222,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.MacAddress, value);
   }
 
-  // endregion
-
-  // region Text
-
+  
+  
   public void setText(String columnName, String value) {
     setValue(columnName, DataType.Text, nullCharacterHandler.apply(value));
   }
@@ -248,10 +240,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.Text, nullCharacterHandler.apply(value));
   }
 
-  // endregion
-
-  // region UUID
-
+  
+  
   public void setUUID(String columnName, UUID value) {
     setValue(columnName, DataType.Uuid, value);
   }
@@ -260,10 +250,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.Uuid, value);
   }
 
-  // endregion
-
-  // region JSON
-
+  
+  
   public void setJsonb(String columnName, String value) {
     setValue(columnName, DataType.Jsonb, nullCharacterHandler.apply(value));
   }
@@ -272,10 +260,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.Jsonb, nullCharacterHandler.apply(value));
   }
 
-  // endregion
-
-  // region hstore
-
+  
+  
   public void setHstore(String columnName, Map<String, String> value) {
     setValue(columnName, DataType.Hstore, value);
   }
@@ -284,10 +270,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.Hstore, value);
   }
 
-  // endregion
-
-  // region Geo
-
+  
+  
   public void setPoint(String columnName, Point value) {
     setValue(columnName, DataType.Point, value);
   }
@@ -344,10 +328,8 @@ public class SimpleRow {
     setValue(ordinal, DataType.Circle, value);
   }
 
-  // endregion
-
-  // region Arrays
-
+  
+  
   public void setByteArray(String columnName, byte[] value) {
     setValue(columnName, DataType.Bytea, value);
   }
@@ -469,10 +451,8 @@ public class SimpleRow {
     setCollection(ordinal, DataType.Inet6, value);
   }
 
-  // endregion
-
-  // region Ranges
-
+  
+  
   public <TElementType> void setRange(String columnName, DataType dataType,
       Range<TElementType> value) {
 
@@ -537,5 +517,4 @@ public class SimpleRow {
     setValue(ordinal, DataType.DateRange, value);
   }
 
-  // endregion
-}
+  }

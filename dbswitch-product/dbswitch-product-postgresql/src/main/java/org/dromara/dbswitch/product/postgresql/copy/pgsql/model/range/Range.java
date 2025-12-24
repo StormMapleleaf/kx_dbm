@@ -2,7 +2,6 @@ package org.dromara.dbswitch.product.postgresql.copy.pgsql.model.range;
 
 import java.util.Objects;
 
-// https://github.com/npgsql/npgsql/blob/d4132d0d546594629bcef658bcb1418b4a8624cc/src/Npgsql/NpgsqlTypes/NpgsqlRange.cs
 public class Range<TElementType> {
 
   private int flags;
@@ -49,18 +48,7 @@ public class Range<TElementType> {
   }
 
   private boolean isEmptyRange(TElementType lowerBound, TElementType upperBound, int flags) {
-    // ---------------------------------------------------------------------------------
-    // We only want to check for those conditions that are unambiguously erroneous:
-    //   1. The bounds must not be default values (including null).
-    //   2. The bounds must be definite (non-infinite).
-    //   3. The bounds must be inclusive.
-    //   4. The bounds must be considered equal.
-    //
-    // See:
-    //  - https://github.com/npgsql/npgsql/pull/1939
-    //  - https://github.com/npgsql/npgsql/issues/1943
-    // ---------------------------------------------------------------------------------
-
+                                            
     if ((flags & RangeFlags.Empty) == RangeFlags.Empty) {
       return true;
     }
@@ -82,8 +70,7 @@ public class Range<TElementType> {
 
     int result = RangeFlags.None;
 
-    // This is the only place flags are calculated.
-    if (lowerBoundIsInclusive) {
+        if (lowerBoundIsInclusive) {
       result |= RangeFlags.LowerBoundInclusive;
     }
     if (upperBoundIsInclusive) {
@@ -96,9 +83,7 @@ public class Range<TElementType> {
       result |= RangeFlags.UpperBoundInfinite;
     }
 
-    // PostgreSQL automatically converts inclusive-infinities.
-    // See: https://www.postgresql.org/docs/current/static/rangetypes.html#RANGETYPES-INFINITE
-    if ((result & RangeFlags.LowerInclusiveInfinite) == RangeFlags.LowerInclusiveInfinite) {
+            if ((result & RangeFlags.LowerInclusiveInfinite) == RangeFlags.LowerInclusiveInfinite) {
       result &= ~RangeFlags.LowerBoundInclusive;
     }
 

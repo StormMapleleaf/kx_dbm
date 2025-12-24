@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.oscar;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -132,8 +123,7 @@ public class OscarMetadataQueryProvider extends AbstractMetadataProvider {
           if (length > 0) {
             if (precision > 0 || length > 18) {
               if ((length + precision) > 0 && precision > 0) {
-                // Numeric(Precision, Scale): Precision = total length; Scale = decimal places
-                retval.append("NUMERIC(" + (length + precision) + ", " + precision + ")");
+                                retval.append("NUMERIC(" + (length + precision) + ", " + precision + ")");
               } else {
                 retval.append("DOUBLE PRECISION");
               }

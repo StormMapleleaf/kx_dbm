@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.dm;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -95,13 +86,6 @@ public class DmMetadataQueryProvider extends AbstractMetadataProvider {
   }
 
 
-  /**
-   * https://eco.dameng.com/document/dm/zh-cn/sql-dev/dmpl-sql-datatype.html
-   * <p>
-   * https://eco.dameng.com/document/dm/zh-cn/pm/dm8_sql-data-types-operators.html
-   * <p>
-   * 违反表[xxx]唯一性约束: https://www.cnblogs.com/theli/p/12858875.html
-   */
   @Override
   public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean useAutoInc,
       boolean addCr, boolean withRemarks) {
@@ -150,9 +134,7 @@ public class DmMetadataQueryProvider extends AbstractMetadataProvider {
         if (null != pks && pks.contains(fieldname)) {
           retval.append("NVARCHAR(" + length + ")");
         } else if (length > 0 && length < 1900) {
-          // 最大存储长度由数据库页面大小决定，支持按照字节存放字符串，数据库页面大小与实际最大存储长度的关系为:
-          // 4K->1900;8k->3900;16k->8000;32k->8188
-          retval.append("NVARCHAR(").append(length).append(')');
+                              retval.append("NVARCHAR(").append(length).append(')');
         } else {
           retval.append("TEXT");
         }

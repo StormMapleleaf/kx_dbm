@@ -32,12 +32,10 @@ public class PgBulkInsert<TEntity> implements IPgBulkInsert<TEntity> {
 
   @Override
   public void saveAll(PGConnection connection, Stream<TEntity> entities) throws SQLException {
-    // Wrap the CopyOutputStream in our own Writer:
-    try (PgBinaryWriter bw = new PgBinaryWriter(
+        try (PgBinaryWriter bw = new PgBinaryWriter(
         new PGCopyOutputStream(connection, mapping.getCopyCommand(), 1),
         configuration.getBufferSize())) {
-      // Insert Each Column:
-      entities.forEach(entity -> saveEntitySynchonized(bw, entity));
+            entities.forEach(entity -> saveEntitySynchonized(bw, entity));
     }
   }
 
@@ -46,12 +44,10 @@ public class PgBulkInsert<TEntity> implements IPgBulkInsert<TEntity> {
   }
 
   private void saveEntity(PgBinaryWriter bw, TEntity entity) throws SaveEntityFailedException {
-    // Start a new Row in PostgreSQL:
-    bw.startRow(mapping.getColumns().size());
+        bw.startRow(mapping.getColumns().size());
 
     try {
-      // Iterate over each column mapping:
-      mapping.getColumns().forEach(column -> {
+            mapping.getColumns().forEach(column -> {
         column.getWrite().accept(bw, entity);
       });
     } catch (Exception e) {

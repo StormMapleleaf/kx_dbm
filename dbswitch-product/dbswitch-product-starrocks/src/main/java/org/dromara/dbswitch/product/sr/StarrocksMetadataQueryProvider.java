@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.sr;
 
 import java.sql.Connection;
@@ -32,11 +23,7 @@ import org.dromara.dbswitch.core.schema.IndexDescription;
 import org.dromara.dbswitch.core.schema.SourceProperties;
 import org.dromara.dbswitch.core.schema.TableDescription;
 
-/**
- * https://docs.starrocks.io/zh/docs/3.1/quick_start/Create_table/
- * <p>
- * https://docs.starrocks.io/zh/docs/3.1/quick_start/deploy_with_docker/
- */
+
 @Slf4j
 public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
 
@@ -147,8 +134,7 @@ public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
     String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
     List<ColumnDescription> ret = this.querySelectSqlColumnMeta(connection, sql);
 
-    // 补充一下注释信息
-    try (ResultSet columns = connection.getMetaData()
+        try (ResultSet columns = connection.getMetaData()
         .getColumns(schemaName, null, tableName, null)) {
       while (columns.next()) {
         String columnName = columns.getString("COLUMN_NAME");
@@ -158,8 +144,7 @@ public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
           if (columnName.equals(cd.getFieldName())) {
             cd.setRemarks(remarks);
             cd.setProductType(ProductTypeEnum.STARROCKS);
-            // 补充默认值信息
-            cd.setDefaultValue(columnDefault);
+                        cd.setDefaultValue(columnDefault);
           }
         }
       }
@@ -283,20 +268,15 @@ public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
       case ColumnMetaData.TYPE_BIGNUMBER:
         if (null != pks && !pks.isEmpty() && pks.contains(fieldname)) {
           if (useAutoInc) {
-            //see: https://docs.starrocks.io/zh/docs/sql-reference/sql-statements/table_bucket_part_index/CREATE_TABLE/#column_definition
-            //fix: AUTO_INCREMENT should be after not null
-            retval += "BIGINT NOT NULL AUTO_INCREMENT";
+                                    retval += "BIGINT NOT NULL AUTO_INCREMENT";
           } else {
             retval += "BIGINT NOT NULL";
           }
         } else {
-          // Integer values...
-          if (precision == 0) {
+                    if (precision == 0) {
             if (length > 9) {
               if (length < 19) {
-                // can hold signed values between -9223372036854775808 and 9223372036854775807
-                // 18 significant digits
-                retval += "BIGINT";
+                                                retval += "BIGINT";
               } else {
                 retval += "DECIMAL(" + (length > 38 ? 38 : length) + ")";
               }
@@ -304,8 +284,7 @@ public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
               retval += "INT";
             }
           } else {
-            // Floating point values...
-            if (length > 15) {
+                        if (length > 15) {
               int p = (length > 38 ? 38 : length);
               retval += "DECIMAL(" + p;
               if (precision > 0) {
@@ -313,17 +292,13 @@ public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
               }
               retval += ")";
             } else {
-              // A double-precision floating-point number is accurate to approximately 15
-              // decimal places.
-              // http://mysql.mirrors-r-us.net/doc/refman/5.1/en/numeric-type-overview.html
-              retval += "DOUBLE";
+                                                        retval += "DOUBLE";
             }
           }
         }
         break;
       case ColumnMetaData.TYPE_STRING:
-        //see: https://docs.starrocks.io/zh/docs/category/string/
-        long newLength = length * 3;
+                long newLength = length * 3;
         if (newLength < 255) {
           retval += "VARCHAR(" + newLength + ")";
         } else if (newLength <= 65533) {
@@ -360,14 +335,12 @@ public class StarrocksMetadataQueryProvider extends AbstractMetadataProvider {
 
   @Override
   public void appendPrimaryKeyForCreateTableSql(StringBuilder builder, List<String> primaryKeys) {
-    // StarRocks主键需要在postAppendCreateTableSql函数里组装
-  }
+      }
 
   @Override
   public void postAppendCreateTableSql(StringBuilder builder, String tblComment, List<String> primaryKeys,
       SourceProperties tblProperties) {
-    // https://docs.mirrorship.cn/zh/docs/table_design/table_types/primary_key_table/
-    if (CollectionUtils.isNotEmpty(primaryKeys)) {
+        if (CollectionUtils.isNotEmpty(primaryKeys)) {
       String pk = getPrimaryKeyAsString(primaryKeys);
       builder.append("PRIMARY KEY (").append(pk).append(")");
       builder.append("\n DISTRIBUTED BY HASH(").append(pk).append(")");

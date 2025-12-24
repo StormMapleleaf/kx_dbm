@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.postgresql;
 
 import org.dromara.dbswitch.common.util.ObjectCastUtils;
@@ -84,13 +75,7 @@ public class PostgresTableCopyWriteProvider extends DefaultTableDataWriteProvide
     }
   }
 
-  /**
-   * 数据类型转换参考
-   * <p>
-   * 1. spring-jdbc: {@code org.springframework.jdbc.core.StatementCreatorUtils}
-   * <p>
-   * 2. postgresql-driver: {@code org.postgresql.jdbc.PgPreparedStatement}
-   */
+
   private Consumer<SimpleRow> getConsumer(List<String> fieldNames, Object[] objects) {
     return (row) -> {
       for (int i = 0; i < objects.length; ++i) {

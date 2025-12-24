@@ -38,11 +38,7 @@ public class PgBinaryWriter implements AutoCloseable {
     handler.handle(buffer, value);
   }
 
-  /**
-   * Writes primitive boolean to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeBoolean(boolean value) {
     try {
       buffer.writeInt(1);
@@ -62,11 +58,7 @@ public class PgBinaryWriter implements AutoCloseable {
   }
 
 
-  /**
-   * Writes primitive byte to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeByte(int value) {
     try {
       buffer.writeInt(1);
@@ -81,11 +73,7 @@ public class PgBinaryWriter implements AutoCloseable {
     }
   }
 
-  /**
-   * Writes primitive short to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeShort(int value) {
     try {
       buffer.writeInt(2);
@@ -100,11 +88,7 @@ public class PgBinaryWriter implements AutoCloseable {
     }
   }
 
-  /**
-   * Writes primitive integer to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeInt(int value) {
     try {
       buffer.writeInt(4);
@@ -119,11 +103,7 @@ public class PgBinaryWriter implements AutoCloseable {
     }
   }
 
-  /**
-   * Writes primitive long to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeLong(long value) {
     try {
       buffer.writeInt(8);
@@ -138,11 +118,7 @@ public class PgBinaryWriter implements AutoCloseable {
     }
   }
 
-  /**
-   * Writes primitive float to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeFloat(float value) {
     try {
       buffer.writeInt(4);
@@ -157,11 +133,7 @@ public class PgBinaryWriter implements AutoCloseable {
     }
   }
 
-  /**
-   * Writes primitive double to the output stream
-   *
-   * @param value value to write
-   */
+
   public void writeDouble(double value) {
     try {
       buffer.writeInt(8);
@@ -176,9 +148,7 @@ public class PgBinaryWriter implements AutoCloseable {
     }
   }
 
-  /**
-   * Writes a Null Value.
-   */
+
   public void writeNull() {
     try {
       buffer.writeInt(-1);
@@ -212,12 +182,9 @@ public class PgBinaryWriter implements AutoCloseable {
   private void writeHeader() {
     try {
 
-      // 11 bytes required header
-      buffer.writeBytes("PGCOPY\n\377\r\n\0");
-      // 32 bit integer indicating no OID
-      buffer.writeInt(0);
-      // 32 bit header extension area length
-      buffer.writeInt(0);
+            buffer.writeBytes("PGCOPY\n\377\r\n\0");
+            buffer.writeInt(0);
+            buffer.writeInt(0);
 
     } catch (IOException e) {
       Throwable t = e.getCause();

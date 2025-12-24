@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.mysql;
 
 import java.sql.Connection;
@@ -136,8 +127,7 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
     String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
     List<ColumnDescription> ret = this.querySelectSqlColumnMeta(connection, sql);
 
-    // 补充一下注释信息
-    try (ResultSet columns = connection.getMetaData()
+        try (ResultSet columns = connection.getMetaData()
         .getColumns(schemaName, null, tableName, null)) {
       while (columns.next()) {
         String columnName = columns.getString("COLUMN_NAME");
@@ -146,8 +136,7 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
         for (ColumnDescription cd : ret) {
           if (columnName.equals(cd.getFieldName())) {
             cd.setRemarks(remarks);
-            // 补充默认值信息
-            cd.setDefaultValue(columnDefault);
+                        cd.setDefaultValue(columnDefault);
           }
         }
       }
@@ -278,13 +267,10 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
             retval += "BIGINT NOT NULL";
           }
         } else {
-          // Integer values...
-          if (precision == 0) {
+                    if (precision == 0) {
             if (length > 9) {
               if (length < 19) {
-                // can hold signed values between -9223372036854775808 and 9223372036854775807
-                // 18 significant digits
-                retval += "BIGINT";
+                                                retval += "BIGINT";
               } else {
                 retval += "DECIMAL(" + length + ")";
               }
@@ -292,8 +278,7 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
               retval += "INT";
             }
           } else {
-            // Floating point values...
-            if (length > 65) {
+                        if (length > 65) {
               length = 65;
             }
             if (length >= 15) {
@@ -306,10 +291,7 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
               }
               retval += ")";
             } else {
-              // A double-precision floating-point number is accurate to approximately 15
-              // decimal places.
-              // http://mysql.mirrors-r-us.net/doc/refman/5.1/en/numeric-type-overview.html
-              retval += "DOUBLE";
+                                                        retval += "DOUBLE";
             }
           }
         }
@@ -321,14 +303,7 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
           } else if (length < 256) {
             retval += "VARCHAR(" + length + ")";
           } else if (null != pks && !pks.isEmpty() && pks.contains(fieldname)) {
-            /*
-             * MySQL5.6中varchar字段为主键时最大长度为254,例如如下的建表语句在MySQL5.7下能通过，但在MySQL5.6下无法通过：
-             *	create table `t_test`(
-             *	`key` varchar(1024) binary,
-             *	`val` varchar(1024) binary,
-             *	primary key(`key`)
-             * );
-             */
+
             retval += "VARCHAR(254) BINARY";
           } else if (length < 65536) {
             retval += "TEXT";
@@ -367,8 +342,7 @@ public class MysqlMetadataQueryProvider extends AbstractMetadataProvider {
 
   @Override
   public void preAppendCreateTableSql(StringBuilder builder) {
-    // builder.append( Const.IF_NOT_EXISTS );
-  }
+      }
 
   @Override
   public void postAppendCreateTableSql(StringBuilder builder, String tblComment, List<String> primaryKeys,

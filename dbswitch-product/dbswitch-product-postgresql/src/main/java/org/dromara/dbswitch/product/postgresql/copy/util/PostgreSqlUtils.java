@@ -36,8 +36,7 @@ public final class PostgreSqlUtils {
         return Optional.of(connection.unwrap(PGConnection.class));
       }
     } catch (Exception e) {
-      // do nothing
-    }
+          }
     return Optional.empty();
   }
 

@@ -97,15 +97,11 @@ public class SimpleRowWriter implements AutoCloseable {
 
   public synchronized void startRow(Consumer<SimpleRow> consumer) {
 
-    // We try to write a Row, but the underlying Stream to PostgreSQL has not
-    // been opened yet. We should not proceed and throw an Exception:
-    if (!isOpened) {
+            if (!isOpened) {
       throw new BinaryWriteFailedException("The SimpleRowWriter has not been opened");
     }
 
-    // We try to write a Row, but the underlying Stream to PostgreSQL has already
-    // been closed. We should not proceed and throw an Exception:
-    if (isClosed) {
+            if (isClosed) {
       throw new BinaryWriteFailedException("The PGCopyOutputStream has already been closed");
     }
 
@@ -124,8 +120,7 @@ public class SimpleRowWriter implements AutoCloseable {
       try {
         close();
       } catch (Exception ex) {
-        // There is nothing more we can do ...
-      }
+              }
 
       throw e;
     }
@@ -134,8 +129,7 @@ public class SimpleRowWriter implements AutoCloseable {
   @Override
   public void close() {
 
-    // This stream shouldn't be reused, so let's store a flag here:
-    isOpened = false;
+        isOpened = false;
     isClosed = true;
 
     writer.close();

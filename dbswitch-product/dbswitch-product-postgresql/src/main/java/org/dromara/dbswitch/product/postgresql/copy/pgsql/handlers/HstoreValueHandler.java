@@ -12,25 +12,18 @@ public class HstoreValueHandler extends BaseValueHandler<Map<String, String>> {
   protected void internalHandle(DataOutputStream buffer, final Map<String, String> value)
       throws IOException {
 
-    // Write into a Temporary ByteArrayOutputStream:
-    ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
+        ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
 
-    // And wrap it in a DataOutputStream:
-    DataOutputStream hstoreOutput = new DataOutputStream(byteArrayOutput);
+        DataOutputStream hstoreOutput = new DataOutputStream(byteArrayOutput);
 
-    // First the Amount of Values to write:
-    hstoreOutput.writeInt(value.size());
+        hstoreOutput.writeInt(value.size());
 
-    // Now Iterate over the Array and write each value:
-    for (Map.Entry<String, String> entry : value.entrySet()) {
-      // Write the Key:
-      writeKey(hstoreOutput, entry.getKey());
-      // The Value can be null, use a different method:
-      writeValue(hstoreOutput, entry.getValue());
+        for (Map.Entry<String, String> entry : value.entrySet()) {
+            writeKey(hstoreOutput, entry.getKey());
+            writeValue(hstoreOutput, entry.getValue());
     }
 
-    // Now write the entire ByteArray to the COPY Buffer:
-    buffer.writeInt(byteArrayOutput.size());
+        buffer.writeInt(byteArrayOutput.size());
     buffer.write(byteArrayOutput.toByteArray());
   }
 

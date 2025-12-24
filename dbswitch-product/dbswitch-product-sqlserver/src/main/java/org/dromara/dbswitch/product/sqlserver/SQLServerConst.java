@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.sqlserver;
 
 public final class SQLServerConst {
@@ -14,14 +5,10 @@ public final class SQLServerConst {
   public static final String GET_CURRENT_CATALOG_SQL =
       "Select Name From Master..SysDataBases Where DbId=(Select Dbid From Master..SysProcesses Where Spid = @@spid)";
 
-  /**
-   * 删除临时表
-   */
+
   public static final String DROP_TEMPTABLE_SQL = "IF (OBJECT_ID('tempdb.dbo.#t') IS NOT NULL) DROP TABLE #t";
 
-  /**
-   * 创建临时表
-   */
+
   public static final String CREATE_TEMPTABLE_SQL = "DECLARE @schemaname VARCHAR(1024)\n" +
           "DECLARE @tabname VARCHAR(1024)\n" +
           "SET @schemaname = '%s'\n" +
@@ -71,9 +58,7 @@ public final class SQLServerConst {
           " WHERE   xtype = 'U'\n" +
           " AND name = @tabname;";
 
-  /**
-   * 获取ddl
-   */
+
   public static final String SELECT_DDL_SQL = "SELECT (\n"
           + " CASE WHEN (\n"
           + "     SELECT COUNT(a.constraint_type)\n"

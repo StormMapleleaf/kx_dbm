@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: wjk (wanglv110@163.com)
-// Date : 2024/9/29
-// Location: wuhan , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.doris;
 
 import java.sql.Connection;
@@ -137,8 +128,7 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
     String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
     List<ColumnDescription> ret = this.querySelectSqlColumnMeta(connection, sql);
 
-    // 补充一下注释信息
-    try (ResultSet columns = connection.getMetaData()
+        try (ResultSet columns = connection.getMetaData()
         .getColumns(schemaName, null, tableName, null)) {
       while (columns.next()) {
         String columnName = columns.getString("COLUMN_NAME");
@@ -147,8 +137,7 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
         for (ColumnDescription cd : ret) {
           if (columnName.equals(cd.getFieldName())) {
             cd.setRemarks(remarks);
-            // 补充默认值信息
-            cd.setDefaultValue(columnDefault);
+                        cd.setDefaultValue(columnDefault);
           }
         }
       }
@@ -251,8 +240,7 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
 
     String retval = " `" + fieldname + "`  ";
 
-    // https://doris.apache.org/zh-CN/docs/table-design/data-type
-    switch (type) {
+        switch (type) {
       case ColumnMetaData.TYPE_TIMESTAMP:
         retval += "DATETIME";
         break;
@@ -275,13 +263,10 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
             retval += "BIGINT NOT NULL";
           }
         } else {
-          // Integer values...
-          if (precision == 0) {
+                    if (precision == 0) {
             if (length > 9) {
               if (length < 19) {
-                // can hold signed values between -9223372036854775808 and 9223372036854775807
-                // 18 significant digits
-                retval += "BIGINT";
+                                                retval += "BIGINT";
               } else {
                 retval += "DECIMAL(" + (length > 38 ? 38 : length) + ")";
               }
@@ -289,8 +274,7 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
               retval += "INT";
             }
           } else {
-            // Floating point values...
-            if (length > 15) {
+                        if (length > 15) {
               int p = (length > 38 ? 38 : length);
               retval += "DECIMAL(" + p;
               if (precision > 0) {
@@ -298,10 +282,7 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
               }
               retval += ")";
             } else {
-              // A double-precision floating-point number is accurate to approximately 15
-              // decimal places.
-              // http://mysql.mirrors-r-us.net/doc/refman/5.1/en/numeric-type-overview.html
-              retval += "DOUBLE";
+                                                        retval += "DOUBLE";
             }
           }
         }
@@ -342,8 +323,7 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
 
   @Override
   public void preAppendCreateTableSql(StringBuilder builder) {
-    // builder.append( Const.IF_NOT_EXISTS );
-  }
+      }
 
   @Override
   public void postAppendCreateTableSql(StringBuilder builder, String tblComment, List<String> primaryKeys,
@@ -353,15 +333,13 @@ public class DorisMetadataQueryProvider extends AbstractMetadataProvider {
     }
     if (CollectionUtils.isNotEmpty(primaryKeys)) {
       String primaryKeyAsString = getPrimaryKeyAsString(primaryKeys);
-      // 自动分桶（BUCKETS AUTO）功能要求 Apache Doris 1.2.2 及以上版本
-      builder.append(" DISTRIBUTED BY HASH(").append(primaryKeyAsString).append(") BUCKETS AUTO ");
+            builder.append(" DISTRIBUTED BY HASH(").append(primaryKeyAsString).append(") BUCKETS AUTO ");
     }
   }
 
   @Override
   public void appendPrimaryKeyForCreateTableSql(StringBuilder builder, List<String> primaryKeys) {
-    // 不支持主键的数据库类型(例如：hive)，需要覆盖掉该方法
-    if (CollectionUtils.isNotEmpty(primaryKeys)) {
+        if (CollectionUtils.isNotEmpty(primaryKeys)) {
       String primaryKeyAsString = getPrimaryKeyAsString(primaryKeys);
       builder.append(" UNIQUE KEY (").append(primaryKeyAsString).append(")");
     }

@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.sqlserver;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -296,10 +287,8 @@ public class SqlserverMetadataQueryProvider extends AbstractMetadataProvider {
         break;
       case ColumnMetaData.TYPE_STRING:
         if (length < 8000) {
-          // Maybe use some default DB String length in case length<=0
-          if (length > 0) {
-            // VARCHAR(n)最多能存n个字节，一个中文是两个字节。
-            length = 2 * length;
+                    if (length > 0) {
+                        length = 2 * length;
             if (length > 8000) {
               length = 8000;
             }
@@ -308,8 +297,7 @@ public class SqlserverMetadataQueryProvider extends AbstractMetadataProvider {
             retval += "VARCHAR(100)";
           }
         } else {
-          retval += "TEXT"; // Up to 2bilion characters.
-        }
+          retval += "TEXT";         }
         break;
       case ColumnMetaData.TYPE_BINARY:
         retval += "VARBINARY(MAX)";

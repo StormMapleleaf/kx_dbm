@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.sqlite;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -112,8 +103,7 @@ public class SqliteMetadataQueryProvider extends AbstractMetadataProvider {
       case ColumnMetaData.TYPE_TIMESTAMP:
       case ColumnMetaData.TYPE_TIME:
       case ColumnMetaData.TYPE_DATE:
-        // sqlite中没有时间数据类型
-        retval += "DATETIME";
+                retval += "DATETIME";
         break;
       case ColumnMetaData.TYPE_BOOLEAN:
         retval += "CHAR(1)";
@@ -122,8 +112,7 @@ public class SqliteMetadataQueryProvider extends AbstractMetadataProvider {
       case ColumnMetaData.TYPE_INTEGER:
       case ColumnMetaData.TYPE_BIGNUMBER:
         if (null != pks && !pks.isEmpty() && pks.contains(fieldname)) {
-          // 关键字 AUTOINCREMENT 只能⽤于整型（INTEGER）字段。
-          if (useAutoInc) {
+                    if (useAutoInc) {
             retval += "INTEGER AUTOINCREMENT";
           } else {
             retval += "BIGINT ";

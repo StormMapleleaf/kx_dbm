@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.oracle;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -106,10 +97,7 @@ public class OracleMetadataQueryProvider extends AbstractMetadataProvider {
   @Override
   public List<String> queryTablePrimaryKeys(Connection connection, String schemaName,
       String tableName) {
-    // Oracle表的主键可以使用如下命令设置主键是否生效
-    // 使主键失效：alter table tableName disable primary key;
-    // 使主键恢复：alter table tableName enable primary key;
-    Set<String> ret = new HashSet<>();
+                Set<String> ret = new HashSet<>();
     String sql = String.format(
         "SELECT col.COLUMN_NAME FROM all_cons_columns col INNER JOIN all_constraints con \n"
             + "ON col.constraint_name=con.constraint_name AND col.OWNER =con.OWNER  AND col.TABLE_NAME =con.TABLE_NAME \n"
@@ -195,14 +183,13 @@ public class OracleMetadataQueryProvider extends AbstractMetadataProvider {
           if (length == 1) {
             retval.append("NVARCHAR2(1)");
           } else if (length > 0 && length < 2000) {
-            // VARCHAR2(size)，size最大值为4000，单位是字节；而NVARCHAR2(size)，size最大值为2000，单位是字符
-            retval.append("NVARCHAR2(").append(length).append(')');
+                        retval.append("NVARCHAR2(").append(length).append(')');
           } else {
-            retval.append("CLOB");// We don't know, so we just use the maximum...
+            retval.append("CLOB");
           }
         }
         break;
-      case ColumnMetaData.TYPE_BINARY: // the BLOB can contain binary data.
+      case ColumnMetaData.TYPE_BINARY: 
         retval.append("BLOB");
         break;
       default:

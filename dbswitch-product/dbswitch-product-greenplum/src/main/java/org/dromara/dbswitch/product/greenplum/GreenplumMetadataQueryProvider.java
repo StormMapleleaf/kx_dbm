@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.product.greenplum;
 
 import org.dromara.dbswitch.product.postgresql.PostgresMetadataQueryProvider;
@@ -42,11 +33,9 @@ public class GreenplumMetadataQueryProvider extends PostgresMetadataQueryProvide
 
   private List<String> determineDistributed(List<String> primaryKeys, List<String> distributedKeys) {
     if (CollectionUtils.isEmpty(distributedKeys)) {
-      // 分布键为空,看是否有主键
-      return CollectionUtils.isEmpty(primaryKeys) ? null : primaryKeys;
+            return CollectionUtils.isEmpty(primaryKeys) ? null : primaryKeys;
     }
-    // 分布键不为空,看是否是主键的子集,主键为空直接用分布键
-    return CollectionUtils.isEmpty(primaryKeys) || new HashSet<>(primaryKeys).containsAll(distributedKeys)
+        return CollectionUtils.isEmpty(primaryKeys) || new HashSet<>(primaryKeys).containsAll(distributedKeys)
         ? distributedKeys : null;
   }
 
