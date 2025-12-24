@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.common.util;
 
 import cn.hutool.core.io.FileUtil;
@@ -25,9 +16,7 @@ import java.util.jar.JarFile;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 获取项目的版本号工具类
- */
+
 @Slf4j
 @UtilityClass
 public final class PomVersionUtils {

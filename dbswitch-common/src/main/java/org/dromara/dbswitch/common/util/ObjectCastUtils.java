@@ -28,12 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 @UtilityClass
 public final class ObjectCastUtils {
 
-  /**
-   * 将任意类型转换为java.lang.Byte类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Byte类型
-   */
   public static Byte castToByte(final Object in) {
     if (in instanceof Number) {
       return ((Number) in).byteValue();
@@ -93,12 +87,6 @@ public final class ObjectCastUtils {
     }
   }
 
-  /**
-   * 将任意类型转换为java.lang.Short类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Short类型
-   */
   public static Short castToShort(final Object in) {
     if (in instanceof Number) {
       return ((Number) in).shortValue();
@@ -150,12 +138,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.lang.Integer类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Integer类型
-   */
   public static Integer castToInteger(final Object in) {
     if (in instanceof Number) {
       return ((Number) in).intValue();
@@ -207,12 +189,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.lang.Long类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Long类型
-   */
   public static Long castToLong(final Object in) {
     if (in instanceof Number) {
       return ((Number) in).longValue();
@@ -264,12 +240,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.lang.Number类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Number类型
-   */
   public static Number castToNumeric(final Object in) {
     if (in instanceof Number) {
       return (Number) in;
@@ -319,12 +289,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.lang.Float类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Float类型
-   */
   public static Float castToFloat(final Object in) {
     if (in instanceof Number) {
       return ((Number) in).floatValue();
@@ -374,12 +338,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.lang.Double类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.lang.Double类型
-   */
   public static Double castToDouble(final Object in) {
     if (in instanceof Number) {
       return ((Number) in).doubleValue();
@@ -429,12 +387,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.time.LocalDate类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.time.LocalDate类型
-   */
   public static LocalDate castToLocalDate(final Object in) {
     if (in instanceof java.sql.Time) {
       java.sql.Time date = (java.sql.Time) in;
@@ -522,12 +474,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.time.LocalTime类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.time.LocalDate类型
-   */
   public static LocalTime castToLocalTime(final Object in) {
     if (in instanceof java.sql.Time) {
       java.sql.Time date = (java.sql.Time) in;
@@ -605,12 +551,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.time.LocalDateTime类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.time.LocalDateTime类型
-   */
   public static LocalDateTime castToLocalDateTime(final Object in) {
     if (in instanceof java.sql.Timestamp) {
       java.sql.Timestamp t = (java.sql.Timestamp) in;
@@ -704,12 +644,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为java.time.LocalDateTime类型
-   *
-   * @param in 任意类型的对象实例
-   * @return java.sql.Timestamp类型
-   */
   public static Timestamp castToTimestamp(final Object in) {
     if (in instanceof java.sql.Timestamp) {
       return (java.sql.Timestamp) in;
@@ -795,12 +729,6 @@ public final class ObjectCastUtils {
     return null;
   }
 
-  /**
-   * 将任意类型转换为Boolean类型
-   *
-   * @param in 任意类型的对象实例
-   * @return Boolean类型
-   */
   public static Boolean castToBoolean(final Object in) {
     if (in instanceof Boolean) {
       return (Boolean) in;

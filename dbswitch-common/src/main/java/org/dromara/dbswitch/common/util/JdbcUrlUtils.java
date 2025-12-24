@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.common.util;
 
 import java.io.IOException;
@@ -17,23 +8,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.experimental.UtilityClass;
 
-/**
- * JDBC-URL参数提取工具类
- *
- * @author tang
- */
+
 @UtilityClass
 public final class JdbcUrlUtils {
 
-  public static final String PROP_HOST = "host"; //$NON-NLS-1$
-  public static final String PROP_PORT = "port"; //$NON-NLS-1$
-  public static final String PROP_DATABASE = "database"; //$NON-NLS-1$
-  public static final String PROP_SERVER = "server"; //$NON-NLS-1$
-  public static final String PROP_PARAMS = "params"; //$NON-NLS-1$
-  public static final String PROP_FOLDER = "folder"; //$NON-NLS-1$
-  public static final String PROP_FILE = "file"; //$NON-NLS-1$
-  public static final String PROP_USER = "user"; //$NON-NLS-1$
-  public static final String PROP_PASSWORD = "password"; //$NON-NLS-1$
+  public static final String PROP_HOST = "host"; 
+  public static final String PROP_PORT = "port"; 
+  public static final String PROP_DATABASE = "database"; 
+  public static final String PROP_SERVER = "server"; 
+  public static final String PROP_PARAMS = "params";
+  public static final String PROP_FOLDER = "folder"; 
+  public static final String PROP_FILE = "file"; 
+  public static final String PROP_USER = "user"; 
+  public static final String PROP_PASSWORD = "password"; 
 
   private static String getPropertyRegex(String property) {
     switch (property) {
@@ -65,13 +52,7 @@ public final class JdbcUrlUtils {
     return Pattern.compile(pattern);
   }
 
-  /**
-   * 根据主机地址与端口号检查可达性
-   *
-   * @param host 主机地址
-   * @param port 端口号
-   * @return 成功返回true，否则为false
-   */
+
   public static boolean reachable(String host, String port) {
     try {
       try (Socket socket = new Socket()) {
@@ -89,14 +70,8 @@ public final class JdbcUrlUtils {
         .replace("\\?{params}", "");
   }
 
-  /**
-   * 测试代码
-   *
-   * @param args
-   */
+
   public static void main(String[] args) {
-    // 1、teradata数据库
-    // jdbc:teradata://localhost/DATABASE=test,DBS_PORT=1234,CLIENT_CHARSET=EUC_CN,TMODE=TERA,CHARSET=ASCII,LOB_SUPPORT=true
     final Matcher matcher0 = JdbcUrlUtils
         .getPattern("jdbc:teradata://{host}/DATABASE={database},DBS_PORT={port}[,{params}]")
         .matcher(
@@ -116,9 +91,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for teradata!");
     }
 
-    // 2、PostgreSQL数据库
-    // jdbc:postgresql://localhost:5432/dvdrental?currentSchema=test&ssl=true
-    // https://jdbc.postgresql.org/documentation/head/connect.html
     final Matcher matcher1 = JdbcUrlUtils
         .getPattern("jdbc:postgresql://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:postgresql://localhost:5432/dvdrental?currentSchema=test&ssl=true");
@@ -137,8 +109,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for postgresql!");
     }
 
-    // 3、Oracle数据库
-    // oracle sid 方式
     final Matcher matcher2 = JdbcUrlUtils.getPattern("jdbc:oracle:thin:@{host}[:{port}]:{sid}")
         .matcher("jdbc:oracle:thin:@localhost:1521:orcl");
     if (matcher2.matches()) {
@@ -149,7 +119,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for oracle sid!");
     }
 
-    // oracle service name 方式
     final Matcher matcher2_1 = JdbcUrlUtils.getPattern("jdbc:oracle:thin:@//{host}[:{port}]/{name}")
         .matcher("jdbc:oracle:thin:@//localhost:1521/orcl.city.com");
     if (matcher2_1.matches()) {
@@ -160,12 +129,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for oracle ServiceName!");
     }
 
-    // oracle TNSName 方式不支持
-    // jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.16.91)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=orcl)))
-    // ..............................
-
-    // 4、MySQL数据库
-    // jdbc:mysql://172.17.2.10:3306/test?useUnicode=true&useSSL=false
     final Matcher matcher3 = JdbcUrlUtils
         .getPattern("jdbc:mysql://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:mysql://localhost:3306/test_demo?useUnicode=true&useSSL=false");
@@ -184,8 +147,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for mysql!");
     }
 
-    // 5、MariaDB数据库
-    // 同Mysql的jdbc-url
     final Matcher matcher4 = JdbcUrlUtils
         .getPattern("jdbc:mariadb://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:mariadb://localhost:3306/test_demo");
@@ -204,8 +165,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for mariadb!");
     }
 
-    // 6、Microsoft SQLServer数据库
-    // jdbc:sqlserver://localhost:1433;DatabaseName=AdventureWorks;user=MyUserName;password=123456;
     final Matcher matcher5 = JdbcUrlUtils
         .getPattern("jdbc:sqlserver://{host}[:{port}][;DatabaseName={database}][;{params}]")
         .matcher("jdbc:sqlserver://localhost:1433;DatabaseName=master;user=MyUserName");
@@ -224,8 +183,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for sqlserver!");
     }
 
-    // 7、人大金仓数据库
-    // 同postgresql的jdbc-url
     final Matcher matcher6 = JdbcUrlUtils
         .getPattern("jdbc:kingbase8://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:kingbase8://localhost:54321/sample");
@@ -244,8 +201,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for kingbase8!");
     }
 
-    // 8、达梦数据库
-    // jdbc:dm://localhost:5236/user?param=hello
     final Matcher matcher7 = JdbcUrlUtils.getPattern("jdbc:dm://{host}:{port}[/{database}][\\?{params}]")
         .matcher("jdbc:dm://localhost:5236");
     if (matcher7.matches()) {
@@ -263,8 +218,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for dm!");
     }
 
-    // 9、DB2数据库
-    // jdbc:db2://localhost:50000/testdb:driverType=4;fullyMaterializeLobData=true;fullyMaterializeInputStreams=true;progressiveStreaming=2;progresssiveLocators=2;
     final Matcher matcher8 = JdbcUrlUtils.getPattern("jdbc:db2://{host}:{port}/{database}[:{params}]")
         .matcher("jdbc:db2://localhost:50000/testdb:driverType=4;fullyMaterializeLobData=true");
     if (matcher8.matches()) {
@@ -282,8 +235,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for db2!");
     }
 
-    // 10、Hive数据库
-    // jdbc:hive2://172.17.2.10:10000/test?useUnicode=true&useSSL=false
     final Matcher matcher9 = JdbcUrlUtils
         .getPattern("jdbc:hive2://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:hive2://127.0.0.1:10000/default?useUnicode=true&useSSL=false");
@@ -302,8 +253,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for hive!");
     }
 
-    // 11、SQLite数据库
-    // jdbc:sqlite:/tmp/phone.db
     final Matcher matcher10 = JdbcUrlUtils.getPattern("jdbc:sqlite:{file}")
         .matcher("jdbc:sqlite:D:\\Project\\Test\\phone.db");
     if (matcher10.matches()) {
@@ -312,8 +261,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for sqlite!");
     }
 
-    // 12、mongo数据库
-    // jdbc:mongodb://127.0.0.1:27017/admin?authSource=admin&authMechanism=SCRAM-SHA-1
     final Matcher matcher11 = JdbcUrlUtils.getPattern("jdbc:mongodb://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:mongodb://127.0.0.1:27017/admin?authSource=admin&authMechanism=SCRAM-SHA-1");
     if (matcher11.matches()) {
@@ -322,8 +269,6 @@ public final class JdbcUrlUtils {
       System.out.println("error for mongodb!");
     }
 
-    // 13、ClickHouse数据库
-    // jdbc:clickhouse://127.0.0.1:8123/default
     final Matcher matcher12 = JdbcUrlUtils.getPattern("jdbc:clickhouse://{host}[:{port}]/[{database}][\\?{params}]")
         .matcher("jdbc:clickhouse://127.0.0.1:8123/default");
     if (matcher12.matches()) {

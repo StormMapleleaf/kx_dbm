@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.common.util;
 
 import cn.hutool.core.convert.Convert;
@@ -16,11 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
 
-/**
- * JDBC的数据类型相关工具类
- *
- * @author tang
- */
 @UtilityClass
 public final class JdbcTypesUtils {
 
@@ -36,49 +22,23 @@ public final class JdbcTypesUtils {
     }
   }
 
-  /**
-   * 将JDBC的整型类型转换成文本类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return JDBC的文本类型
-   */
   public static String resolveTypeName(int sqlType) {
     return TYPE_NAMES.get(sqlType);
   }
 
-  /**
-   * 判断是否为JDCB的浮点数类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return true为是，否则为false
-   */
+
   public static boolean isNumeric(int sqlType) {
-    // 5
     return (Types.DECIMAL == sqlType || Types.DOUBLE == sqlType || Types.FLOAT == sqlType
         || Types.NUMERIC == sqlType || Types.REAL == sqlType);
   }
 
-  /**
-   * 判断是否为JDCB的整型类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return true为是，否则为false
-   */
   public static boolean isInteger(int sqlType) {
-    // 5
     return (Types.BIT == sqlType || Types.BIGINT == sqlType || Types.INTEGER == sqlType
         || Types.SMALLINT == sqlType
         || Types.TINYINT == sqlType);
   }
 
-  /**
-   * 判断是否为JDCB的字符文本类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return true为是，否则为false
-   */
   public static boolean isString(int sqlType) {
-    // 10
     return (Types.CHAR == sqlType || Types.NCHAR == sqlType || Types.VARCHAR == sqlType
         || Types.LONGVARCHAR == sqlType || Types.NVARCHAR == sqlType
         || Types.LONGNVARCHAR == sqlType
@@ -86,37 +46,17 @@ public final class JdbcTypesUtils {
         || Types.ROWID == sqlType);
   }
 
-  /**
-   * 判断是否为JDCB的时间类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return true为是，否则为false
-   */
   public static boolean isDateTime(int sqlType) {
-    // 5
     return (Types.DATE == sqlType || Types.TIME == sqlType || Types.TIMESTAMP == sqlType
         || Types.TIME_WITH_TIMEZONE == sqlType || Types.TIMESTAMP_WITH_TIMEZONE == sqlType);
   }
 
-  /**
-   * 判断是否为JDCB的布尔类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return true为是，否则为false
-   */
   public static boolean isBoolean(int sqlType) {
-    // 1
     return (Types.BOOLEAN == sqlType);
   }
 
-  /**
-   * 判断是否为JDCB的二进制类型
-   *
-   * @param sqlType jdbc的整型类型，详见:{@codejava.sql.Types }
-   * @return true为是，否则为false
-   */
+
   public static boolean isBinary(int sqlType) {
-    // 4
     return (Types.BINARY == sqlType || Types.VARBINARY == sqlType || Types.BLOB == sqlType
         || Types.LONGVARBINARY == sqlType);
   }
@@ -133,17 +73,6 @@ public final class JdbcTypesUtils {
         || Types.TIME_WITH_TIMEZONE == sqlType
         || Types.TIMESTAMP_WITH_TIMEZONE == sqlType);
   }
-
-  // 其他类型如下：9个
-  // JAVA_OBJECT
-  // OTHER
-  // NULL
-  // DISTINCT
-  // STRUCT
-  // ARRAY
-  // REF
-  // DATALINK
-  // REF_CURSOR
 
   public static long getObjectSize(int jdbcType, Object value) {
     if (null == value) {
