@@ -1,24 +1,12 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.provider.transform;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 字段值映射关系表
- */
+
 public class ColumnValueDataMapTable {
 
-  // <SchemaName,TableName,ColumnName> -> Map<String,String>
   private Map<SchemaTableColumnTuple, Map<String, String>> valueMap = new HashMap<>();
 
   public ColumnValueDataMapTable() {

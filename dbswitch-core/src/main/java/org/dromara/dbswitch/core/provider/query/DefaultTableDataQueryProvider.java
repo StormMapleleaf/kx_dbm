@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.provider.query;
 
 import cn.hutool.core.util.HexUtil;
@@ -173,7 +164,6 @@ public class DefaultTableDataQueryProvider
   }
 
   protected void beforeExecuteQuery(Connection connection, String schema, String table) {
-    // nothing except for hive
   }
 
 }

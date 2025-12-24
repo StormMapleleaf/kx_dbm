@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.service;
 
 import java.sql.Connection;
@@ -28,11 +19,6 @@ import org.dromara.dbswitch.core.schema.SourceProperties;
 import org.dromara.dbswitch.core.schema.TableDescription;
 import org.dromara.dbswitch.core.util.GenerateSqlUtils;
 
-/**
- * 用DataSource对象的元数据获取服务
- *
- * @author tang
- */
 public class DefaultMetadataService implements MetadataService {
 
   private DataSource dataSource;

@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.provider.meta;
 
 import cn.hutool.core.text.StrPool;
@@ -37,11 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * 数据库元信息抽象基类
- *
- * @author tang
- */
 @Slf4j
 public abstract class AbstractMetadataProvider
     extends AbstractCommonProvider
@@ -245,12 +231,10 @@ public abstract class AbstractMetadataProvider
 
   @Override
   public void preAppendCreateTableSql(StringBuilder builder) {
-    // NOTHING, Please override by subclass!
   }
 
   @Override
   public void appendPrimaryKeyForCreateTableSql(StringBuilder builder, List<String> primaryKeys) {
-    // 不支持主键的数据库类型(例如：hive)，需要覆盖掉该方法
     if (CollectionUtils.isNotEmpty(primaryKeys)) {
       String primaryKeyAsString = getPrimaryKeyAsString(primaryKeys);
       builder.append(", PRIMARY KEY (").append(primaryKeyAsString).append(")");
@@ -260,7 +244,6 @@ public abstract class AbstractMetadataProvider
   @Override
   public void postAppendCreateTableSql(StringBuilder builder, String tblComment, List<String> primaryKeys,
       SourceProperties tblProperties) {
-    // Nothing, please override by subclass!
   }
 
   @Override
@@ -282,11 +265,6 @@ public abstract class AbstractMetadataProvider
     throw new RuntimeException("AbstractDatabase Unimplemented!");
   }
 
-  /**
-   * 执行写SQL操作
-   *
-   * @param sql 写SQL语句
-   */
   protected final int executeSql(String sql) {
     if (log.isDebugEnabled()) {
       log.debug("Execute sql :{}", sql);
@@ -314,7 +292,6 @@ public abstract class AbstractMetadataProvider
       cd.setAutoIncrement(m.isAutoIncrement(i));
       cd.setNullable(m.isNullable(i) != ResultSetMetaData.columnNoNulls);
     } else {
-      // 处理视图中NULL as fieldName的情况
       cd.setFieldTypeName("CHAR");
       cd.setFiledTypeClassName(String.class.getName());
       cd.setDisplaySize(1);
@@ -328,16 +305,11 @@ public abstract class AbstractMetadataProvider
     try {
       signed = m.isSigned(i);
     } catch (Exception ignored) {
-      // This JDBC Driver doesn't support the isSigned method
-      // nothing more we can do here by catch the exception.
     }
     cd.setSigned(signed);
     return cd;
   }
 
-  /**************************************
-   * internal function
-   **************************************/
   protected List<ColumnDescription> getSelectSqlColumnMeta(Connection connection, String querySQL) {
     return getSelectSqlColumnMeta(connection, querySQL, conn -> {});
   }

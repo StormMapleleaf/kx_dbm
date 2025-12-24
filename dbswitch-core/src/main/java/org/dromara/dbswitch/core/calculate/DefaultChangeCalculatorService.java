@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.calculate;
 
 import org.dromara.dbswitch.common.consts.Constants;
@@ -34,32 +25,20 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
-/**
- * 数据变化量计算核心类
- *
- * @author tang
- */
+
 @Slf4j
 public final class DefaultChangeCalculatorService implements RecordRowChangeCalculator {
 
-  /**
-   * 是否记录不变化的记录
-   */
+
   private boolean recordIdentical;
 
-  /**
-   * 是否进行jdbc数据type检查
-   */
+
   private boolean checkJdbcType;
 
-  /**
-   * 批量读取数据的行数大小
-   */
+
   private int queryFetchSize;
 
-  /**
-   * 中断检查函数
-   */
+
   private Runnable checkInterrupt;
 
   public DefaultChangeCalculatorService() {
@@ -110,16 +89,7 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     this.checkInterrupt = checkInterrupt;
   }
 
-  /**
-   * 变化量计算函数
-   * <p>
-   * 说明 ： old 后缀的为目标段； new 后缀的为来源段；
-   * <p>
-   * 数据由 new 向 old 方向 同步。
-   *
-   * @param task    任务描述实体对象
-   * @param handler 计算结果回调处理器
-   */
+
   @Override
   public void executeCalculate(TaskParamEntity task, RecordRowHandler handler) {
     ExamineUtils.checkNotNull(task, "task");
@@ -132,7 +102,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     Map<String, String> columnsMap = task.getColumnsMap();
     boolean useOwnFieldsColumns = !CollectionUtils.isEmpty(task.getFieldColumns());
 
-    // 检查新旧两张表的主键字段与比较字段
     MetadataService oldMd = new DefaultMetadataService(task.getOldDataSource(), task.getOldProductType());
     MetadataService newMd = new DefaultMetadataService(task.getNewDataSource(), task.getNewProductType());
     List<String> fieldsPrimaryKeyOld = oldMd
@@ -160,7 +129,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     );
 
     if (useOwnFieldsColumns) {
-      // 如果自己配置了字段列表，判断子集关系
       List<String> mappedFieldColumns = task.getFieldColumns().stream()
           .map(s -> columnsMap.getOrDefault(s, s))
           .collect(Collectors.toList());
@@ -186,7 +154,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
       }
     }
 
-    // 计算除主键外的比较字段
     List<String> fieldsOfCompareValue = new ArrayList<>();
     if (useOwnFieldsColumns) {
       fieldsOfCompareValue.addAll(task.getFieldColumns());
@@ -195,7 +162,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     }
     fieldsOfCompareValue.removeAll(fieldsPrimaryKeyNew);
 
-    // 构造查询列字段
     List<String> queryFieldColumn;
     List<String> mappedQueryFieldColumn;
     if (useOwnFieldsColumns) {
@@ -211,7 +177,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     ResultSetWrapper rsnew = null;
 
     try {
-      // 提取新旧两表数据的结果集(按主键排序后的)
       TableDataQueryProvider oldQuery = ProductProviderFactory
           .newProvider(task.getOldProductType(), task.getOldDataSource())
           .createTableDataQueryProvider();
@@ -242,7 +207,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
         log.debug("###### Check data validate now");
       }
 
-      // 检查结果集源信息是否一直
       int oldcnt = rsold.getResultSet().getMetaData().getColumnCount();
       int newcnt = rsnew.getResultSet().getMetaData().getColumnCount();
       if (oldcnt != newcnt) {
@@ -272,21 +236,18 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
         }
       }
 
-      // 计算主键字段序列在结果集中的索引号
       int[] keyNumbers = new int[fieldsPrimaryKeyNew.size()];
       for (int i = 0; i < keyNumbers.length; ++i) {
         String fn = fieldsPrimaryKeyNew.get(i);
         keyNumbers[i] = getIndexOfField(fn, metaData);
       }
 
-      // 计算比较(非主键)字段序列在结果集中的索引号
       int[] valNumbers = new int[fieldsOfCompareValue.size()];
       for (int i = 0; i < valNumbers.length; ++i) {
         String fn = fieldsOfCompareValue.get(i);
         valNumbers[i] = getIndexOfField(fn, metaData);
       }
 
-      // 初始化计算结果数据字段列信息
       int[] jdbcTypes = new int[metaData.getColumnCount()];
       List<String> targetColumns = new ArrayList<>();
       for (int k = 1; k <= metaData.getColumnCount(); ++k) {
@@ -306,7 +267,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
 
       RecordTransformProvider transformer = task.getTransformer();
 
-      // 进入核心比较计算算法区域
       RowChangeTypeEnum flagField = null;
       Object[] outputRow;
       Object[] one = getRowData(rsold.getResultSet());
@@ -358,7 +318,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
           continue;
         }
 
-        // 这里对计算的单条记录结果进行处理
         handler.handle(Collections.unmodifiableList(targetColumns), outputRow, jdbcTypes, flagField);
       }
 
@@ -366,7 +325,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
         log.debug("###### Calculate CDC Over now");
       }
 
-      // 结束返回前的回调
       handler.destroy(Collections.unmodifiableList(targetColumns));
 
     } catch (SQLException e) {
@@ -386,14 +344,7 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     return left.containsAll(right) && right.containsAll(left);
   }
 
-  /**
-   * 获取字段的索引号
-   *
-   * @param key      字段名
-   * @param metaData 结果集的元信息
-   * @return 字段的索引号
-   * @throws SQLException
-   */
+ 
   private int getIndexOfField(String key, ResultSetMetaData metaData) throws SQLException {
     for (int k = 1; k <= metaData.getColumnCount(); ++k) {
       String fieldName = metaData.getColumnLabel(k);
@@ -409,16 +360,7 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     return -1;
   }
 
-  /**
-   * 记录比较
-   *
-   * @param obj1     记录1
-   * @param obj2     记录2
-   * @param fieldnrs 待比较的字段索引号
-   * @param metaData 记录集的元信息
-   * @return 比较的结果：0，-1，1
-   * @throws SQLException
-   */
+
   private int compare(Object[] obj1, Object[] obj2, int[] fieldnrs, ResultSetMetaData metaData)
       throws SQLException {
     if (obj1.length != obj2.length) {
@@ -439,14 +381,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     return 0;
   }
 
-  /**
-   * 字段值对象比较，将对象转换为字节数组来比较实现
-   *
-   * @param type 字段的JDBC数据类型
-   * @param o1   对象1
-   * @param o2   对象2
-   * @return 0为相等，-1为小于，1为大于
-   */
   private int typeCompare(int type, Object o1, Object o2) {
     boolean n1 = (o1 == null);
     boolean n2 = (o2 == null);
@@ -460,14 +394,6 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
       return 0;
     }
 
-    /**
-     * <p>
-     * 这里要比较的两个对象o1与o2可能类型不同，但值相同，例如： Integer o1=12，Long o2=12;
-     * </p>
-     * <p>
-     * 但是这种不属于同一类的比较情况不应出现: String o1="12", Integer o2=12;
-     * </p>
-     */
     if (JdbcTypesUtils.isString(type)) {
       String s1 = ObjectCastUtils.castToString(o1);
       String s2 = ObjectCastUtils.castToString(o2);
@@ -531,13 +457,7 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     }
   }
 
-  /**
-   * 字节数组的比较
-   *
-   * @param s1 字节数组1
-   * @param s2 字节数组2
-   * @return 0为相等，-1为小于，1为大于
-   */
+
   public int compareTo(byte[] s1, byte[] s2) {
     int len1 = s1.length;
     int len2 = s2.length;
@@ -557,13 +477,7 @@ public final class DefaultChangeCalculatorService implements RecordRowChangeCalc
     return len1 - len2;
   }
 
-  /**
-   * 从结果集中取出一条记录
-   *
-   * @param rs 记录集
-   * @return 一条记录，到记录结尾时返回null
-   * @throws SQLException
-   */
+
   private Object[] getRowData(ResultSet rs) throws SQLException {
     ResultSetMetaData metaData = rs.getMetaData();
     Object[] rowData = null;

@@ -1,21 +1,7 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.schema;
 
 import org.dromara.dbswitch.common.type.ProductTableEnum;
 
-/**
- * 数据库表描述符信息定义(Table Description)
- *
- * @author tang
- */
 public class TableDescription {
 
   private String tableName;

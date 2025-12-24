@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.basic.exchange;
 
 import org.dromara.dbswitch.common.util.ExamineUtils;
@@ -37,22 +28,17 @@ public abstract class AbstractBatchExchanger {
   }
 
   public void exchange(RobotReader reader, RobotWriter writer) {
-    // 为reader和writer配置数据传输隧道
     reader.setChannel(this.memChannel);
     writer.setChannel(this.memChannel);
 
-    // 初始化reader和writer
     reader.init(readThreadExecutor);
     writer.init(writeThreadExecutor);
 
-    // 启动reader和writer的并行工作
     writer.startWork();
     reader.startWork();
 
-    // writer会等待reader执行完
     writer.waitForFinish();
 
-    // 收集统计信息
     Throwable throwable = collectPerfStats(reader, writer);
     if (null != throwable) {
       if (throwable instanceof RuntimeException) {

@@ -1,12 +1,3 @@
-// Copyright tang.  All rights reserved.
-// https://gitee.com/inrgihc/dbswitch
-//
-// Use of this source code is governed by a BSD-style license
-//
-// Author: tang (inrgihc@126.com)
-// Date : 2020/1/2
-// Location: beijing , china
-/////////////////////////////////////////////////////////////
 package org.dromara.dbswitch.core.provider.sync;
 
 import cn.hutool.json.JSONUtil;
@@ -26,11 +17,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
-/**
- * 数据同步抽象基类
- *
- * @author tang
- */
 @Slf4j
 public class DefaultTableDataSynchronizeProvider
     extends AbstractCommonProvider implements TableDataSynchronizeProvider {
@@ -213,14 +199,6 @@ public class DefaultTableDataSynchronizeProvider
     }
   }
 
-  /**
-   * 生成Insert操作的SQL语句
-   *
-   * @param schemaName 模式名称
-   * @param tableName  表名称
-   * @param fieldNames 字段列表
-   * @return Insert操作的SQL语句
-   */
   protected String getInsertPrepareStatementSql(String schemaName, String tableName,
       List<String> fieldNames) {
     List<String> placeHolders = Collections.nCopies(fieldNames.size(), "?");
@@ -231,15 +209,6 @@ public class DefaultTableDataSynchronizeProvider
         StringUtils.join(placeHolders, ","));
   }
 
-  /**
-   * 生成Update操作的SQL语句
-   *
-   * @param schemaName 模式名称
-   * @param tableName  表名称
-   * @param fieldNames 字段列表
-   * @param pks        主键列表
-   * @return Update操作的SQL语句
-   */
   protected String getUpdatePrepareStatementSql(String schemaName, String tableName,
       List<String> fieldNames, List<String> pks) {
     String fullTableName = quoteSchemaTableName(schemaName, tableName);
@@ -254,15 +223,6 @@ public class DefaultTableDataSynchronizeProvider
         fullTableName, StringUtils.join(uf, " , "),
         StringUtils.join(uw, " AND "));
   }
-
-  /**
-   * 生成Delete操作的SQL语句
-   *
-   * @param schemaName 模式名称
-   * @param tableName  表名称
-   * @param pks        主键列表
-   * @return Delete操作的SQL语句
-   */
   protected String getDeletePrepareStatementSql(String schemaName, String tableName,
       List<String> pks) {
     String fullTableName = quoteSchemaTableName(schemaName, tableName);
