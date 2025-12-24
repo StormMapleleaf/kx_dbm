@@ -40,7 +40,7 @@ export default {
 }
 
 .app-breadcrumb .el-breadcrumb .no-redirect {
-  color: #97a8be;
+  color: #909399;
   cursor: text;
 }
 </style>

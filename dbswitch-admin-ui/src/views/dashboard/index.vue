@@ -270,7 +270,7 @@ export default {
           axisLine: {
             show: true,
             lineStyle: {
-              color: 'rgb(2,121,253)'
+              color: '#e4e7ed'
             }
           },
           axisTick: {
@@ -286,12 +286,18 @@ export default {
             name: "作业数",
             type: "bar",
             barWidth: '8%',
+            itemStyle: {
+              color: '#409eff'
+            },
             data: JSON.parse(JSON.stringify(this.y1AxisData))
           },
           {
             name: "任务数",
             type: "bar",
             barWidth: '8%',
+            itemStyle: {
+              color: '#67c23a'
+            },
             data: JSON.parse(JSON.stringify(this.y2AxisData))
           }
         ]

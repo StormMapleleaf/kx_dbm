@@ -58,6 +58,7 @@ export default {
   padding: 10px 0;
   float: right;
   cursor: pointer;
+  color: #606266;
 }
 
 .user-dropdown-wrap .user-dropdown-photo img {
@@ -66,5 +67,9 @@ export default {
   vertical-align: middle;
   margin-right: 10px;
   cursor: pointer;
+}
+
+.user-dropdown-text {
+  color: #606266;
 }
 </style>

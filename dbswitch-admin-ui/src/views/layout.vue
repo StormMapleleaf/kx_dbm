@@ -69,17 +69,18 @@ export default {
 
 .el-aside {
   float: left;
-  background: #002140;
+  background: #ffffff;
   color: #333;
   text-align: left;
+  border-right: 1px solid #e4e7ed;
 }
 
 .el-aside .title {
   height: 60px;
-  background: #001529;
+  background: #f5f7fa;
   line-height: 64px;
-  background: #002140;
   text-align: center;
+  border-bottom: 1px solid #e4e7ed;
 }
 
 .el-aside .title img {
@@ -89,7 +90,7 @@ export default {
 }
 
 .el-aside .title .title-text {
-  color: #fff;
+  color: #606266;
   font-weight: 600;
   font-size: 20px;
   vertical-align: middle;
@@ -97,16 +98,17 @@ export default {
 
 .el-header {
   padding: 0px;
-  color: #ffffff;
+  color: #606266;
   width: 100%;
-  background: #fff;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e7ed;
 }
 
 .el-header .collapse {
   float: left;
   padding-left: 2px;
   font-size: 22px;
-  color: #838383;
+  color: #909399;
   margin-top: 10px;
   margin-right: 20px;
   cursor: pointer;
@@ -115,6 +117,6 @@ export default {
 .el-main {
   padding: 0px;
   float: left;
-  background-color: #eaedf1;
+  background-color: #f5f7fa;
 }
 </style>

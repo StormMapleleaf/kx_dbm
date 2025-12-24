@@ -50,7 +50,8 @@ export default {
  
 <style scoped>
 .el-menu-item.is-active {
-  background-color: #1890ff !important;
+  background-color: #ecf5ff !important;
+  color: #409eff !important;
 }
 
   .el-menu--collapse .asideBarItem-container span{

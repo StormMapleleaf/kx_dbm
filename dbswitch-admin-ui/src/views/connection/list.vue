@@ -323,11 +323,11 @@ export default {
 }
 
 .btn-style {
-  color: #e9e9f3;
+  color: #e4e7ed;
 }
 
 .btn-text {
   font-size: 12px;
-  color: #6873ce;
+  color: #409eff;
 }
 </style>

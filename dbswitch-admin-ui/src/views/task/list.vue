@@ -13,7 +13,6 @@
                    :disabled=isSelected
                    plain
                    @click="batchStop()">停用</el-button>
-        <span style="color:#e9e9f3;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
         <el-button size="mini"
                    :disabled=isSelected
                    plain

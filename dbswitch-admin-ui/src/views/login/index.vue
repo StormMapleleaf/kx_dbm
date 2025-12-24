@@ -107,6 +107,7 @@ export default {
 .login-container {
   width: 100%;
   height: 100%;
+  background-color: #f5f7fa;
 }
 
 .login-page {
@@ -116,8 +117,8 @@ export default {
   width: 350px;
   padding: 35px 35px 15px;
   background: #fff;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #cac6c6;
+  border: 1px solid #e4e7ed;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 label.el-checkbox.rememberme {
