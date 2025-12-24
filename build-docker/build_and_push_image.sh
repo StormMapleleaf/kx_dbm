@@ -1,3 +1,5 @@
+#!/bin/sh
+
 set -e 
 
 DBSWITCH_VERSION=2.0.1
@@ -22,3 +24,4 @@ cd ${DOCKER_DBSWITCH_DIR} \
   && rm -rf dbswitch-release/drivers/*
 
 cd $PROJECT_ROOT_DIR && sh docker-maven-clean.sh && cd -
+

@@ -1,5 +1,7 @@
-APP_MAIN="org.dromara.dbswitch.admin.AdminApplication"
+#!/bin/sh
 
+
+APP_MAIN="org.dromara.dbswitch.admin.AdminApplication"
 
 APP_HOME="${BASH_SOURCE-$0}"
 APP_HOME="$(dirname "${APP_HOME}")"
