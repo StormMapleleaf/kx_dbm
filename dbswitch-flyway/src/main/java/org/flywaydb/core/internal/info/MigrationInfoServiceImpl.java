@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.info;
 
 import org.flywaydb.core.api.*;
@@ -36,74 +21,28 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * Default implementation of MigrationInfoService.
- */
 public class MigrationInfoServiceImpl implements MigrationInfoService {
-    /**
-     * The migration resolver for available migrations.
-     */
-    private final MigrationResolver migrationResolver;
+        private final MigrationResolver migrationResolver;
 
     private final Context context;
 
-    /**
-     * The schema history table for applied migrations.
-     */
-    private final SchemaHistory schemaHistory;
+        private final SchemaHistory schemaHistory;
 
-    /**
-     * The target version up to which to retrieve the info.
-     */
-    private MigrationVersion target;
+        private MigrationVersion target;
 
-    /**
-     * Allows migrations to be run "out of order".
-     * <p>If you already have versions 1 and 3 applied, and now a version 2 is found,
-     * it will be applied too instead of being ignored.</p>
-     * <p>(default: {@code false})</p>
-     */
-    private boolean outOfOrder;
+        private boolean outOfOrder;
 
-    /**
-     * Whether pending migrations are allowed.
-     */
-    private final boolean pending;
+        private final boolean pending;
 
-    /**
-     * Whether missing migrations are allowed.
-     */
-    private final boolean missing;
+        private final boolean missing;
 
-    /**
-     * Whether ignored migrations are allowed.
-     */
-    private final boolean ignored;
+        private final boolean ignored;
 
-    /**
-     * Whether future migrations are allowed.
-     */
-    private final boolean future;
+        private final boolean future;
 
-    /**
-     * The migrations infos calculated at the last refresh.
-     */
-    private List<MigrationInfoImpl> migrationInfos;
+        private List<MigrationInfoImpl> migrationInfos;
 
-    /**
-     * Creates a new MigrationInfoServiceImpl.
-     *
-     * @param migrationResolver The migration resolver for available migrations.
-     * @param schemaHistory     The schema history table for applied migrations.
-     * @param configuration     The current configuration.
-     * @param target            The target version up to which to retrieve the info.
-     * @param outOfOrder        Allows migrations to be run "out of order".
-     * @param pending           Whether pending migrations are allowed.
-     * @param missing           Whether missing migrations are allowed.
-     * @param ignored           Whether ignored migrations are allowed.
-     * @param future            Whether future migrations are allowed.
-     */
-    public MigrationInfoServiceImpl(MigrationResolver migrationResolver,
+        public MigrationInfoServiceImpl(MigrationResolver migrationResolver,
                                     SchemaHistory schemaHistory, final Configuration configuration,
                                     MigrationVersion target, boolean outOfOrder,
                                     boolean pending, boolean missing, boolean ignored, boolean future) {
@@ -123,10 +62,7 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
         this.future = future;
     }
 
-    /**
-     * Refreshes the info about all known migrations from both the classpath and the DB.
-     */
-    public void refresh() {
+        public void refresh() {
         Collection<ResolvedMigration> resolvedMigrations = migrationResolver.resolveMigrations(context);
         List<AppliedMigration> appliedMigrations = schemaHistory.allAppliedMigrations();
 
@@ -147,7 +83,6 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
                 if (version.compareTo(context.lastResolved) > 0) {
                     context.lastResolved = version;
                 }
-                //noinspection RedundantConditionalExpression
                 resolvedVersioned.put(Pair.of(version,
 
 
@@ -309,7 +244,6 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
             return current;
         }
 
-        // If no versioned migration has been applied so far, fall back to the latest repeatable one
         for (int i = migrationInfos.size() - 1; i >= 0; i--) {
             MigrationInfoImpl migrationInfo = migrationInfos.get(i);
             if (migrationInfo.getState().isApplied()
@@ -349,12 +283,7 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
         return appliedMigrations.toArray(new MigrationInfoImpl[0]);
     }
 
-    /**
-     * Retrieves the full set of infos about the migrations resolved on the classpath.
-     *
-     * @return The resolved migrations. An empty array if none.
-     */
-    public MigrationInfo[] resolved() {
+        public MigrationInfo[] resolved() {
         List<MigrationInfo> resolvedMigrations = new ArrayList<>();
         for (MigrationInfo migrationInfo : migrationInfos) {
             if (migrationInfo.getState().isResolved()) {
@@ -365,12 +294,7 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
         return resolvedMigrations.toArray(new MigrationInfo[0]);
     }
 
-    /**
-     * Retrieves the full set of infos about the migrations that failed.
-     *
-     * @return The failed migrations. An empty array if none.
-     */
-    public MigrationInfo[] failed() {
+        public MigrationInfo[] failed() {
         List<MigrationInfo> failedMigrations = new ArrayList<>();
         for (MigrationInfo migrationInfo : migrationInfos) {
             if (migrationInfo.getState().isFailed()) {
@@ -381,12 +305,7 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
         return failedMigrations.toArray(new MigrationInfo[0]);
     }
 
-    /**
-     * Retrieves the full set of infos about future migrations applied to the DB.
-     *
-     * @return The future migrations. An empty array if none.
-     */
-    public MigrationInfo[] future() {
+        public MigrationInfo[] future() {
         List<MigrationInfo> futureMigrations = new ArrayList<>();
         for (MigrationInfo migrationInfo : migrationInfos) {
             if (((migrationInfo.getState() == MigrationState.FUTURE_SUCCESS)
@@ -403,12 +322,7 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
         return futureMigrations.toArray(new MigrationInfo[0]);
     }
 
-    /**
-     * Retrieves the full set of infos about out of order migrations applied to the DB.
-     *
-     * @return The out of order migrations. An empty array if none.
-     */
-    public MigrationInfo[] outOfOrder() {
+        public MigrationInfo[] outOfOrder() {
         List<MigrationInfo> outOfOrderMigrations = new ArrayList<>();
         for (MigrationInfo migrationInfo : migrationInfos) {
             if (migrationInfo.getState() == MigrationState.OUT_OF_ORDER) {
@@ -438,12 +352,7 @@ public class MigrationInfoServiceImpl implements MigrationInfoService {
 
 
 
-    /**
-     * Validate all migrations for consistency.
-     *
-     * @return The error message, or {@code null} if everything is fine.
-     */
-    public String validate() {
+        public String validate() {
         StringBuilder builder = new StringBuilder();
         boolean hasFailures = false;
 

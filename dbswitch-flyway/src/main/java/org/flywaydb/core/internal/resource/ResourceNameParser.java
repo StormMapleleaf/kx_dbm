@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.resource;
 
 import org.flywaydb.core.api.MigrationVersion;
@@ -28,20 +13,15 @@ public class ResourceNameParser {
 
     public ResourceNameParser(Configuration configuration) {
         this.configuration = configuration;
-        // Versioned and Undo migrations are named in the form prefixVERSIONseparatorDESCRIPTIONsuffix
-        // Repeatable migrations and callbacks are named in the form prefixSeparatorDESCRIPTIONsuffix
         prefixes = populatePrefixes(configuration);
     }
 
     public ResourceName parse(String resourceName) {
-        // Strip off suffixes
         Pair<String, String> suffixResult = stripSuffix(resourceName, configuration.getSqlMigrationSuffixes());
 
-        // Find the appropriate prefix
         Pair<String, ResourceType> prefix = findPrefix(suffixResult.getLeft(), prefixes);
         if (prefix != null) {
 
-            // Strip off prefix
             Pair<String, String> prefixResult = stripPrefix(suffixResult.getLeft(), prefix.getLeft());
             String name = prefixResult.getRight();
             Pair<String, String> splitName = splitAtSeparator(name, configuration.getSqlMigrationSeparator());
@@ -49,9 +29,7 @@ public class ResourceNameParser {
             String validationMessage = "";
             String exampleDescription = ("".equals(splitName.getRight())) ? "description" : splitName.getRight();
 
-            // Validate the name
             if (!ResourceType.isVersioned(prefix.getRight())) {
-                // Must not have a version (that is, something before the separator)
                 if (!"".equals(splitName.getLeft())) {
                     isValid = false;
                     validationMessage = "Invalid repeatable migration / callback name format: " + resourceName
@@ -59,14 +37,12 @@ public class ResourceNameParser {
                             + prefixResult.getLeft() + configuration.getSqlMigrationSeparator() + exampleDescription + suffixResult.getRight() + ")";
                 }
             } else {
-                // Must have a version (that is, something before the separator)
                 if ("".equals(splitName.getLeft())) {
                     isValid = false;
                     validationMessage = "Invalid versioned migration name format: " + resourceName
                             + " (It must contain a version and should look like this: "
                             + prefixResult.getLeft() + "1.2" + configuration.getSqlMigrationSeparator() + exampleDescription + suffixResult.getRight() + ")";
                 } else {
-                    // ... and that must be a legitimate version
                     try {
                         MigrationVersion.fromVersion(splitName.getLeft());
                     } catch (Exception e) {
@@ -83,7 +59,6 @@ public class ResourceNameParser {
                     isValid, validationMessage);
         }
 
-        // Didn't match any prefix
         return ResourceName.invalid("Unrecognised migration name format: " + resourceName);
     }
 
@@ -138,7 +113,6 @@ public class ResourceNameParser {
         Comparator<Pair<String, ResourceType>> prefixComparator
                 = new Comparator<Pair<String, ResourceType>>() {
             public int compare(Pair<String, ResourceType> p1, Pair<String, ResourceType> p2) {
-                // Sort most-hard-to-match first; that is, in descending order of prefix length
                 return p2.getLeft().length() - p1.getLeft().length();
             }
         };

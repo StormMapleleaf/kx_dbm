@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.snowflake;
 
 import org.flywaydb.core.api.configuration.Configuration;
@@ -32,16 +17,9 @@ import java.util.Map;
 public class SnowflakeDatabase extends Database<SnowflakeConnection> {
     private static final Log LOG = LogFactory.getLog(SnowflakeDatabase.class);
 
-    /**
-     * Whether quoted identifiers are treated in a case-insensitive way. Defaults to false. See
-     * https://docs.snowflake.com/en/sql-reference/identifiers-syntax.html#controlling-case-using-the-quoted-identifiers-ignore-case-parameter
-     */
-    private final boolean quotedIdentifiersIgnoreCase;
+        private final boolean quotedIdentifiersIgnoreCase;
 
-    /**
-     * Creates a new instance.
-     */
-    public SnowflakeDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory
+        public SnowflakeDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory
 
 
 
@@ -60,7 +38,6 @@ public class SnowflakeDatabase extends Database<SnowflakeConnection> {
 
     private static boolean getQuotedIdentifiersIgnoreCase(JdbcTemplate jdbcTemplate) {
         try {
-            // Attempt query
             List<Map<String, String>> result = jdbcTemplate.queryForList("SHOW PARAMETERS LIKE 'QUOTED_IDENTIFIERS_IGNORE_CASE'");
             Map<String, String> row = result.get(0);
             return "TRUE".equals(row.get("value").toUpperCase());
@@ -94,8 +71,6 @@ public class SnowflakeDatabase extends Database<SnowflakeConnection> {
 
     @Override
     public String getRawCreateScript(Table table, boolean baseline) {
-        // CAUTION: Quotes are optional around column names without underscores; but without them, Snowflake will
-        // uppercase the column name leading to SELECTs failing.
         return "CREATE TABLE " + table + " (\n" +
                 quote("installed_rank") + " NUMBER(38,0) NOT NULL,\n" +
                 quote("version") + " VARCHAR(50),\n" +
@@ -114,8 +89,6 @@ public class SnowflakeDatabase extends Database<SnowflakeConnection> {
 
     @Override
     public String getSelectStatement(Table table) {
-        // CAUTION: Quotes are optional around column names without underscores; but without them, Snowflake will
-        // uppercase the column name. In data readers, the column name is case sensitive.
         return "SELECT " + quote("installed_rank")
                 + "," + quote("version")
                 + "," + quote("description")
@@ -133,8 +106,6 @@ public class SnowflakeDatabase extends Database<SnowflakeConnection> {
 
     @Override
     public String getInsertStatement(Table table) {
-        // CAUTION: Quotes are optional around column names without underscores; but without them, Snowflake will
-        // uppercase the column name.
         return "INSERT INTO " + table
                 + " (" + quote("installed_rank")
                 + ", " + quote("version")

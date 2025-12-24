@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.jdbc;
 
 import org.flywaydb.core.api.ErrorCode;
@@ -32,18 +17,10 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-/**
- * YAGNI: The simplest DataSource implementation that works for Flyway.
- */
 public class DriverDataSource implements DataSource {
     private static final Log LOG = LogFactory.getLog(DriverDataSource.class);
 
-    /**
-     * The driver types that flyway supports. Contains the jdbc prefix and the driver class name.
-     *
-     * NOTE: The drivers will be matched in order, from the top of this enum down.
-     */
-    public enum DriverType {
+        public enum DriverType {
         DB2("jdbc:db2:", "com.ibm.db2.jcc.DB2Driver"),
         DERBY_CLIENT("jdbc:derby://", "org.apache.derby.jdbc.ClientDriver"),
         DERBY_EMBEDDED("jdbc:derby:", "org.apache.derby.jdbc.EmbeddedDriver"),
@@ -84,78 +61,29 @@ public class DriverDataSource implements DataSource {
     private static final String REDSHIFT_JDBC4_DRIVER = "com.amazon.redshift.jdbc4.Driver";
     private static final String REDSHIFT_JDBC41_DRIVER = "com.amazon.redshift.jdbc41.Driver";
 
-    /**
-     * The name of the application that created the connection. This is useful for databases that allow setting this
-     * in order to easily correlate individual application with database connections.
-     */
-    private static final String APPLICATION_NAME = "Flyway by Redgate";
+        private static final String APPLICATION_NAME = "Flyway by Redgate";
 
-    /**
-     * The JDBC Driver instance to use.
-     */
-    private Driver driver;
+        private Driver driver;
 
-    /**
-     * The JDBC URL to use for connecting through the Driver.
-     */
-    private final String url;
+        private final String url;
 
-    /**
-     * The detected type of the driver.
-     */
-    private final DriverType type;
+        private final DriverType type;
 
-    /**
-     * The JDBC user to use for connecting through the Driver.
-     */
-    private final String user;
+        private final String user;
 
-    /**
-     * The JDBC password to use for connecting through the Driver.
-     */
-    private final String password;
+        private final String password;
 
-    /**
-     * The properties to be passed to a new connection.
-     */
-    private final Properties defaultProps;
+        private final Properties defaultProps;
 
-    /**
-     * The ClassLoader to use.
-     */
-    private final ClassLoader classLoader;
+        private final ClassLoader classLoader;
 
-    /**
-     * Whether connection should have auto commit activated or not. Default: {@code true}
-     */
-    private boolean autoCommit = true;
+        private boolean autoCommit = true;
 
-    /**
-     * Creates a new DriverDataSource.
-     *
-     * @param classLoader The ClassLoader to use.
-     * @param driverClass The name of the JDBC Driver class to use. {@code null} for url-based autodetection.
-     * @param url         The JDBC URL to use for connecting through the Driver. (required)
-     * @param user        The JDBC user to use for connecting through the Driver.
-     * @param password    The JDBC password to use for connecting through the Driver.
-     * @throws FlywayException when the datasource could not be created.
-     */
-    public DriverDataSource(ClassLoader classLoader, String driverClass, String url, String user, String password) throws FlywayException {
+        public DriverDataSource(ClassLoader classLoader, String driverClass, String url, String user, String password) throws FlywayException {
         this(classLoader, driverClass, url, user, password, new Properties());
     }
 
-    /**
-     * Creates a new DriverDataSource.
-     *
-     * @param classLoader The ClassLoader to use.
-     * @param driverClass The name of the JDBC Driver class to use. {@code null} for url-based autodetection.
-     * @param url         The JDBC URL to use for connecting through the Driver. (required)
-     * @param user        The JDBC user to use for connecting through the Driver.
-     * @param password    The JDBC password to use for connecting through the Driver.
-     * @param props       The properties to pass to the connection.
-     * @throws FlywayException when the datasource could not be created.
-     */
-    public DriverDataSource(ClassLoader classLoader, String driverClass, String url, String user, String password,
+        public DriverDataSource(ClassLoader classLoader, String driverClass, String url, String user, String password,
                             Properties props) throws FlywayException {
         this.classLoader = classLoader;
         this.url = detectFallbackUrl(url);
@@ -184,7 +112,6 @@ public class DriverDataSource implements DataSource {
             try {
                 this.driver = ClassUtils.instantiate(backupDriverClass, classLoader);
             } catch (Exception e1) {
-                // Only report original exception about primary driver
                 throw new FlywayException(
                         "Unable to instantiate JDBC driver: " + driverClass + " => Check whether the jar file is present", e,
                         ErrorCode.JDBC_DRIVER);
@@ -195,15 +122,8 @@ public class DriverDataSource implements DataSource {
         this.password = detectFallbackPassword(password);
     }
 
-    /**
-     * Detects a fallback url in case this one is missing.
-     *
-     * @param url The url to check.
-     * @return The url to use.
-     */
-    private String detectFallbackUrl(String url) {
+        private String detectFallbackUrl(String url) {
         if (!StringUtils.hasText(url)) {
-            // Attempt fallback to the automatically provided Boxfuse database URL (https://boxfuse.com/docs/databases#envvars)
             String boxfuseDatabaseUrl = System.getenv("BOXFUSE_DATABASE_URL");
             if (StringUtils.hasText(boxfuseDatabaseUrl)) {
                 return boxfuseDatabaseUrl;
@@ -218,15 +138,8 @@ public class DriverDataSource implements DataSource {
         return url;
     }
 
-    /**
-     * Detects a fallback user in case this one is missing.
-     *
-     * @param user The user to check.
-     * @return The user to use.
-     */
-    private String detectFallbackUser(String user) {
+        private String detectFallbackUser(String user) {
         if (!StringUtils.hasText(user)) {
-            // Attempt fallback to the automatically provided Boxfuse database user (https://boxfuse.com/docs/databases#envvars)
             String boxfuseDatabaseUser = System.getenv("BOXFUSE_DATABASE_USER");
             if (StringUtils.hasText(boxfuseDatabaseUser)) {
                 return boxfuseDatabaseUser;
@@ -235,15 +148,7 @@ public class DriverDataSource implements DataSource {
         return user;
     }
 
-    /**
-     * Detects whether a user is required from configuration. This may not be the case if the driver supports
-     * other authentication mechanisms, or supports the user being encoded in the URL
-     *
-     * @param url The url to check
-     * @return false if a username needs to be provided
-     */
-    public static boolean detectUserRequiredByUrl(String url) {
-        // Using Snowflake private-key auth instead of password allows user to be passed on URL
+        public static boolean detectUserRequiredByUrl(String url) {
         if (DriverDataSource.DriverType.SNOWFLAKE.matches(url)
                 || DriverDataSource.DriverType.POSTGRESQL.matches(url)) {
             return !url.contains("user=");
@@ -254,26 +159,16 @@ public class DriverDataSource implements DataSource {
                     && !url.contains("authentication=ActiveDirectoryMSI");
         }
         if (DriverDataSource.DriverType.ORACLE.matches(url)) {
-            // Oracle usernames/passwords can be 1-30 chars, can only contain alphanumerics and # _ $
             Pattern pattern = Pattern.compile("^jdbc:oracle:thin:[a-zA-Z0-9#_$]+/[a-zA-Z0-9#_$]+@//.*");
             return !pattern.matcher(url).matches();
         }
         return true;
     }
 
-    /**
-     * Detects whether a password is required from configuration. This may not be the case if the driver supports
-     * other authentication mechanisms, or supports the password being encoded in the URL
-     *
-     * @param url The url to check
-     * @return false if a username needs to be provided
-     */
-    public static boolean detectPasswordRequiredByUrl(String url) {
-        // Using Snowflake private-key auth instead of password
+        public static boolean detectPasswordRequiredByUrl(String url) {
         if (DriverDataSource.DriverType.SNOWFLAKE.matches(url)) {
             return !url.contains("private_key_file=");
         }
-        // Postgres supports password in URL
         if (DriverDataSource.DriverType.POSTGRESQL.matches(url)) {
             return !url.contains("password=");
         }
@@ -283,22 +178,14 @@ public class DriverDataSource implements DataSource {
                     && ! url.contains("authentication=ActiveDirectoryMSI");
         }
         if (DriverDataSource.DriverType.ORACLE.matches(url)) {
-            // Oracle usernames/passwords can be 1-30 chars, can only contain alphanumerics and # _ $
             Pattern pattern = Pattern.compile("^jdbc:oracle:thin:[a-zA-Z0-9#_$]+/[a-zA-Z0-9#_$]+@//.*");
             return !pattern.matcher(url).matches();
         }
         return true;
     }
 
-    /**
-     * Detects a fallback password in case this one is missing.
-     *
-     * @param password The password to check.
-     * @return The password to use.
-     */
-    private String detectFallbackPassword(String password) {
+        private String detectFallbackPassword(String password) {
         if (!StringUtils.hasText(password)) {
-            // Attempt fallback to the automatically provided Boxfuse database password (https://boxfuse.com/docs/databases#envvars)
             String boxfuseDatabasePassword = System.getenv("BOXFUSE_DATABASE_PASSWORD");
             if (StringUtils.hasText(boxfuseDatabasePassword)) {
                 return boxfuseDatabasePassword;
@@ -307,13 +194,7 @@ public class DriverDataSource implements DataSource {
         return password;
     }
 
-    /**
-     * Detect the default connection properties for this driver type.
-     *
-     * @param type The driver type.
-     * @return The properties.
-     */
-    private Properties detectPropsForType(DriverType type) {
+        private Properties detectPropsForType(DriverType type) {
         Properties result = new Properties();
 
         if (DriverType.ORACLE.equals(type)) {
@@ -344,12 +225,7 @@ public class DriverDataSource implements DataSource {
         return result;
     }
 
-    /**
-     * Detects the driver type for the url by checking the start of the url against the DriverType prefixes
-     * @param url The url to check
-     * @return The detected driver type
-     */
-    private DriverType detectDriverTypeForUrl(String url) {
+        private DriverType detectDriverTypeForUrl(String url) {
         for (DriverType type : DriverType.values()) {
             if (type.matches(url)) {
                 return type;
@@ -359,13 +235,7 @@ public class DriverDataSource implements DataSource {
         return null;
     }
 
-    /**
-     * Retrieves a second choice backup driver for a given driver type, in case the primary driver is not available.
-     *
-     * @param type The detected driver type.
-     * @return The JDBC driver. {@code null} if none.
-     */
-    private String detectBackupDriverForType(DriverType type) {
+        private String detectBackupDriverForType(DriverType type) {
         if (DriverType.MYSQL.equals(type) && ClassUtils.isPresent(MYSQL_LEGACY_JDBC_DRIVER, classLoader)) {
             return MYSQL_LEGACY_JDBC_DRIVER;
         }
@@ -387,13 +257,7 @@ public class DriverDataSource implements DataSource {
         return null;
     }
 
-    /**
-     * Detects the correct Jdbc driver for this driver type.
-     *
-     * @param type The detected driver type.
-     * @return The Jdbc driver.
-     */
-    private String detectDriverForType(DriverType type) {
+        private String detectDriverForType(DriverType type) {
         if (DriverType.SQLLITE.equals(type)) {
             if (new FeatureDetector(classLoader).isAndroidAvailable()) {
                 return DriverType.SQLDROID.driverClass;
@@ -403,68 +267,34 @@ public class DriverDataSource implements DataSource {
         return type.driverClass;
     }
 
-    /**
-     * @return the JDBC Driver instance to use.
-     */
-    public Driver getDriver() {
+        public Driver getDriver() {
         return this.driver;
     }
 
-    /**
-     * @return the JDBC URL to use for connecting through the Driver.
-     */
-    public String getUrl() {
+        public String getUrl() {
         return this.url;
     }
 
-    /**
-     * @return the JDBC user to use for connecting through the Driver.
-     */
-    public String getUser() {
+        public String getUser() {
         return this.user;
     }
 
-    /**
-     * @return the JDBC password to use for connecting through the Driver.
-     */
-    public String getPassword() {
+        public String getPassword() {
         return this.password;
     }
 
-    /**
-     * This implementation delegates to {@code getConnectionFromDriver},
-     * using the default user and password of this DataSource.
-     *
-     * @see #getConnectionFromDriver(String, String)
-     */
-    @Override
+        @Override
     public Connection getConnection() throws SQLException {
         return getConnectionFromDriver(getUser(), getPassword());
     }
 
-    /**
-     * This implementation delegates to {@code getConnectionFromDriver},
-     * using the given user and password.
-     *
-     * @see #getConnectionFromDriver(String, String)
-     */
-    @Override
+        @Override
     public Connection getConnection(String username, String password) throws SQLException {
         return getConnectionFromDriver(username, password);
     }
 
 
-    /**
-     * Build properties for the Driver, including the given user and password (if any),
-     * and obtain a corresponding Connection.
-     *
-     * @param username the name of the user
-     * @param password the password to use
-     * @return the obtained Connection
-     * @throws SQLException in case of failure
-     * @see java.sql.Driver#connect(String, java.util.Properties)
-     */
-    protected Connection getConnectionFromDriver(String username, String password) throws SQLException {
+        protected Connection getConnectionFromDriver(String username, String password) throws SQLException {
         Properties props = new Properties(this.defaultProps);
         if (username != null) {
             props.setProperty("user", username);
@@ -481,17 +311,11 @@ public class DriverDataSource implements DataSource {
         return connection;
     }
 
-    /**
-     * @return Whether connection should have auto commit activated or not. Default: {@code true}
-     */
-    public boolean isAutoCommit() {
+        public boolean isAutoCommit() {
         return autoCommit;
     }
 
-    /**
-     * @param autoCommit Whether connection should have auto commit activated or not. Default: {@code true}
-     */
-    public void setAutoCommit(boolean autoCommit) {
+        public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
@@ -537,10 +361,7 @@ public class DriverDataSource implements DataSource {
         throw new UnsupportedOperationException(methodName);
     }
 
-    /**
-     * Shutdown the database that was opened (only applicable to embedded databases that require this).
-     */
-    public void shutdownDatabase() {
+        public void shutdownDatabase() {
         if (DriverType.DERBY_EMBEDDED.equals(type)) {
             try {
                 int i = url.indexOf(";");

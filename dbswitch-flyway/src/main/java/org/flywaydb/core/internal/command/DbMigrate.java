@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.command;
 
 import org.flywaydb.core.api.FlywayException;
@@ -48,57 +33,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-/**
- * Main workflow for migrating the database.
- */
 public class DbMigrate {
     private static final Log LOG = LogFactory.getLog(DbMigrate.class);
 
-    /**
-     * Database-specific functionality.
-     */
-    private final Database database;
+        private final Database database;
 
-    /**
-     * The database schema history table.
-     */
-    private final SchemaHistory schemaHistory;
+        private final SchemaHistory schemaHistory;
 
-    /**
-     * The schema containing the schema history table.
-     */
-    private final Schema schema;
+        private final Schema schema;
 
-    /**
-     * The migration resolver.
-     */
-    private final MigrationResolver migrationResolver;
+        private final MigrationResolver migrationResolver;
 
-    /**
-     * The Flyway configuration.
-     */
-    private final Configuration configuration;
+        private final Configuration configuration;
 
-    /**
-     * The callback executor.
-     */
-    private final CallbackExecutor callbackExecutor;
+        private final CallbackExecutor callbackExecutor;
 
-    /**
-     * The connection to use to perform the actual database migrations.
-     */
-    private final Connection connectionUserObjects;
+        private final Connection connectionUserObjects;
 
-    /**
-     * Creates a new database migrator.
-     *
-     * @param database          Database-specific functionality.
-     * @param schemaHistory     The database schema history table.
-     * @param migrationResolver The migration resolver.
-     * @param configuration     The Flyway configuration.
-     * @param callbackExecutor  The callbacks executor.
-     */
-    public DbMigrate(Database database,
+        public DbMigrate(Database database,
                      SchemaHistory schemaHistory, Schema schema, MigrationResolver migrationResolver,
                      Configuration configuration, CallbackExecutor callbackExecutor) {
         this.database = database;
@@ -110,13 +62,7 @@ public class DbMigrate {
         this.callbackExecutor = callbackExecutor;
     }
 
-    /**
-     * Starts the actual migration.
-     *
-     * @return The number of successfully applied migrations.
-     * @throws FlywayException when migration failed.
-     */
-    public int migrate() throws FlywayException {
+        public int migrate() throws FlywayException {
         callbackExecutor.onMigrateOrUndoEvent(Event.BEFORE_MIGRATE);
 
         int count;
@@ -125,15 +71,12 @@ public class DbMigrate {
             stopWatch.start();
 
             count = configuration.isGroup() ?
-                    // When group is active, start the transaction boundary early to
-                    // ensure that all changes to the schema history table are either committed or rolled back atomically.
                     schemaHistory.lock(new Callable<Integer>() {
                         @Override
                         public Integer call() {
                             return migrateAll();
                         }
                     }) :
-                    // For all regular cases, proceed with the migration as usual.
                     migrateAll();
 
             stopWatch.stop();
@@ -153,9 +96,7 @@ public class DbMigrate {
         while (true) {
             final boolean firstRun = total == 0;
             int count = configuration.isGroup()
-                    // With group active a lock on the schema history table has already been acquired.
                     ? migrateGroup(firstRun)
-                    // Otherwise acquire the lock now. The lock will be released at the end of each migration.
                     : schemaHistory.lock(new Callable<Integer>() {
                 @Override
                 public Integer call() {
@@ -164,20 +105,13 @@ public class DbMigrate {
             });
             total += count;
             if (count == 0) {
-                // No further migrations available
                 break;
             }
         }
         return total;
     }
 
-    /**
-     * Migrate a group of one (group = false) or more (group = true) migrations.
-     *
-     * @param firstRun Where this is the first time this code runs in this migration run.
-     * @return The number of newly applied migrations.
-     */
-    private Integer migrateGroup(boolean firstRun) {
+        private Integer migrateGroup(boolean firstRun) {
         MigrationInfoServiceImpl infoService =
                 new MigrationInfoServiceImpl(migrationResolver, schemaHistory, configuration,
                         configuration.getTarget(), configuration.isOutOfOrder(),
@@ -203,7 +137,6 @@ public class DbMigrate {
                         + ", but no migration could be resolved in the configured locations ! Note this warning will become an error in Flyway 7.");
             } else {
                 for (MigrationInfo migrationInfo : resolved) {
-                    // Only consider versioned migrations
                     if (migrationInfo.getVersion() != null) {
                         LOG.warn("Schema " + schema + " has a version (" + currentSchemaVersion
                                 + ") that is newer than the latest available migration ("
@@ -235,7 +168,6 @@ public class DbMigrate {
             group.put(pendingMigration, isOutOfOrder);
 
             if (!configuration.isGroup()) {
-                // Only include one pending migration if group is disabled
                 break;
             }
         }
@@ -246,13 +178,7 @@ public class DbMigrate {
         return group.size();
     }
 
-    /**
-     * Logs the summary of this migration run.
-     *
-     * @param migrationSuccessCount The number of successfully applied migrations.
-     * @param executionTime         The total time taken to perform this migration run (in ms).
-     */
-
+    
     private void logSummary(int migrationSuccessCount, long executionTime) {
         if (migrationSuccessCount == 0) {
             LOG.info("Schema " + schema + " is up to date. No migration necessary.");
@@ -266,12 +192,7 @@ public class DbMigrate {
         }
     }
 
-    /**
-     * Applies this migration to the database. The migration state and the execution time are updated accordingly.
-     *
-     * @param group The group of migrations to apply.
-     */
-    private void applyMigrations(final LinkedHashMap<MigrationInfoImpl, Boolean> group) {
+        private void applyMigrations(final LinkedHashMap<MigrationInfoImpl, Boolean> group) {
         boolean executeGroupInTransaction = isExecuteGroupInTransaction(group);
         final StopWatch stopWatch = new StopWatch();
         try {

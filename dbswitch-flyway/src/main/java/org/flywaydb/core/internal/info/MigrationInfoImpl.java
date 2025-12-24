@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.info;
 
 import org.flywaydb.core.api.MigrationInfo;
@@ -27,29 +12,14 @@ import org.flywaydb.core.internal.util.AbbreviationUtils;
 
 import java.util.Date;
 
-/**
- * Default implementation of MigrationInfo.
- */
 public class MigrationInfoImpl implements MigrationInfo {
-    /**
-     * The resolved migration to aggregate the info from.
-     */
-    private final ResolvedMigration resolvedMigration;
+        private final ResolvedMigration resolvedMigration;
 
-    /**
-     * The applied migration to aggregate the info from.
-     */
-    private final AppliedMigration appliedMigration;
+        private final AppliedMigration appliedMigration;
 
-    /**
-     * The current context.
-     */
-    private final MigrationInfoContext context;
+        private final MigrationInfoContext context;
 
-    /**
-     * Whether this migration was applied out of order.
-     */
-    private final boolean outOfOrder;
+        private final boolean outOfOrder;
 
 
 
@@ -58,18 +28,7 @@ public class MigrationInfoImpl implements MigrationInfo {
 
 
 
-    /**
-     * Creates a new MigrationInfoImpl.
-     *
-     * @param resolvedMigration The resolved migration to aggregate the info from.
-     * @param appliedMigration  The applied migration to aggregate the info from.
-     * @param context           The current context.
-     * @param outOfOrder        Whether this migration was applied out of order.
-
-
-
-     */
-    MigrationInfoImpl(ResolvedMigration resolvedMigration, AppliedMigration appliedMigration,
+        MigrationInfoImpl(ResolvedMigration resolvedMigration, AppliedMigration appliedMigration,
                       MigrationInfoContext context, boolean outOfOrder
 
 
@@ -84,17 +43,11 @@ public class MigrationInfoImpl implements MigrationInfo {
 
     }
 
-    /**
-     * @return The resolved migration to aggregate the info from.
-     */
-    public ResolvedMigration getResolvedMigration() {
+        public ResolvedMigration getResolvedMigration() {
         return resolvedMigration;
     }
 
-    /**
-     * @return The applied migration to aggregate the info from.
-     */
-    public AppliedMigration getAppliedMigration() {
+        public AppliedMigration getAppliedMigration() {
         return appliedMigration;
     }
 
@@ -248,12 +201,7 @@ public class MigrationInfoImpl implements MigrationInfo {
         return "";
     }
 
-    /**
-     * Validates this migrationInfo for consistency.
-     *
-     * @return The error message, or {@code null} if everything is fine.
-     */
-    public String validate() {
+        public String validate() {
         MigrationState state = getState();
 
 
@@ -263,7 +211,6 @@ public class MigrationInfoImpl implements MigrationInfo {
 
 
 
-        // Ignore any migrations above the current target as they are out of scope.
         if (MigrationState.ABOVE_TARGET.equals(state)) {
             return null;
         }
@@ -303,9 +250,7 @@ public class MigrationInfoImpl implements MigrationInfo {
 
         ) {
             String migrationIdentifier = appliedMigration.getVersion() == null ?
-                    // Repeatable migrations
                     appliedMigration.getScript() :
-                    // Versioned migrations
                     "version " + appliedMigration.getVersion();
             if (getVersion() == null || getVersion().compareTo(context.baseline) > 0) {
                 if (resolvedMigration.getType() != appliedMigration.getType()) {
@@ -326,9 +271,6 @@ public class MigrationInfoImpl implements MigrationInfo {
             }
         }
 
-        // Perform additional validation for pending migrations. This is not performed for previously applied migrations
-        // as it is assumed that if the checksum is unchanged, previous positive validation results still hold true.
-        // #2392: Migrations above target are also ignored as the user explicitly asked for them to not be taken into account.
         if (!context.pending && MigrationState.PENDING == state && resolvedMigration instanceof ResolvedMigrationImpl) {
             ((ResolvedMigrationImpl) resolvedMigration).validate();
         }
@@ -337,25 +279,14 @@ public class MigrationInfoImpl implements MigrationInfo {
     }
 
     private boolean descriptionMismatch(ResolvedMigration resolvedMigration, AppliedMigration appliedMigration) {
-        // For some databases, we can't put an empty description into the history table
         if (SchemaHistory.NO_DESCRIPTION_MARKER.equals(appliedMigration.getDescription())) {
             return !"".equals(resolvedMigration.getDescription());
         }
-        // The default
         return (!AbbreviationUtils.abbreviateDescription(resolvedMigration.getDescription())
                 .equals(appliedMigration.getDescription()));
     }
 
-    /**
-     * Creates a message for a mismatch.
-     *
-     * @param mismatch            The type of mismatch.
-     * @param migrationIdentifier The offending version.
-     * @param applied             The applied value.
-     * @param resolved            The resolved value.
-     * @return The message.
-     */
-    private String createMismatchMessage(String mismatch, String migrationIdentifier, Object applied, Object resolved) {
+        private String createMismatchMessage(String mismatch, String migrationIdentifier, Object applied, Object resolved) {
         return String.format("Migration " + mismatch + " mismatch for migration %s\n" +
                         "-> Applied to database : %s\n" +
                         "-> Resolved locally    : %s",
@@ -371,7 +302,6 @@ public class MigrationInfoImpl implements MigrationInfo {
         MigrationState state = getState();
         MigrationState oState = o.getState();
 
-        // Below baseline migrations come before applied ones
         if (state == MigrationState.BELOW_BASELINE && oState.isApplied()) {
             return -1;
         }
@@ -392,7 +322,6 @@ public class MigrationInfoImpl implements MigrationInfo {
             return 1;
         }
 
-        // Sort installed before pending
         if (getInstalledRank() != null) {
             return -1;
         }
@@ -400,8 +329,6 @@ public class MigrationInfoImpl implements MigrationInfo {
             return 1;
         }
 
-        // No migration installed, sort according to other criteria
-        // Two versioned migrations: sort by version
         if (getVersion() != null && o.getVersion() != null) {
             int v = getVersion().compareTo(o.getVersion());
             if (v != 0) {
@@ -421,7 +348,6 @@ public class MigrationInfoImpl implements MigrationInfo {
             return 0;
         }
 
-        // One versioned and one repeatable migration: versioned migration goes before repeatable one
         if (getVersion() != null) {
             return -1;
         }
@@ -429,7 +355,6 @@ public class MigrationInfoImpl implements MigrationInfo {
             return 1;
         }
 
-        // Two repeatable migrations: sort by description
         return getDescription().compareTo(o.getDescription());
     }
 

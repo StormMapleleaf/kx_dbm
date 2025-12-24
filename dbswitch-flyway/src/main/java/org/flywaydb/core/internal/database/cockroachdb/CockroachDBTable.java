@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.cockroachdb;
 
 import org.flywaydb.core.api.FlywayException;
@@ -27,30 +12,12 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.Random;
 
-/**
- * CockroachDB-specific table.
- *
- * Note that CockroachDB doesn't support table locks. We therefore use a row in the schema history as a lock indicator;
- * if another process ahs inserted such a row we wait (potentially indefinitely) for it to be removed before
- * carrying out a migration.
- */
 public class CockroachDBTable extends Table<CockroachDBDatabase, CockroachDBSchema> {
     private static final Log LOG = LogFactory.getLog(CockroachDBTable.class);
 
-    /**
-     * A random string, used as an ID of this instance of Flyway.
-     */
-    private String tableLockString = RandomStringGenerator.getNextRandomString();
+        private String tableLockString = RandomStringGenerator.getNextRandomString();
 
-    /**
-     * Creates a new CockroachDB table.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param schema       The schema this table lives in.
-     * @param name         The name of the table.
-     */
-    CockroachDBTable(JdbcTemplate jdbcTemplate, CockroachDBDatabase database, CockroachDBSchema schema, String name) {
+        CockroachDBTable(JdbcTemplate jdbcTemplate, CockroachDBDatabase database, CockroachDBSchema schema, String name) {
         super(jdbcTemplate, database, schema, name);
     }
 

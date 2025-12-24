@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.scanner.classpath;
 
 import org.flywaydb.core.api.FlywayException;
@@ -26,20 +11,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * OSGi specific scanner that performs the migration search in
- * the current bundle's classpath.
- *
- * <p>
- * The resources that this scanner returns can only be loaded if
- * Flyway's ClassLoader has access to the bundle that contains the migrations.
- * </p>
- */
 public class OsgiClassPathLocationScanner implements ClassPathLocationScanner {
-    // Equinox "host" resource url pattern starts with bundleId, which is long according osgi core specification
     private static final Pattern EQUINOX_BUNDLE_ID_PATTERN = Pattern.compile("^\\d+");
 
-    // #2198: Felix 6.0+ uses a "host" like e3a74e5a-af1f-46f0-bb53-bc5fee1b4a57_145.0 instead, where 145 is the bundle id.
     private static final Pattern FELIX_BUNDLE_ID_PATTERN = Pattern.compile("^[0-9a-f\\-]{36}_(\\d+)\\.\\d+");
 
     public Set<String> findResourceNames(String location, URL locationUrl) {

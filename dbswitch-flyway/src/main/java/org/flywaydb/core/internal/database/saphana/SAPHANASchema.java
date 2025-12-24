@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.saphana;
 
 import org.flywaydb.core.internal.jdbc.JdbcTemplate;
@@ -23,18 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * SAP HANA implementation of Schema.
- */
 public class SAPHANASchema extends Schema<SAPHANADatabase, SAPHANATable> {
-    /**
-     * Creates a new SAP HANA schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param name         The name of the schema.
-     */
-    SAPHANASchema(JdbcTemplate jdbcTemplate, SAPHANADatabase database, String name) {
+        SAPHANASchema(JdbcTemplate jdbcTemplate, SAPHANADatabase database, String name) {
         super(jdbcTemplate, database, name);
     }
 
@@ -82,14 +57,7 @@ public class SAPHANASchema extends Schema<SAPHANADatabase, SAPHANATable> {
         }
     }
 
-    /**
-     * Generates DROP statements for this type of object in this schema.
-     *
-     * @param objectType The type of object.
-     * @return The drop statements.
-     * @throws SQLException when the statements could not be generated.
-     */
-    private List<String> generateDropStatements(String objectType) throws SQLException {
+        private List<String> generateDropStatements(String objectType) throws SQLException {
         List<String> dropStatements = new ArrayList<>();
         List<String> dbObjects = getDbObjects(objectType);
         for (String dbObject : dbObjects) {

@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.postgresql;
 
 import java.sql.PreparedStatement;
@@ -27,9 +12,6 @@ import org.flywaydb.core.internal.database.base.Table;
 import org.flywaydb.core.internal.exception.FlywaySqlException;
 import org.flywaydb.core.internal.util.StringUtils;
 
-/**
- * PostgreSQL connection.
- */
 public class PostgreSQLConnection extends Connection<PostgreSQLDatabase> {
     private final String originalRole;
 
@@ -43,12 +25,6 @@ public class PostgreSQLConnection extends Connection<PostgreSQLDatabase> {
         }
     }
 
-//    @Override
-//    protected void doRestoreOriginalState() throws SQLException {
-//        // Reset the role to its original value in case a migration or callback changed it
-//        // 由于 postgresql 和 高斯 之间对设置 role 语法之间的差异，高斯数据库 set 角色时还需要带上密码，而postgresql则不用
-//        jdbcTemplate.execute("SET ROLE '" + originalRole + "'");
-//    }
 
     @Override
     public Schema doGetCurrentSchema() throws SQLException {

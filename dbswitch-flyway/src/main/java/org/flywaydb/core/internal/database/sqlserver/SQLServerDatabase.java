@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.sqlserver;
 
 import org.flywaydb.core.api.MigrationVersion;
@@ -28,16 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * SQL Server database.
- */
 public class SQLServerDatabase extends Database<SQLServerConnection> {
-    /**
-     * Creates a new instance.
-     *
-     * @param configuration The Flyway configuration.
-     */
-    public SQLServerDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory
+        public SQLServerDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory
 
 
 
@@ -157,13 +134,7 @@ public class SQLServerDatabase extends Database<SQLServerConnection> {
         return "0";
     }
 
-    /**
-     * Escapes this identifier, so it can be safely used in sql queries.
-     *
-     * @param identifier The identifier to escaped.
-     * @return The escaped version.
-     */
-    private String escapeIdentifier(String identifier) {
+        private String escapeIdentifier(String identifier) {
         return StringUtils.replaceAll(identifier, "]", "]]");
     }
 
@@ -206,50 +177,30 @@ public class SQLServerDatabase extends Database<SQLServerConnection> {
                 "GO\n";
     }
 
-    /**
-     * @return Whether this is a SQL Azure database.
-     */
-    boolean isAzure() {
+        boolean isAzure() {
         return getMainConnection().isAzureConnection();
     }
 
-    /**
-     * @return The database engine edition.
-     */
-    SQLServerEngineEdition getEngineEdition() {
+        SQLServerEngineEdition getEngineEdition() {
         return getMainConnection().getEngineEdition();
     }
 
-    /**
-     * @return Whether this database supports temporal tables
-     */
-    boolean supportsTemporalTables() {
+        boolean supportsTemporalTables() {
         // SQL Server 2016+, or Azure  (which has different versioning)
         return isAzure() || getVersion().isAtLeast("13.0");
     }
 
-    /**
-     * @return Whether this database supports partitions
-     */
-    boolean supportsPartitions() {
+        boolean supportsPartitions() {
         return isAzure()
                 || SQLServerEngineEdition.ENTERPRISE.equals(getEngineEdition())
                 || getVersion().isAtLeast("13");
     }
 
-    /**
-     * @return Whether this database supports sequences
-     */
-    boolean supportsSequences() {
+        boolean supportsSequences() {
         return getVersion().isAtLeast("11");
     }
 
-    /**
-     * Cleans all the objects in this database that need to be done after cleaning schemas.
-     *
-     * @throws SQLException when the clean failed.
-     */
-    @Override
+        @Override
     protected void doCleanPostSchemas() throws SQLException {
         if (supportsPartitions()) {
             for (String statement : cleanPartitionSchemes()) {
@@ -262,13 +213,7 @@ public class SQLServerDatabase extends Database<SQLServerConnection> {
         }
     }
 
-    /**
-     * Cleans the Partition Schemes in this database.
-     *
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanPartitionSchemes() throws SQLException {
+        private List<String> cleanPartitionSchemes() throws SQLException {
         List<String> partitionSchemeNames =
                 jdbcTemplate.queryForStringList("SELECT name FROM sys.partition_schemes");
         List<String> statements = new ArrayList<>();
@@ -278,13 +223,7 @@ public class SQLServerDatabase extends Database<SQLServerConnection> {
         return statements;
     }
 
-    /**
-     * Cleans the Partition Functions in this database.
-     *
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanPartitionFunctions() throws SQLException {
+        private List<String> cleanPartitionFunctions() throws SQLException {
         List<String> partitionFunctionNames =
                 jdbcTemplate.queryForStringList("SELECT name FROM sys.partition_functions");
         List<String> statements = new ArrayList<>();

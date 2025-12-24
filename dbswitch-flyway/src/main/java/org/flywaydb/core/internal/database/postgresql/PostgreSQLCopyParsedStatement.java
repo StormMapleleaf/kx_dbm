@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.postgresql;
 
 import org.flywaydb.core.api.FlywayException;
@@ -31,29 +16,19 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * A PostgreSQL COPY FROM STDIN statement.
- */
 public class PostgreSQLCopyParsedStatement extends ParsedSqlStatement {
-    /**
-     * Delimiter of COPY statements.
-     */
-    private static final Delimiter COPY_DELIMITER = new Delimiter("\\.", true);
+        private static final Delimiter COPY_DELIMITER = new Delimiter("\\.", true);
 
     private final String copyData;
 
-    /**
-     * Creates a new PostgreSQL COPY ... FROM STDIN statement.
-     */
-    public PostgreSQLCopyParsedStatement(int pos, int line, int col, String sql, String copyData) {
+        public PostgreSQLCopyParsedStatement(int pos, int line, int col, String sql, String copyData) {
         super(pos, line, col, sql, COPY_DELIMITER, true);
         this.copyData = copyData;
     }
 
     @Override
     public Results execute(JdbcTemplate jdbcTemplate) {
-        // #2355: Use reflection to ensure this works in cases where the PostgreSQL driver classes were loaded in a
-        //        child URLClassLoader instead of the system classloader.
+
         Object baseConnection;
         Object copyManager;
         Method copyManagerCopyInMethod;

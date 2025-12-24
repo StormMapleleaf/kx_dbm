@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.jdbc;
 
 import org.flywaydb.core.api.FlywayException;
@@ -24,9 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-/**
- * The various types of databases Flyway supports.
- */
 @SuppressWarnings("SqlDialectInspection")
 public enum DatabaseType {
     COCKROACHDB("CockroachDB", Types.NULL, false),
@@ -35,7 +17,7 @@ public enum DatabaseType {
 
 
     DERBY("Derby", Types.VARCHAR, true),
-    FIREBIRD("Firebird", Types.NULL, true), // TODO does it support read only transactions?
+    FIREBIRD("Firebird", Types.NULL, true), 
     H2("H2", Types.VARCHAR, true),
     HSQLDB("HSQLDB", Types.VARCHAR, true),
     INFORMIX("Informix", Types.VARCHAR, true),
@@ -90,18 +72,13 @@ public enum DatabaseType {
             return SQLSERVER;
         }
 
-        // #2289: MariaDB JDBC driver 2.4.0 and newer report MariaDB as "MariaDB"
         if (databaseProductName.startsWith("MariaDB")
-                // Older versions of the driver report MariaDB as "MySQL"
                 || (databaseProductName.contains("MySQL") && databaseProductVersion.contains("MariaDB"))
-                // Azure Database For MariaDB reports as "MySQL"
                 || (databaseProductName.contains("MySQL") && getSelectVersionOutput(connection).contains("MariaDB"))) {
             return MARIADB;
         }
 
         if (databaseProductName.contains("MySQL")) {
-            // Google Cloud SQL returns different names depending on the environment and the SDK version.
-            //   ex.: Google SQL Service/MySQL
             return MYSQL;
         }
         if (databaseProductName.startsWith("Oracle")) {
@@ -146,14 +123,7 @@ public enum DatabaseType {
         throw new FlywayException("Unsupported Database: " + databaseProductName);
     }
 
-    /**
-     * Retrieves the version string for this connection as described by SELECT VERSION(), which may differ
-     * from the connection metadata.
-     *
-     * @param connection The connection to use.
-     * @return The version string.
-     */
-    public static String getSelectVersionOutput(Connection connection) {
+        public static String getSelectVersionOutput(Connection connection) {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
@@ -175,17 +145,11 @@ public enum DatabaseType {
         return result;
     }
 
-    /**
-     * @return The human-readable name for this database.
-     */
-    public String getName() {
+        public String getName() {
         return name;
     }
 
-    /**
-     * @return The JDBC type used to represent {@code null} in prepared statements.
-     */
-    public int getNullType() {
+        public int getNullType() {
         return nullType;
     }
 

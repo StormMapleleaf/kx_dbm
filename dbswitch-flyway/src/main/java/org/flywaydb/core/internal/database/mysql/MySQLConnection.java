@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.mysql;
 
 import org.flywaydb.core.api.logging.Log;
@@ -28,9 +13,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-/**
- * MySQL connection.
- */
 public class MySQLConnection extends Connection<MySQLDatabase> {
     private static final Log LOG = LogFactory.getLog(MySQLConnection.class);
 
@@ -65,7 +47,6 @@ public class MySQLConnection extends Connection<MySQLDatabase> {
         }
     }
 
-    // #2215: ensure the database is recent enough and the current user has the necessary SELECT grant
     private boolean hasUserVariableResetCapability() {
 
 
@@ -98,7 +79,6 @@ public class MySQLConnection extends Connection<MySQLDatabase> {
                 originalForeignKeyChecks, originalSqlSafeUpdates);
     }
 
-    // #2197: prevent user-defined variables from leaking beyond the scope of a migration
     private void resetUserVariables() throws SQLException {
         if (canResetUserVariables) {
             List<String> userVariables = jdbcTemplate.queryForStringList(userVariablesQuery);
@@ -129,7 +109,6 @@ public class MySQLConnection extends Connection<MySQLDatabase> {
             jdbcTemplate.getConnection().setCatalog(schema);
         } else {
             try {
-                // Weird hack to switch back to no database selected...
                 String newDb = database.quote(UUID.randomUUID().toString());
                 jdbcTemplate.execute("CREATE SCHEMA " + newDb);
                 jdbcTemplate.execute("USE " + newDb);
@@ -144,7 +123,6 @@ public class MySQLConnection extends Connection<MySQLDatabase> {
     protected Schema doGetCurrentSchema() throws SQLException {
         String schemaName = getCurrentSchemaNameOrSearchPath();
 
-        // #2206: MySQL and MariaDB can have URLs where no current schema is set, so we must handle this case explicitly.
         return schemaName == null ? null : getSchema(schemaName);
     }
 

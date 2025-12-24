@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.base;
 
 import org.flywaydb.core.api.logging.Log;
@@ -26,53 +11,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a database schema.
- */
 public abstract class Schema<D extends Database, T extends Table> {
     private static final Log LOG = LogFactory.getLog(Schema.class);
 
-    /**
-     * The Jdbc Template for communicating with the DB.
-     */
-    protected final JdbcTemplate jdbcTemplate;
+        protected final JdbcTemplate jdbcTemplate;
 
-    /**
-     * The database-specific support.
-     */
-    protected final D database;
+        protected final D database;
 
-    /**
-     * The name of the schema.
-     */
-    protected final String name;
+        protected final String name;
 
-    /**
-     * Creates a new schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param name         The name of the schema.
-     */
-    public Schema(JdbcTemplate jdbcTemplate, D database, String name) {
+        public Schema(JdbcTemplate jdbcTemplate, D database, String name) {
         this.jdbcTemplate = jdbcTemplate;
         this.database = database;
         this.name = name;
     }
 
-    /**
-     * @return The name of the schema, quoted for the database it lives in.
-     */
-    public String getName() {
+        public String getName() {
         return name;
     }
 
-    /**
-     * Checks whether this schema exists.
-     *
-     * @return {@code true} if it does, {@code false} if not.
-     */
-    public boolean exists() {
+        public boolean exists() {
         try {
             return doExists();
         } catch (SQLException e) {
@@ -80,20 +38,9 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Checks whether this schema exists.
-     *
-     * @return {@code true} if it does, {@code false} if not.
-     * @throws SQLException when the check failed.
-     */
-    protected abstract boolean doExists() throws SQLException;
+        protected abstract boolean doExists() throws SQLException;
 
-    /**
-     * Checks whether this schema is empty.
-     *
-     * @return {@code true} if it is, {@code false} if isn't.
-     */
-    public boolean empty() {
+        public boolean empty() {
         try {
             return doEmpty();
         } catch (SQLException e) {
@@ -101,18 +48,9 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Checks whether this schema is empty.
-     *
-     * @return {@code true} if it is, {@code false} if isn't.
-     * @throws SQLException when the check failed.
-     */
-    protected abstract boolean doEmpty() throws SQLException;
+        protected abstract boolean doEmpty() throws SQLException;
 
-    /**
-     * Creates this schema in the database.
-     */
-    public void create() {
+        public void create() {
         try {
             LOG.info("Creating schema " + this + " ...");
             doCreate();
@@ -121,17 +59,9 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Creates this schema in the database.
-     *
-     * @throws SQLException when the creation failed.
-     */
-    protected abstract void doCreate() throws SQLException;
+        protected abstract void doCreate() throws SQLException;
 
-    /**
-     * Drops this schema from the database.
-     */
-    public void drop() {
+        public void drop() {
         try {
             doDrop();
         } catch (SQLException e) {
@@ -139,17 +69,9 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Drops this schema from the database.
-     *
-     * @throws SQLException when the drop failed.
-     */
-    protected abstract void doDrop() throws SQLException;
+        protected abstract void doDrop() throws SQLException;
 
-    /**
-     * Cleans all the objects in this schema.
-     */
-    public void clean() {
+        public void clean() {
         try {
             doClean();
         } catch (SQLException e) {
@@ -157,19 +79,9 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Cleans all the objects in this schema.
-     *
-     * @throws SQLException when the clean failed.
-     */
-    protected abstract void doClean() throws SQLException;
+        protected abstract void doClean() throws SQLException;
 
-    /**
-     * Retrieves all the tables in this schema.
-     *
-     * @return All tables in the schema.
-     */
-    public T[] allTables() {
+        public T[] allTables() {
         try {
             return doAllTables();
         } catch (SQLException e) {
@@ -177,20 +89,9 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Retrieves all the tables in this schema.
-     *
-     * @return All tables in the schema.
-     * @throws SQLException when the retrieval failed.
-     */
-    protected abstract T[] doAllTables() throws SQLException;
+        protected abstract T[] doAllTables() throws SQLException;
 
-    /**
-     * Retrieves all the types in this schema.
-     *
-     * @return All types in the schema.
-     */
-    protected final Type[] allTypes() {
+        protected final Type[] allTypes() {
         ResultSet resultSet = null;
         try {
             resultSet = database.jdbcMetaData.getUDTs(null, name, null, null);
@@ -208,40 +109,17 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Retrieves the type with this name in this schema.
-     *
-     * @param typeName The name of the type.
-     * @return The type.
-     */
-    protected Type getType(String typeName) {
+        protected Type getType(String typeName) {
         return null;
     }
 
-    /**
-     * Retrieves the table with this name in this schema.
-     *
-     * @param tableName The name of the table.
-     * @return The table.
-     */
-    public abstract Table getTable(String tableName);
+        public abstract Table getTable(String tableName);
 
-    /**
-     * Retrieves the function with this name in this schema.
-     *
-     * @param functionName The name of the function.
-     * @return The function.
-     */
-    public Function getFunction(String functionName, String... args) {
+        public Function getFunction(String functionName, String... args) {
         throw new UnsupportedOperationException("getFunction()");
     }
 
-    /**
-     * Retrieves all the types in this schema.
-     *
-     * @return All types in the schema.
-     */
-    protected final Function[] allFunctions() {
+        protected final Function[] allFunctions() {
         try {
             return doAllFunctions();
         } catch (SQLException e) {
@@ -249,20 +127,11 @@ public abstract class Schema<D extends Database, T extends Table> {
         }
     }
 
-    /**
-     * Retrieves all the functions in this schema.
-     *
-     * @return All functions in the schema.
-     * @throws SQLException when the retrieval failed.
-     */
-    protected Function[] doAllFunctions() throws SQLException {
+        protected Function[] doAllFunctions() throws SQLException {
         return new Function[0];
     }
 
-    /**
-     * @return The quoted name of the schema.
-     */
-    @Override
+        @Override
     public String toString() {
         return database.quote(name);
     }

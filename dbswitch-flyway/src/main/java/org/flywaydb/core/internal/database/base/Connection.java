@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.base;
 
 import org.flywaydb.core.internal.exception.FlywaySqlException;
@@ -29,15 +14,9 @@ public abstract class Connection<D extends Database> implements Closeable {
     protected final JdbcTemplate jdbcTemplate;
     private final java.sql.Connection jdbcConnection;
 
-    /**
-     * The original schema of the connection that should be restored later.
-     */
-    protected final String originalSchemaNameOrSearchPath;
+        protected final String originalSchemaNameOrSearchPath;
 
-    /**
-     * The original autocommit state of the connection.
-     */
-    private final boolean originalAutoCommit;
+        private final boolean originalAutoCommit;
 
     protected Connection(D database, java.sql.Connection connection) {
         this.database = database;
@@ -60,18 +39,9 @@ public abstract class Connection<D extends Database> implements Closeable {
         }
     }
 
-    /**
-     * Retrieves the current schema.
-     *
-     * @return The current schema for this connection.
-     * @throws SQLException when the current schema could not be retrieved.
-     */
-    protected abstract String getCurrentSchemaNameOrSearchPath() throws SQLException;
+        protected abstract String getCurrentSchemaNameOrSearchPath() throws SQLException;
 
-    /**
-     * @return The current schema for this connection.
-     */
-    public final Schema getCurrentSchema() {
+        public final Schema getCurrentSchema() {
         try {
             return doGetCurrentSchema();
         } catch (SQLException e) {
@@ -83,20 +53,9 @@ public abstract class Connection<D extends Database> implements Closeable {
         return getSchema(getCurrentSchemaNameOrSearchPath());
     }
 
-    /**
-     * Retrieves the schema with this name in the database.
-     *
-     * @param name The name of the schema.
-     * @return The schema.
-     */
-    public abstract Schema getSchema(String name);
+        public abstract Schema getSchema(String name);
 
-    /**
-     * Sets the current schema to this schema.
-     *
-     * @param schema The new current schema for this connection.
-     */
-    public void changeCurrentSchemaTo(Schema schema) {
+        public void changeCurrentSchemaTo(Schema schema) {
         try {
             if (!schema.exists()) {
                 return;
@@ -107,23 +66,10 @@ public abstract class Connection<D extends Database> implements Closeable {
         }
     }
 
-    /**
-     * Sets the current schema to this schema.
-     *
-     * @param schemaNameOrSearchPath The new current schema for this connection.
-     * @throws SQLException when the current schema could not be set.
-     */
-    protected void doChangeCurrentSchemaOrSearchPathTo(String schemaNameOrSearchPath) throws SQLException {
+        protected void doChangeCurrentSchemaOrSearchPathTo(String schemaNameOrSearchPath) throws SQLException {
     }
 
-    /**
-     * Locks this table and executes this callable.
-     *
-     * @param table    The table to lock.
-     * @param callable The callable to execute.
-     * @return The result of the callable.
-     */
-    public <T> T lock(final Table table, final Callable<T> callable) {
+        public <T> T lock(final Table table, final Callable<T> callable) {
         return ExecutionTemplateFactory
                 .createTableExclusiveExecutionTemplate(jdbcTemplate.getConnection(), table, database)
                 .execute(callable);
@@ -155,10 +101,7 @@ public abstract class Connection<D extends Database> implements Closeable {
         });
     }
 
-    /**
-     * Restores this connection to its original state.
-     */
-    public final void restoreOriginalState() {
+        public final void restoreOriginalState() {
         try {
             doRestoreOriginalState();
         } catch (SQLException e) {
@@ -166,10 +109,7 @@ public abstract class Connection<D extends Database> implements Closeable {
         }
     }
 
-    /**
-     * Restores this connection to its original auto-commit setting.
-     */
-    private void restoreOriginalAutoCommit() {
+        private void restoreOriginalAutoCommit() {
         try {
             jdbcConnection.setAutoCommit(originalAutoCommit);
         } catch (SQLException e) {
@@ -177,10 +117,7 @@ public abstract class Connection<D extends Database> implements Closeable {
         }
     }
 
-    /**
-     * Restores this connection to its original state.
-     */
-    protected void doRestoreOriginalState() throws SQLException {
+        protected void doRestoreOriginalState() throws SQLException {
     }
 
     public final java.sql.Connection getJdbcConnection() {

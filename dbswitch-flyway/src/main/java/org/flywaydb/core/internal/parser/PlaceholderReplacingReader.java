@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.parser;
 
 import org.flywaydb.core.api.FlywayException;
@@ -29,11 +14,7 @@ public class PlaceholderReplacingReader extends FilterReader {
     private final String suffix;
     private final Map<String, String> placeholders;
 
-    /**
-     * The number of chars by which to increase the read-ahead limit to factor in the difference in length between
-     * placeholders (with prefix and suffix) and their replacements.
-     */
-    private final int readAheadLimitAdjustment;
+        private final int readAheadLimitAdjustment;
 
     private final StringBuilder buffer = new StringBuilder();
     private String markBuffer;
@@ -134,7 +115,6 @@ public class PlaceholderReplacingReader extends FilterReader {
 
             replacement = placeholders.get(placeholder);
 
-            // Empty placeholder value -> move to the next character
             if (replacement == null || replacement.length() == 0) {
                 replacement = null;
                 return read();

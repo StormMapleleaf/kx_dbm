@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.jdbc;
 
 import org.flywaydb.core.api.FlywayException;
@@ -28,9 +13,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-/**
- * Utility class for dealing with jdbc connections.
- */
 public class JdbcConnectionFactory {
     private static final Log LOG = LogFactory.getLog(JdbcConnectionFactory.class);
 
@@ -59,17 +41,7 @@ public class JdbcConnectionFactory {
 
 
 
-    /**
-     * Creates a new JDBC connection factory. This automatically opens a first connection which can be obtained via
-     * a call to getConnection and which must be closed again to avoid leaking it.
-     *
-     * @param dataSource                 The dataSource to obtain the connection from.
-     * @param connectRetries             The maximum number of retries when attempting to connect to the database.
-
-
-
-     */
-    public JdbcConnectionFactory(DataSource dataSource, int connectRetries
+        public JdbcConnectionFactory(DataSource dataSource, int connectRetries
 
 
 
@@ -153,17 +125,11 @@ public class JdbcConnectionFactory {
 
 
 
-    /**
-     * @return The type of database this is.
-     */
-    public DatabaseType getDatabaseType() {
+        public DatabaseType getDatabaseType() {
         return databaseType;
     }
 
-    /**
-     * @return The JDBC url for these connections.
-     */
-    public String getJdbcUrl() {
+        public String getJdbcUrl() {
         return jdbcUrl;
     }
 
@@ -175,13 +141,7 @@ public class JdbcConnectionFactory {
         return productName;
     }
 
-    /**
-     * Opens a new connection from this dataSource.
-     *
-     * @return The new connection.
-     * @throws FlywayException when the connection could not be opened.
-     */
-    public Connection openConnection() throws FlywayException {
+        public Connection openConnection() throws FlywayException {
         Connection connection =
                 firstConnection == null ? JdbcUtils.openConnection(dataSource, connectRetries) : firstConnection;
         firstConnection = null;
@@ -208,13 +168,7 @@ public class JdbcConnectionFactory {
         void initialize(JdbcConnectionFactory jdbcConnectionFactory, Connection connection);
     }
 
-    /**
-     * Retrieves the Jdbc Url for this connection.
-     *
-     * @param databaseMetaData The Jdbc connection metadata.
-     * @return The Jdbc Url.
-     */
-
+    
     private static String getJdbcUrl(DatabaseMetaData databaseMetaData) {
         String url;
         try {
@@ -228,13 +182,7 @@ public class JdbcConnectionFactory {
         return filterUrl(url);
     }
 
-    /**
-     * Filter out parameters to avoid including passwords, etc.
-     *
-     * @param url The raw url.
-     * @return The filtered url.
-     */
-    static String filterUrl(String url) {
+        static String filterUrl(String url) {
         int questionMark = url.indexOf("?");
         if (questionMark >= 0 && !url.contains("?databaseName=")) {
             url = url.substring(0, questionMark);

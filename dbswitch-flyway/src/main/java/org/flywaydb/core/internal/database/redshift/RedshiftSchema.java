@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.redshift;
 
 import org.flywaydb.core.internal.jdbc.JdbcTemplate;
@@ -25,18 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * PostgreSQL implementation of Schema.
- */
 public class RedshiftSchema extends Schema<RedshiftDatabase, RedshiftTable> {
-    /**
-     * Creates a new PostgreSQL schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database    The database-specific support.
-     * @param name         The name of the schema.
-     */
-    RedshiftSchema(JdbcTemplate jdbcTemplate, RedshiftDatabase database, String name) {
+        RedshiftSchema(JdbcTemplate jdbcTemplate, RedshiftDatabase database, String name) {
         super(jdbcTemplate, database, name);
     }
 
@@ -84,22 +59,11 @@ public class RedshiftSchema extends Schema<RedshiftDatabase, RedshiftTable> {
         }
     }
 
-    /**
-     * Generates the statements for dropping the routines in this schema.
-     *
-     * @kind The kind of object: f for functions, a for aggregate functions, p for procedures
-     * @objType The type of object for the DROP statement; FUNCTION or PROCEDURE
-     * @cascade CASCADE if required, blank if not.
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> generateDropStatementsForRoutines(char kind, String objType, String cascade) throws SQLException {
+        private List<String> generateDropStatementsForRoutines(char kind, String objType, String cascade) throws SQLException {
         List<Map<String, String>> rows =
                 jdbcTemplate.queryForList(
-                // Search for all functions
                         "SELECT proname, oidvectortypes(proargtypes) AS args "
                                 + "FROM pg_proc_info INNER JOIN pg_namespace ns ON (pg_proc_info.pronamespace = ns.oid) "
-                // that don't depend on an extension
                         + "LEFT JOIN pg_depend dep ON dep.objid = pg_proc_info.prooid AND dep.deptype = 'e' "
                         + "WHERE pg_proc_info.proisagg = false AND pg_proc_info.prokind = '" + kind + "' "
                         + "AND ns.nspname = ? AND dep.objid IS NULL",
@@ -113,18 +77,10 @@ public class RedshiftSchema extends Schema<RedshiftDatabase, RedshiftTable> {
         return statements;
     }
 
-    /**
-     * Generates the statements for dropping the views in this schema.
-     *
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> generateDropStatementsForViews() throws SQLException {
+        private List<String> generateDropStatementsForViews() throws SQLException {
         List<String> viewNames =
                 jdbcTemplate.queryForStringList(
-                // Search for all views
                 "SELECT relname FROM pg_catalog.pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace" +
-                        // that don't depend on an extension
                         " LEFT JOIN pg_depend dep ON dep.objid = c.oid AND dep.deptype = 'e'" +
                         " WHERE c.relkind = 'v' AND  n.nspname = ? AND dep.objid IS NULL",
                 name);
@@ -140,15 +96,11 @@ public class RedshiftSchema extends Schema<RedshiftDatabase, RedshiftTable> {
     protected RedshiftTable[] doAllTables() throws SQLException {
         List<String> tableNames =
                 jdbcTemplate.queryForStringList(
-                        //Search for all the table names
                         "SELECT t.table_name FROM information_schema.tables t" +
-                                //in this schema
                                 " WHERE table_schema=?" +
-                                //that are real tables (as opposed to views)
                                 " AND table_type='BASE TABLE'",
                         name
                 );
-        //Views and child tables are excluded as they are dropped with the parent table when using cascade.
 
         RedshiftTable[] tables = new RedshiftTable[tableNames.size()];
         for (int i = 0; i < tableNames.size(); i++) {

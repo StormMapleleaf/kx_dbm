@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.sqlscript;
 
 import org.flywaydb.core.api.FlywayException;
@@ -31,22 +16,13 @@ import java.util.TreeSet;
 public class ParserSqlScript implements SqlScript {
     private static final Log LOG = LogFactory.getLog(ParserSqlScript.class);
 
-    /**
-     * The sql statements contained in this script.
-     */
-    protected final List<SqlStatement> sqlStatements = new ArrayList<>();
+        protected final List<SqlStatement> sqlStatements = new ArrayList<>();
 
     private int sqlStatementCount;
 
-    /**
-     * Whether this SQL script contains at least one non-transactional statement.
-     */
-    private boolean nonTransactionalStatementFound;
+        private boolean nonTransactionalStatementFound;
 
-    /**
-     * The resource containing the statements.
-     */
-    protected final LoadableResource resource;
+        protected final LoadableResource resource;
 
     private final SqlScriptMetadata metadata;
     protected final Parser parser;
@@ -58,14 +34,7 @@ public class ParserSqlScript implements SqlScript {
 
 
 
-    /**
-     * Creates a new sql script from this source.
-     *
-     * @param resource         The sql script resource.
-     * @param metadataResource The sql script metadata resource.
-     * @param mixed            Whether to allow mixing transactional and non-transactional statements within the same migration.
-     */
-    public ParserSqlScript(Parser parser, LoadableResource resource, LoadableResource metadataResource, boolean mixed) {
+        public ParserSqlScript(Parser parser, LoadableResource resource, LoadableResource metadataResource, boolean mixed) {
         this.resource = resource;
         this.metadata = SqlScriptMetadata.fromResource(metadataResource);
         this.parser = parser;

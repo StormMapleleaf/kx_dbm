@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.jdbc;
 
 import org.flywaydb.core.api.FlywayException;
@@ -28,28 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Utility class for dealing with jdbc connections.
- */
 public class JdbcUtils {
     private static final Log LOG = LogFactory.getLog(JdbcUtils.class);
 
-    /**
-     * Prevents instantiation.
-     */
-    private JdbcUtils() {
-        //Do nothing
+        private JdbcUtils() {
     }
 
-    /**
-     * Opens a new connection from this dataSource.
-     *
-     * @param dataSource     The dataSource to obtain the connection from.
-     * @param connectRetries The maximum number of retries when attempting to connect to the database.
-     * @return The new connection.
-     * @throws FlywayException when the connection could not be opened.
-     */
-    public static Connection openConnection(DataSource dataSource, int connectRetries) throws FlywayException {
+        public static Connection openConnection(DataSource dataSource, int connectRetries) throws FlywayException {
         int retries = 0;
         while (true) {
             try {
@@ -88,12 +58,7 @@ public class JdbcUtils {
         return " (" + driverDataSource.getUrl() + ") for user '" + driverDataSource.getUser() + "'";
     }
 
-    /**
-     * Safely closes this connection. This method never fails.
-     *
-     * @param connection The connection to close.
-     */
-    public static void closeConnection(Connection connection) {
+        public static void closeConnection(Connection connection) {
         if (connection == null) {
             return;
         }
@@ -105,12 +70,7 @@ public class JdbcUtils {
         }
     }
 
-    /**
-     * Safely closes this statement. This method never fails.
-     *
-     * @param statement The statement to close.
-     */
-    public static void closeStatement(Statement statement) {
+        public static void closeStatement(Statement statement) {
         if (statement == null) {
             return;
         }
@@ -122,12 +82,7 @@ public class JdbcUtils {
         }
     }
 
-    /**
-     * Safely closes this resultSet. This method never fails.
-     *
-     * @param resultSet The resultSet to close.
-     */
-    public static void closeResultSet(ResultSet resultSet) {
+        public static void closeResultSet(ResultSet resultSet) {
         if (resultSet == null) {
             return;
         }
@@ -139,13 +94,7 @@ public class JdbcUtils {
         }
     }
 
-    /**
-     * Retrieves the database metadata for this connection.
-     *
-     * @param connection The connection to use to query the database.
-     * @return The database metadata.
-     */
-    public static DatabaseMetaData getDatabaseMetaData(Connection connection) {
+        public static DatabaseMetaData getDatabaseMetaData(Connection connection) {
         DatabaseMetaData databaseMetaData;
         try {
             databaseMetaData = connection.getMetaData();
@@ -158,13 +107,7 @@ public class JdbcUtils {
         return databaseMetaData;
     }
 
-    /**
-     * Retrieves the name of the database product.
-     *
-     * @param databaseMetaData The connection metadata to use to query the database.
-     * @return The name of the database product. Ex.: Oracle, MySQL, ...
-     */
-    public static String getDatabaseProductName(DatabaseMetaData databaseMetaData) {
+        public static String getDatabaseProductName(DatabaseMetaData databaseMetaData) {
         try {
             String databaseProductName = databaseMetaData.getDatabaseProductName();
             if (databaseProductName == null) {
@@ -180,13 +123,7 @@ public class JdbcUtils {
         }
     }
 
-    /**
-     * Retrieves the version of the database product.
-     *
-     * @param databaseMetaData The connection metadata to use to query the database.
-     * @return The version of the database product. Ex.: MariaDB 10.3, ...
-     */
-    public static String getDatabaseProductVersion(DatabaseMetaData databaseMetaData) {
+        public static String getDatabaseProductVersion(DatabaseMetaData databaseMetaData) {
         try {
             return databaseMetaData.getDatabaseProductVersion();
         } catch (SQLException e) {
@@ -194,13 +131,7 @@ public class JdbcUtils {
         }
     }
 
-    /**
-     * Retrieves the name of the database driver.
-     *
-     * @param databaseMetaData The connection metadata to use to query the database.
-     * @return The name of the database driver. Ex.: MariaDB JDBC driver, ...
-     */
-    public static String getDriverName(DatabaseMetaData databaseMetaData) {
+        public static String getDriverName(DatabaseMetaData databaseMetaData) {
         try {
             return databaseMetaData.getDriverName();
         } catch (SQLException e) {

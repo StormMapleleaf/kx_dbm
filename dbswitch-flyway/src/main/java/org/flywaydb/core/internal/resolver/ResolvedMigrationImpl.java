@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.resolver;
 
 import org.flywaydb.core.api.MigrationType;
@@ -22,64 +7,24 @@ import org.flywaydb.core.api.resolver.ResolvedMigration;
 
 import java.util.Objects;
 
-/**
- * A migration available on the classpath.
- */
 public class ResolvedMigrationImpl implements ResolvedMigration {
-    /**
-     * The target version of this migration.
-     */
-    private final MigrationVersion version;
+        private final MigrationVersion version;
 
-    /**
-     * The description of the migration.
-     */
-    private final String description;
+        private final String description;
 
-    /**
-     * The name of the script to execute for this migration, relative to its classpath location.
-     */
-    private final String script;
+        private final String script;
 
-    /**
-     * The equivalent checksum of the migration. For versioned migrations, this is the same as the checksum.
-     * For repeatable migrations, it is the checksum calculated prior to placeholder replacement.
-     */
-    private final Integer equivalentChecksum;
+        private final Integer equivalentChecksum;
 
-    /**
-     * The checksum of the migration.
-     */
-    private final Integer checksum;
+        private final Integer checksum;
 
-    /**
-     * The type of migration (INIT, SQL, ...)
-     */
-    private final MigrationType type;
+        private final MigrationType type;
 
-    /**
-     * The physical location of the migration on disk.
-     */
-    private final String physicalLocation;
+        private final String physicalLocation;
 
-    /**
-     * The executor to run this migration.
-     */
-    private final MigrationExecutor executor;
+        private final MigrationExecutor executor;
 
-    /**
-     * Creates a new resolved migration.
-     *
-     * @param version               The target version of this migration.
-     * @param description           The description of the migration.
-     * @param script                The name of the script to execute for this migration, relative to its classpath location.
-     * @param checksum              The checksum of the migration.
-     * @param equivalentChecksum    The equivalent checksum of the migration.
-     * @param type                  The type of migration (SQL, ...)
-     * @param physicalLocation      The physical location of the migration on disk.
-     * @param executor              The executor to run this migration.
-     */
-    public ResolvedMigrationImpl(MigrationVersion version, String description, String script,
+        public ResolvedMigrationImpl(MigrationVersion version, String description, String script,
                                  Integer checksum, Integer equivalentChecksum,
                                  MigrationType type, String physicalLocation, MigrationExecutor executor) {
         this.version = version;
@@ -174,11 +119,7 @@ public class ResolvedMigrationImpl implements ResolvedMigration {
                 '}';
     }
 
-    /**
-     * Validates this resolved migration.
-     */
-    public void validate() {
-        // Do nothing by default.
+        public void validate() {
     }
 
     @Override
@@ -189,8 +130,6 @@ public class ResolvedMigrationImpl implements ResolvedMigration {
 
     @Override
     public boolean checksumMatchesWithoutBeingIdentical(Integer checksum) {
-        // The checksum in the database matches the one calculated without replacement, but not the one with.
-        // That is, the script has placeholders and the checksum was originally calculated ignoring their values.
         return Objects.equals(checksum, this.equivalentChecksum)
                 && !Objects.equals(checksum, this.checksum);
     }

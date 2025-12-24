@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.schemahistory;
 
 import org.flywaydb.core.api.FlywayException;
@@ -38,39 +23,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- * Supports reading and writing to the schema history table.
- */
 class JdbcTableSchemaHistory extends SchemaHistory {
     private static final Log LOG = LogFactory.getLog(JdbcTableSchemaHistory.class);
 
     private final SqlScriptExecutorFactory sqlScriptExecutorFactory;
     private final SqlScriptFactory sqlScriptFactory;
 
-    /**
-     * The database to use.
-     */
-    private final Database database;
+        private final Database database;
 
-    /**
-     * Connection with access to the database.
-     */
-    private final Connection<?> connection;
+        private final Connection<?> connection;
 
     private final JdbcTemplate jdbcTemplate;
 
-    /**
-     * Applied migration cache.
-     */
-    private final LinkedList<AppliedMigration> cache = new LinkedList<>();
+        private final LinkedList<AppliedMigration> cache = new LinkedList<>();
 
-    /**
-     * Creates a new instance of the schema history table support.
-     *
-     * @param database The database to use.
-     * @param table    The schema history table used by Flyway.
-     */
-    JdbcTableSchemaHistory(SqlScriptExecutorFactory sqlScriptExecutorFactory, SqlScriptFactory sqlScriptFactory,
+        JdbcTableSchemaHistory(SqlScriptExecutorFactory sqlScriptExecutorFactory, SqlScriptFactory sqlScriptFactory,
                            Database database, Table table) {
         this.sqlScriptExecutorFactory = sqlScriptExecutorFactory;
         this.sqlScriptFactory = sqlScriptFactory;
@@ -124,7 +91,6 @@ class JdbcTableSchemaHistory extends SchemaHistory {
                             LOG.debug("Schema History table creation failed. Retrying in 1 sec ...");
                             Thread.sleep(1000);
                         } catch (InterruptedException e1) {
-                            // Ignore
                         }
                     }
                 }
@@ -147,9 +113,6 @@ class JdbcTableSchemaHistory extends SchemaHistory {
         boolean tableIsLocked = false;
         connection.restoreOriginalState();
 
-        // Lock again for databases with no clean DDL transactions like Oracle
-        // to prevent implicit commits from triggering deadlocks
-        // in highly concurrent environments
         if (!database.supportsDdlTransactions()) {
             table.lock();
             tableIsLocked = true;
@@ -199,7 +162,6 @@ class JdbcTableSchemaHistory extends SchemaHistory {
                         checksum = null;
                     }
 
-                    // Convert legacy types to their modern equivalent to avoid validation errors
                     String type = rs.getString("type");
                     if ("SPRING_JDBC".equals(type)) {
                         type = "JDBC";

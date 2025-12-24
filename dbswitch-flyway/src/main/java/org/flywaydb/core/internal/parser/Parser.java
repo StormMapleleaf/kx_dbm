@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.parser;
 
 import org.flywaydb.core.api.FlywayException;
@@ -35,9 +20,6 @@ import java.io.Reader;
 import java.util.*;
 import java.util.regex.Pattern;
 
-/**
- * The main parser all database-specific parsers derive from.
- */
 public abstract class Parser {
     private static final Log LOG = LogFactory.getLog(Parser.class);
 
@@ -86,13 +68,7 @@ public abstract class Parser {
         return null;
     }
 
-    /**
-     * Parses this resource into a stream of statements.
-     *
-     * @param resource The resource to parse.
-     * @return The statements.
-     */
-    public final SqlStatementIterator parse(final LoadableResource resource) {
+        public final SqlStatementIterator parse(final LoadableResource resource) {
         PositionTracker tracker = new PositionTracker();
         Recorder recorder = new Recorder();
         ParserContext context = new ParserContext(getDefaultDelimiter());
@@ -109,13 +85,7 @@ public abstract class Parser {
         return new ParserSqlStatementIterator(peekingReader, resource, recorder, tracker, context);
     }
 
-    /**
-     * Configures this reader for placeholder replacement.
-     *
-     * @param reader The original reader.
-     * @return The new reader with placeholder replacement.
-     */
-    protected Reader replacePlaceholders(Reader reader) {
+        protected Reader replacePlaceholders(Reader reader) {
         if (configuration.isPlaceholderReplacement()) {
             return PlaceholderReplacingReader.create(
                     configuration,
@@ -294,37 +264,19 @@ public abstract class Parser {
         return (token.getType() == TokenType.KEYWORD && token.getParensDepth() == 0);
     }
 
-    /**
-     * Whether the current set of tokens should be discarded.
-     *
-     * @param token              The latest token.
-     * @param nonCommentPartSeen Whether a non-comment part has already be seen.
-     * @return {@code true} if it should, {@code false} if not.
-     */
-    protected boolean shouldDiscard(Token token, boolean nonCommentPartSeen) {
+        protected boolean shouldDiscard(Token token, boolean nonCommentPartSeen) {
         TokenType tokenType = token.getType();
         return (tokenType == TokenType.DELIMITER || tokenType == TokenType.BLANK_LINES) && !nonCommentPartSeen;
     }
 
-    /**
-     * Resets the delimiter to its default value before parsing a new statement.
-     */
-    protected void resetDelimiter(ParserContext context) {
+        protected void resetDelimiter(ParserContext context) {
         context.setDelimiter(getDefaultDelimiter());
     }
 
-    /**
-     * Adjusts the delimiter if necessary for this statement type.
-     *
-     * @param statementType The statement type.
-     */
-    protected void adjustDelimiter(ParserContext context, StatementType statementType) {
+        protected void adjustDelimiter(ParserContext context, StatementType statementType) {
     }
 
-    /**
-     * @return The cutoff point in terms of number of tokens after which a statement can no longer be non-transactional.
-     */
-    protected int getTransactionalDetectionCutoff() {
+        protected int getTransactionalDetectionCutoff() {
         return 10;
     }
 
@@ -372,10 +324,7 @@ public abstract class Parser {
         return false;
     }
 
-    /**
-     * Returns the last token at the given parensDepth. Skips comments and blank lines. Will return null if no token found.
-     */
-    protected static Token getPreviousToken(List<Token> tokens, int parensDepth) {
+        protected static Token getPreviousToken(List<Token> tokens, int parensDepth) {
         for (int i = tokens.size()-1; i >= 0; i--) {
             Token previousToken = tokens.get(i);
 
@@ -394,10 +343,7 @@ public abstract class Parser {
         return null;
     }
 
-    /**
-     * Returns true if the previous token matches the tokenText
-     */
-    protected static boolean lastTokenIs(List<Token> tokens, int parensDepth, String tokenText) {
+        protected static boolean lastTokenIs(List<Token> tokens, int parensDepth, String tokenText) {
         Token previousToken = getPreviousToken(tokens, parensDepth);
         if (previousToken == null) {
             return false;
@@ -406,10 +352,7 @@ public abstract class Parser {
         return tokenText.equals(previousToken.getText());
     }
 
-    /**
-     * Check if the previous tokens in the statement at the same depth as the current token match the provided regex
-     */
-    protected static boolean doTokensMatchPattern(List<Token> previousTokens, Token current, Pattern regex) {
+        protected static boolean doTokensMatchPattern(List<Token> previousTokens, Token current, Pattern regex) {
         ArrayList<String> tokenStrings = new ArrayList<>();
         tokenStrings.add(current.getText());
 
@@ -511,86 +454,7 @@ public abstract class Parser {
             reader.swallowUntilExcluding('\n', '\r');
             return new Token(TokenType.COMMENT, pos, line, col, null, null, context.getParensDepth());
         }
-        if (peek.startsWith("/*")) {
-            reader.swallow(2);
-            reader.swallowUntilExcluding("*/");
-            reader.swallow(2);
-            return new Token(TokenType.COMMENT, pos, line, col, null, null, context.getParensDepth());
-        }
-        if (isDigit(c)) {
-            String text = reader.readNumeric();
-            return new Token(TokenType.NUMERIC, pos, line, col, text, text, context.getParensDepth());
-        }
-        if (peek.startsWith("B'") || peek.startsWith("E'") || peek.startsWith("X'")) {
-            reader.swallow(2);
-            reader.swallowUntilExcludingWithEscape('\'', true, '\\');
-            return new Token(TokenType.STRING, pos, line, col, null, null, context.getParensDepth());
-        }
-        if (peek.startsWith("U&'")) {
-            reader.swallow(3);
-            reader.swallowUntilExcludingWithEscape('\'', true);
-            return new Token(TokenType.STRING, pos, line, col, null, null, context.getParensDepth());
-        }
-        if (isDelimiter(peek, context, col)) {
-            return handleDelimiter(reader, context, pos, line, col);
-        }
-        if (c == '_' || context.isLetter(c)) {
-            String text = readKeyword(reader, context.getDelimiter(), context);
-            if (reader.peek('.')) {
-                text += readAdditionalIdentifierParts(reader, identifierQuote, context.getDelimiter(), context);
-            }
-            if (!isKeyword(text)) {
-                return new Token(TokenType.IDENTIFIER, pos, line, col, text, text, context.getParensDepth());
-            }
-            return handleKeyword(reader, context, pos, line, col, text);
-        }
-        if (c == ' ' || c == '\r' || c == '\u00A0' /* Non-linebreaking space */) {
-            reader.swallow();
-            return null;
-        }
-        if (Character.isWhitespace(c)) {
-            String text = reader.readWhitespace();
-            if (containsAtLeast(text, '\n', 2)) {
-                return new Token(TokenType.BLANK_LINES, pos, line, col, null, null, context.getParensDepth());
-            }
-            return null;
-        }
-
-        String text = "" + (char) reader.read();
-        return new Token(TokenType.SYMBOL, pos, line, col, text, text, context.getParensDepth());
-    }
-
-    protected String readKeyword(PeekingReader reader, Delimiter delimiter, ParserContext context) throws IOException {
-        return "" + (char) reader.read() + reader.readKeywordPart(delimiter, context);
-    }
-
-    protected Token handleDelimiter(PeekingReader reader, ParserContext context, int pos, int line, int col) throws IOException {
-        Delimiter delimiter = context.getDelimiter();
-        String text = delimiter.getDelimiter();
-        reader.swallow(text.length());
-        return new Token(TokenType.DELIMITER, pos, line, col, text, text, context.getParensDepth());
-    }
-
-    protected boolean isAlternativeStringLiteral(String peek) {
-        return alternativeStringLiteralQuote != 0 && peek.charAt(0) == alternativeStringLiteralQuote;
-    }
-
-    protected boolean isDelimiter(String peek, ParserContext context, int col) {
-        Delimiter delimiter = context.getDelimiter();
-        return peek.startsWith(delimiter.getDelimiter());
-    }
-
-    protected boolean isSingleLineComment(String peek, ParserContext context, int col) {
-        return peek.startsWith("--");
-    }
-
-    /**
-     * Checks whether this is a keyword ({@code true}) or not ({@code false} = identifier, ...).
-     *
-     * @param text The token to check.
-     * @return {@code true} if it is, {@code false} if not.
-     */
-    protected boolean isKeyword(String text) {
+        if (peek.startsWith("    protected boolean isKeyword(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')) {

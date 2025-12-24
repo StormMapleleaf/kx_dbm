@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.resolver.sql;
 
 import org.flywaydb.core.api.MigrationType;
@@ -37,40 +22,18 @@ import org.flywaydb.core.internal.sqlscript.SqlScriptFactory;
 import java.io.Reader;
 import java.util.*;
 
-/**
- * Migration resolver for SQL files on the classpath. The SQL files must have names like
- * V1__Description.sql, V1_1__Description.sql or R__description.sql.
- */
 public class SqlMigrationResolver implements MigrationResolver {
-    /**
-     * The SQL script executor factory.
-     */
-    private final SqlScriptExecutorFactory sqlScriptExecutorFactory;
+        private final SqlScriptExecutorFactory sqlScriptExecutorFactory;
 
-    /**
-     * The resource provider to use.
-     */
-    private final ResourceProvider resourceProvider;
+        private final ResourceProvider resourceProvider;
 
     private final SqlScriptFactory sqlScriptFactory;
 
-    /**
-     * The Flyway configuration.
-     */
-    private final Configuration configuration;
+        private final Configuration configuration;
 
     private final ParsingContext parsingContext;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param resourceProvider         The Scanner for loading migrations on the classpath.
-     * @param sqlScriptExecutorFactory The SQL script executor factory.
-     * @param sqlScriptFactory         The SQL script factory.
-     * @param configuration            The Flyway configuration.
-     * @param parsingContext           The parsing context.
-     */
-    public SqlMigrationResolver(ResourceProvider resourceProvider,
+        public SqlMigrationResolver(ResourceProvider resourceProvider,
                                 SqlScriptExecutorFactory sqlScriptExecutorFactory, SqlScriptFactory sqlScriptFactory,
                                 Configuration configuration, ParsingContext parsingContext) {
         this.sqlScriptExecutorFactory = sqlScriptExecutorFactory;
@@ -199,7 +162,6 @@ public class SqlMigrationResolver implements MigrationResolver {
                     )) {
                 @Override
                 public void validate() {
-                    // Do nothing by default.
                 }
             });
         }
@@ -207,14 +169,7 @@ public class SqlMigrationResolver implements MigrationResolver {
 
 
 
-    /**
-     * Checks whether this filename is actually a sql-based callback instead of a regular migration.
-     *
-     * @param result  The parsing result to check.
-     * @return {@code true} if it is, {@code false} if it isn't.
-     */
-    /* private -> testing */
-    static boolean isSqlCallback(ResourceName result) {
+            static boolean isSqlCallback(ResourceName result) {
         if (Event.fromId(result.getPrefix()) != null) {
             return true;
         }

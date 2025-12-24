@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.sybasease;
 
 import org.flywaydb.core.api.FlywayException;
@@ -29,21 +14,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Sybase ASE database.
- */
 public class SybaseASEDatabase extends Database<SybaseASEConnection> {
     private static final Log LOG = LogFactory.getLog(SybaseASEDatabase.class);
 
     private String databaseName = null;
     private boolean supportsMultiStatementTransactions = false;
 
-    /**
-     * Creates a new Sybase ASE database.
-     *
-     * @param configuration The Flyway configuration.
-     */
-    public SybaseASEDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory
+        public SybaseASEDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory
 
 
 
@@ -101,8 +78,6 @@ public class SybaseASEDatabase extends Database<SybaseASEConnection> {
 
     @Override
     public boolean supportsEmptyMigrationDescription() {
-        // Sybase will convert the empty string to a single space implicitly, which won't error on updating the
-        // history table but will subsequently fail validation of the history table against the file name.
         return false;
     }
 
@@ -138,7 +113,6 @@ public class SybaseASEDatabase extends Database<SybaseASEConnection> {
 
     @Override
     protected String doQuote(String identifier) {
-        //Sybase doesn't quote identifiers, skip quoting.
         return identifier;
     }
 
@@ -148,21 +122,7 @@ public class SybaseASEDatabase extends Database<SybaseASEConnection> {
     }
 
     @Override
-    /**
-     * Multi statement transaction support is dependent on the 'ddl in tran' option being set.
-     * However, setting 'ddl in tran' doesn't necessarily mean that multi-statement transactions are supported.
-     * i.e.
-     *  - multi statement transaction support => ddl in tran
-     *  - ddl in tran =/> multi statement transaction support
-     * Also, ddl in tran can change during execution for unknown reasons.
-     * Therefore, as a best guess:
-     *  - When this method is called, check ddl in tran
-     *  - If ddl in tran is true, assume support for multi statement transactions forever more
-     *      - Never check ddl in tran again
-     *  - If ddl in tran is false, return false
-     *      - Check ddl in tran again on the next call
-     */
-    public boolean supportsMultiStatementTransactions() {
+        public boolean supportsMultiStatementTransactions() {
         if (supportsMultiStatementTransactions) {
             LOG.debug("ddl in tran was found to be true at some point during execution." +
                     "Therefore multi statement transaction support is assumed.");
@@ -181,10 +141,7 @@ public class SybaseASEDatabase extends Database<SybaseASEConnection> {
 
     boolean getDdlInTranOption() {
         try {
-            // http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.infocenter.dc36273.1600/doc/html/san1393052037182.html
             String databaseName = getDatabaseName();
-            // The Sybase driver (v7.07) concatenates "null" to this query and we can't see why. By adding a one-line
-            // comment marker we can at least prevent this causing us problems until we get a resolution.
             String getDatabaseMetadataQuery = "sp_helpdb " + databaseName + " -- ";
             Results results = getMainConnection().getJdbcTemplate().executeStatement(getDatabaseMetadataQuery);
             for (int resultsIndex = 0; resultsIndex < results.getResults().size(); resultsIndex++) {

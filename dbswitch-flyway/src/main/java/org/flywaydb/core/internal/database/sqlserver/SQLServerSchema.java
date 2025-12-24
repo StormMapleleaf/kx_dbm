@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.sqlserver;
 
 import org.flywaydb.core.api.logging.Log;
@@ -27,97 +12,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * SQLServer implementation of Schema.
- */
 public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
     private static final Log LOG = LogFactory.getLog(SQLServerSchema.class);
 
     private final String databaseName;
 
-    /**
-     * SQL server object types for which we support automatic clean-up. Those types can be used in conjunction with the
-     * {@code sys.objects} catalog. The full list of object types is available in the
-     * <a href="https://msdn.microsoft.com/en-us/library/ms190324.aspx">MSDN documentation</a> (see the {@code type}
-     * column description.
-     */
-    private enum ObjectType {
-        /**
-         * Aggregate function (CLR).
-         */
-        AGGREGATE("AF"),
-        /**
-         * CHECK constraint
-         */
-        CHECK_CONSTRAINT("C"),
-        /**
-         * DEFAULT constraint.
-         */
-        DEFAULT_CONSTRAINT("D"),
-        /**
-         * FOREIGN KEY constraint.
-         */
-        FOREIGN_KEY("F"),
-        /**
-         * In-lined table-function.
-         */
-        INLINED_TABLE_FUNCTION("IF"),
-        /**
-         * Scalar function.
-         */
-        SCALAR_FUNCTION("FN"),
-        /**
-         * Assembly (CLR) scalar-function.
-         */
-        CLR_SCALAR_FUNCTION("FS"),
-        /**
-         * Assembly (CLR) table-valued function
-         */
-        CLR_TABLE_VALUED_FUNCTION("FT"),
-        /**
-         * Stored procedure.
-         */
-        STORED_PROCEDURE("P"),
-        /**
-         * Assembly (CLR) stored-procedure.
-         */
-        CLR_STORED_PROCEDURE("PC"),
-        /**
-         * Rule (old-style, stand-alone).
-         */
-        RULE("R"),
-        /**
-         * Synonym.
-         */
-        SYNONYM("SN"),
-        /**
-         * Table-valued function.
-         */
-        TABLE_VALUED_FUNCTION("TF"),
-        /**
-         * Assembly (CLR) DML trigger.
-         */
-        ASSEMBLY_DML_TRIGGER("TA"),
-        /**
-         * SQL DML trigger.
-         */
-        SQL_DML_TRIGGER("TR"),
-        /**
-         * Unique Constraint.
-         */
-        UNIQUE_CONSTRAINT("UQ"),
-        /**
-         * User table.
-         */
-        USER_TABLE("U"),
-        /**
-         * View.
-         */
-        VIEW("V"),
-        /**
-         * Sequence object.
-         */
-        SEQUENCE_OBJECT("SO");
+        private enum ObjectType {
+                AGGREGATE("AF"),
+                CHECK_CONSTRAINT("C"),
+                DEFAULT_CONSTRAINT("D"),
+                FOREIGN_KEY("F"),
+                INLINED_TABLE_FUNCTION("IF"),
+                SCALAR_FUNCTION("FN"),
+                CLR_SCALAR_FUNCTION("FS"),
+                CLR_TABLE_VALUED_FUNCTION("FT"),
+                STORED_PROCEDURE("P"),
+                CLR_STORED_PROCEDURE("PC"),
+                RULE("R"),
+                SYNONYM("SN"),
+                TABLE_VALUED_FUNCTION("TF"),
+                ASSEMBLY_DML_TRIGGER("TA"),
+                SQL_DML_TRIGGER("TR"),
+                UNIQUE_CONSTRAINT("UQ"),
+                USER_TABLE("U"),
+                VIEW("V"),
+                SEQUENCE_OBJECT("SO");
 
         final String code;
 
@@ -127,18 +46,9 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         }
     }
 
-    /**
-     * SQL server object meta-data.
-     */
-    private class DBObject {
-        /**
-         * The object name.
-         */
-        final String name;
-        /**
-         * The object id.
-         */
-        final long objectId;
+        private class DBObject {
+                final String name;
+                final long objectId;
 
         DBObject(long objectId, String name) {
             assert name != null;
@@ -147,15 +57,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         }
     }
 
-    /**
-     * Creates a new SQLServer schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param databaseName The database name.
-     * @param name         The name of the schema.
-     */
-    SQLServerSchema(JdbcTemplate jdbcTemplate, SQLServerDatabase database, String databaseName, String name) {
+        SQLServerSchema(JdbcTemplate jdbcTemplate, SQLServerDatabase database, String databaseName, String name) {
         super(jdbcTemplate, database, name);
         this.databaseName = databaseName;
     }
@@ -220,8 +122,6 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
             jdbcTemplate.execute(statement);
         }
 
-        // Use a 2-pass approach for cleaning computed columns and functions with SCHEMABINDING due to dependency errors
-        // Pass 1
         for (String statement : cleanComputedColumns(tables)) {
             try {
                 jdbcTemplate.execute(statement);
@@ -242,7 +142,6 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
             }
         }
 
-        // Pass 2
         for (String statement : cleanComputedColumns(tables)) {
             jdbcTemplate.execute(statement);
         }
@@ -309,40 +208,23 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
 
     }
 
-    /**
-     * Query objects with any of the given types.
-     *
-     * @param types the object types to be queried
-     * @return the found objects
-     * @throws SQLException when the retrieval failed
-     */
-    private List<DBObject> queryDBObjects(ObjectType... types) throws SQLException {
+        private List<DBObject> queryDBObjects(ObjectType... types) throws SQLException {
         return queryDBObjectsWithParent(null, types);
     }
 
-    /**
-     * Query objects with any of the given types and parent (if non-null).
-     *
-     * @param parent the parent object or {@code null} if unspecified
-     * @param types  the object types to be queried
-     * @return the found objects
-     * @throws SQLException when the retrieval failed
-     */
-    private List<DBObject> queryDBObjectsWithParent(DBObject parent, ObjectType... types) throws SQLException {
+        private List<DBObject> queryDBObjectsWithParent(DBObject parent, ObjectType... types) throws SQLException {
         StringBuilder query = new StringBuilder("SELECT obj.object_id, obj.name FROM sys.objects AS obj " +
                 "LEFT JOIN sys.extended_properties AS eps " +
                 "ON obj.object_id = eps.major_id " +
-                "AND eps.class = 1 " +    // Class 1 = objects and columns (we are only interested in objects).
-                "AND eps.minor_id = 0 " + // Minor ID, always 0 for objects.
-                "AND eps.name='microsoft_database_tools_support' " + // Select all objects generated from MS database
-                // tools.
+                "AND eps.class = 1 " +    
+                "AND eps.minor_id = 0 " + 
+                "AND eps.name='microsoft_database_tools_support' " + 
                 "WHERE SCHEMA_NAME(obj.schema_id) = '" + name + "'  " +
-                "AND eps.major_id IS NULL " + // Left Excluding JOIN (we are only interested in user defined entries).
-                "AND obj.is_ms_shipped = 0 " + // Make sure we do not return anything MS shipped.
-                "AND obj.type IN (" // Select the object types.
+                "AND eps.major_id IS NULL " + 
+                "AND obj.is_ms_shipped = 0 " + 
+                "AND obj.type IN (" 
         );
 
-        // Build the types IN clause.
         boolean first = true;
         for (ObjectType type : types) {
             if (!first) {
@@ -354,7 +236,6 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         query.append(")");
 
         if (parent != null) {
-            // Apply the parent selection if one was given.
             query.append(" AND obj.parent_object_id = ").append(parent.objectId);
         }
 
@@ -373,14 +254,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         });
     }
 
-    /**
-     * Cleans the foreign keys in this schema.
-     *
-     * @param tables the tables to be cleaned
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanForeignKeys(List<DBObject> tables) throws SQLException {
+        private List<String> cleanForeignKeys(List<DBObject> tables) throws SQLException {
         List<String> statements = new ArrayList<>();
         for (DBObject table : tables) {
             List<DBObject> fks = queryDBObjectsWithParent(table, ObjectType.FOREIGN_KEY,
@@ -393,14 +267,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the computed columns in this schema.
-     *
-     * @param tables the tables to be cleaned
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanComputedColumns(List<DBObject> tables) throws SQLException {
+        private List<String> cleanComputedColumns(List<DBObject> tables) throws SQLException {
         List<String> statements = new ArrayList<>();
         for (DBObject table : tables) {
             String tableName = database.quote(name, table.name);
@@ -413,14 +280,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the indexes in this schema.
-     *
-     * @param tables the tables to be cleaned
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanIndexes(List<DBObject> tables) throws SQLException {
+        private List<String> cleanIndexes(List<DBObject> tables) throws SQLException {
         List<String> statements = new ArrayList<>();
         for (DBObject table : tables) {
             String tableName = database.quote(name, table.name);
@@ -437,14 +297,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the default constraints in this schema.
-     *
-     * @param tables the tables to be cleaned
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanDefaultConstraints(List<DBObject> tables) throws SQLException {
+        private List<String> cleanDefaultConstraints(List<DBObject> tables) throws SQLException {
         List<String> statements = new ArrayList<>();
         for (DBObject table : tables) {
             String tableName = database.quote(name, table.name);
@@ -457,8 +310,6 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
                             " AND is_unique_constraint = 1" +
                             " AND i.name IS NOT NULL" +
                             " GROUP BY i.name" +
-                            // We can't delete the unique ROWGUIDCOL constraint from a table which has a FILESTREAM column.
-                            // It will auto-delete when the table is dropped.
                             " HAVING MAX(CAST(is_rowguidcol AS INT)) = 0 OR MAX(CAST(is_filestream AS INT)) = 0");
             for (String index : indexes) {
                 statements.add("ALTER TABLE " + tableName + " DROP CONSTRAINT " + database.quote(index));
@@ -467,14 +318,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the unique constraints in this schema.
-     *
-     * @param tables the tables to be cleaned
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanUniqueConstraints(List<DBObject> tables) throws SQLException {
+        private List<String> cleanUniqueConstraints(List<DBObject> tables) throws SQLException {
         List<String> statements = new ArrayList<>();
         for (DBObject table : tables) {
             List<DBObject> dfs = queryDBObjectsWithParent(table, ObjectType.DEFAULT_CONSTRAINT);
@@ -486,13 +330,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the types in this schema.
-     *
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanTypes() throws SQLException {
+        private List<String> cleanTypes() throws SQLException {
         List<String> typeNames =
                 jdbcTemplate.queryForStringList(
                         "SELECT t.name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id" +
@@ -507,13 +345,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the CLR assemblies in this schema.
-     *
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanAssemblies() throws SQLException {
+        private List<String> cleanAssemblies() throws SQLException {
         List<String> assemblyNames =
                 jdbcTemplate.queryForStringList("SELECT * FROM sys.assemblies WHERE is_user_defined=1");
         List<String> statements = new ArrayList<>();
@@ -523,13 +355,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the triggers in this schema.
-     *
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanTriggers() throws SQLException {
+        private List<String> cleanTriggers() throws SQLException {
         List<String> triggerNames =
                 jdbcTemplate.queryForStringList("SELECT * FROM sys.triggers" +
                         " WHERE is_ms_shipped=0 AND parent_id=0 AND parent_class_desc='DATABASE'");
@@ -540,15 +366,7 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         return statements;
     }
 
-    /**
-     * Cleans the objects of these types in this schema.
-     *
-     * @param dropQualifier The type of DROP statement to issue.
-     * @param objectTypes   The type of objects to drop.
-     * @return The drop statements.
-     * @throws SQLException when the clean statements could not be generated.
-     */
-    private List<String> cleanObjects(String dropQualifier, ObjectType... objectTypes) throws SQLException {
+        private List<String> cleanObjects(String dropQualifier, ObjectType... objectTypes) throws SQLException {
         List<String> statements = new ArrayList<>();
         List<DBObject> dbObjects = queryDBObjects(objectTypes);
         for (DBObject dbObject : dbObjects) {

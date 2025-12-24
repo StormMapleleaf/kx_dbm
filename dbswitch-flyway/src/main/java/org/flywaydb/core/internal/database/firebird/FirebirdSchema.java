@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.firebird;
 
 import org.flywaydb.core.internal.database.base.Schema;
@@ -26,28 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebirdSchema extends Schema<FirebirdDatabase, FirebirdTable> {
-    /**
-     * Creates a new Firebird schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param name         The name of the schema.
-     */
-    public FirebirdSchema(JdbcTemplate jdbcTemplate, FirebirdDatabase database, String name) {
+        public FirebirdSchema(JdbcTemplate jdbcTemplate, FirebirdDatabase database, String name) {
         super(jdbcTemplate, database, name);
 
     }
 
     @Override
     protected boolean doExists() throws SQLException {
-        // database == schema, always return true
         return true;
     }
 
     @Override
     protected boolean doEmpty() throws SQLException {
-        // database == schema, check content of database
-        // Check for all object types except custom collations and roles
         return 0 == jdbcTemplate.queryForInt("select count(*)\n" +
                 "from (\n" +
                 "  -- views and tables\n" +
@@ -94,18 +69,15 @@ public class FirebirdSchema extends Schema<FirebirdDatabase, FirebirdTable> {
 
     @Override
     protected void doCreate() throws SQLException {
-        // database == schema, do nothing for creation
     }
 
     @Override
     protected void doDrop() throws SQLException {
-        // database == schema, doClean() instead
         doClean();
     }
 
     @Override
     protected void doClean() throws SQLException {
-        // Dropping everything except custom collations and roles
         for (String dropPackageStmt : generateDropPackageStatements()) {
             jdbcTemplate.execute(dropPackageStmt);
         }

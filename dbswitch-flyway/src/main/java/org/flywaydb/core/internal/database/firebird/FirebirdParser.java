@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.firebird;
 
 import org.flywaydb.core.api.configuration.Configuration;
@@ -31,7 +16,6 @@ public class FirebirdParser extends Parser {
     @Override
     protected Token handleKeyword(PeekingReader reader, ParserContext context, int pos, int line, int col, String keyword) throws IOException {
         if (keywordIs("SET", keyword)) {
-            // Try to detect if this is set SET TERM <new terminator><old terminator>
             String possiblyTerm = reader.peek(TERM_WITH_SPACES.length());
             if (keywordIs(TERM_WITH_SPACES, possiblyTerm)) {
                 reader.swallow(TERM_WITH_SPACES.length());
@@ -45,12 +29,10 @@ public class FirebirdParser extends Parser {
 
     @Override
     protected void resetDelimiter(ParserContext context) {
-        // Do not reset delimiter as delimiter changes survive beyond a single statement
     }
 
     @Override
     protected boolean isAlternativeStringLiteral(String peek) {
-        // Support Firebird 3+ Q-quoted string
         if (peek.length() < 3) {
             return false;
         }

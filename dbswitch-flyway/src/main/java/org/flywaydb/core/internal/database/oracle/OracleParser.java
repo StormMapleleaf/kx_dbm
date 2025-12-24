@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.oracle;
 
 import org.flywaydb.core.api.configuration.Configuration;
@@ -43,10 +28,7 @@ public class OracleParser extends Parser {
 
 
 
-    /**
-     * Delimiter of PL/SQL blocks and statements.
-     */
-    private static final Delimiter PLSQL_DELIMITER = new Delimiter("/", true
+        private static final Delimiter PLSQL_DELIMITER = new Delimiter("/", true
 
 
 
@@ -289,7 +271,6 @@ public class OracleParser extends Parser {
         if (PLSQL_VIEW_STATEMENT == statementType) {
             sql = sql.trim();
 
-            // Strip extra semicolon to avoid issues with WITH statements containing PL/SQL
             if (sql.endsWith(";")) {
                 sql = sql.substring(0, sql.length() - 1);
             }
@@ -367,7 +348,6 @@ public class OracleParser extends Parser {
 
     @Override
     protected boolean shouldDiscard(Token token, boolean nonCommentPartSeen) {
-        // Discard dangling PL/SQL / delimiters
         return ("/".equals(token.getText()) && !nonCommentPartSeen) || super.shouldDiscard(token, nonCommentPartSeen);
     }
 
@@ -399,13 +379,11 @@ public class OracleParser extends Parser {
 
     @Override
     protected boolean shouldAdjustBlockDepth(ParserContext context, Token token) {
-        // Package bodies can have an unbalanced BEGIN without END in the initialisation section.
         TokenType tokenType = token.getType();
         if (context.getStatementType() == PLSQL_PACKAGE_BODY_STATEMENT && (TokenType.EOF == tokenType || TokenType.DELIMITER == tokenType)) {
             return true;
         }
 
-        // In Oracle, symbols { } affect the block depth in embedded Java code
         if (token.getType() == TokenType.SYMBOL && context.getStatementType() == PLSQL_JAVA_STATEMENT) {
             return true;
         }
@@ -420,15 +398,12 @@ public class OracleParser extends Parser {
         return super.shouldAdjustBlockDepth(context, token);
     }
 
-    // These words increase the block depth - unless preceded by END (in which case the END will decrease the block depth)
     private static final List<String> CONTROL_FLOW_KEYWORDS = Arrays.asList("IF", "LOOP", "CASE");
 
     @Override
     protected void adjustBlockDepth(ParserContext context, List<Token> tokens, Token keyword, PeekingReader reader) throws IOException {
         String keywordText = keyword.getText();
 
-        // In embedded Java code we judge the end of a class definition by the depth of braces.
-        // We ignore normal SQL keywords as Java code can contain arbitrary identifiers.
         if (context.getStatementType() == PLSQL_JAVA_STATEMENT) {
             if ("{".equals(keywordText)) {
                 context.increaseBlockDepth();
@@ -452,8 +427,6 @@ public class OracleParser extends Parser {
             context.decreaseBlockDepth();
         }
 
-        // Package bodies can have an unbalanced BEGIN without END in the initialisation section. This allows us
-        // to exit the package even though we are still at block depth 1 due to the BEGIN.
         TokenType tokenType = keyword.getType();
         if (context.getStatementType() == PLSQL_PACKAGE_BODY_STATEMENT && (TokenType.EOF == tokenType || TokenType.DELIMITER == tokenType) && context.getBlockDepth() == 1) {
             context.decreaseBlockDepth();
@@ -465,8 +438,6 @@ public class OracleParser extends Parser {
     protected boolean isDelimiter(String peek, ParserContext context, int col) {
         Delimiter delimiter = context.getDelimiter();
 
-        // Only consider alone-on-line delimiters (such as "/" for PL/SQL) if
-        // it's the first character on the line
         if (delimiter.isAloneOnLine() && col > 1) {
             return false;
         }
@@ -502,8 +473,6 @@ public class OracleParser extends Parser {
         if (peek.length() < 3) {
             return false;
         }
-        // Oracle's quoted-literal syntax is introduced by q (case-insensitive) followed by a literal surrounded by
-        // any of !!, [], {}, (), <> provided the selected pair do not appear in the literal string; the others may do.
         char firstChar = peek.charAt(0);
         return (firstChar == 'q' || firstChar == 'Q') && peek.charAt(1) == '\'';
     }

@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.info;
 
 import org.flywaydb.core.api.MigrationVersion;
@@ -20,59 +5,26 @@ import org.flywaydb.core.api.MigrationVersion;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * The current context of the migrations.
- */
 public class MigrationInfoContext {
-    /**
-     * Whether out of order migrations are allowed.
-     */
-    public boolean outOfOrder;
+        public boolean outOfOrder;
 
-    /**
-     * Whether pending migrations are allowed.
-     */
-    public boolean pending;
+        public boolean pending;
 
-    /**
-     * Whether missing migrations are allowed.
-     */
-    public boolean missing;
+        public boolean missing;
 
-    /**
-     * Whether ignored migrations are allowed.
-     */
-    public boolean ignored;
+        public boolean ignored;
 
-    /**
-     * Whether future migrations are allowed.
-     */
-    public boolean future;
+        public boolean future;
 
-    /**
-     * The migration target.
-     */
-    public MigrationVersion target;
+        public MigrationVersion target;
 
-    /**
-     * The SCHEMA migration version that was applied.
-     */
-    public MigrationVersion schema;
+        public MigrationVersion schema;
 
-    /**
-     * The BASELINE migration version that was applied.
-     */
-    public MigrationVersion baseline;
+        public MigrationVersion baseline;
 
-    /**
-     * The last resolved migration.
-     */
-    public MigrationVersion lastResolved = MigrationVersion.EMPTY;
+        public MigrationVersion lastResolved = MigrationVersion.EMPTY;
 
-    /**
-     * The last applied migration.
-     */
-    public MigrationVersion lastApplied = MigrationVersion.EMPTY;
+        public MigrationVersion lastApplied = MigrationVersion.EMPTY;
 
     public Map<String, Integer> latestRepeatableRuns = new HashMap<>();
 

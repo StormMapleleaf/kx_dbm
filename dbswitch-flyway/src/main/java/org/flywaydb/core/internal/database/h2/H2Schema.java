@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.h2;
 
 import org.flywaydb.core.api.logging.Log;
@@ -26,20 +11,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * H2 implementation of Schema.
- */
 public class H2Schema extends Schema<H2Database, H2Table> {
     private static final Log LOG = LogFactory.getLog(H2Schema.class);
 
-    /**
-     * Creates a new H2 schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database     The database-specific support.
-     * @param name         The name of the schema.
-     */
-    H2Schema(JdbcTemplate jdbcTemplate, H2Database database, String name) {
+        H2Schema(JdbcTemplate jdbcTemplate, H2Database database, String name) {
         super(jdbcTemplate, database, name);
     }
 
@@ -99,14 +74,7 @@ public class H2Schema extends Schema<H2Database, H2Table> {
         }
     }
 
-    /**
-     * Generate the statements for dropping all the objects of this type in this schema.
-     *
-     * @param objectType  The type of object to drop (Sequence, constant, ...)
-     * @param objectNames The names of the objects to drop.
-     * @return The list of statements.
-     */
-    private List<String> generateDropStatements(String objectType, List<String> objectNames) {
+        private List<String> generateDropStatements(String objectType, List<String> objectNames) {
         List<String> statements = new ArrayList<>();
         for (String objectName : objectNames) {
             String dropStatement =
@@ -117,14 +85,7 @@ public class H2Schema extends Schema<H2Database, H2Table> {
         return statements;
     }
 
-    /**
-     * Generate the statements for dropping all the objects of this type in the current schema.
-     *
-     * @param objectType  The type of object to drop (Sequence, constant, ...)
-     * @param objectNames The names of the objects to drop.
-     * @return The list of statements.
-     */
-    private List<String> generateDropStatementsForCurrentSchema(String objectType, List<String> objectNames) {
+        private List<String> generateDropStatementsForCurrentSchema(String objectType, List<String> objectNames) {
         List<String> statements = new ArrayList<>();
         for (String objectName : objectNames) {
             String dropStatement =
@@ -146,15 +107,7 @@ public class H2Schema extends Schema<H2Database, H2Table> {
         return tables;
     }
 
-    /**
-     * List the names of the objects of this type in this schema.
-     *
-     * @param objectType  The type of objects to list (Sequence, constant, ...)
-     * @param querySuffix Suffix to append to the query to find the objects to list.
-     * @return The names of the objects.
-     * @throws java.sql.SQLException when the object names could not be listed.
-     */
-    private List<String> listObjectNames(String objectType, String querySuffix) throws SQLException {
+        private List<String> listObjectNames(String objectType, String querySuffix) throws SQLException {
         String query = "SELECT " + objectType + "_NAME FROM INFORMATION_SCHEMA." + objectType
                 + "S WHERE " + objectType + "_SCHEMA = ?";
         if (StringUtils.hasLength(querySuffix)) {

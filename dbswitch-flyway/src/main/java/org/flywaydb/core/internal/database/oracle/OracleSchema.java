@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.database.oracle;
 
 import org.flywaydb.core.api.FlywayException;
@@ -32,38 +17,18 @@ import java.util.Set;
 
 import static org.flywaydb.core.internal.database.oracle.OracleSchema.ObjectType.*;
 
-/**
- * Oracle implementation of Schema.
- */
 public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
     private static final Log LOG = LogFactory.getLog(OracleSchema.class);
 
-    /**
-     * Creates a new Oracle schema.
-     *
-     * @param jdbcTemplate The Jdbc Template for communicating with the DB.
-     * @param database    The database-specific support.
-     * @param name         The name of the schema.
-     */
-    OracleSchema(JdbcTemplate jdbcTemplate, OracleDatabase database, String name) {
+        OracleSchema(JdbcTemplate jdbcTemplate, OracleDatabase database, String name) {
         super(jdbcTemplate, database, name);
     }
 
-    /**
-     * Checks whether the schema is system, i.e. Oracle-maintained, or not.
-     *
-     * @return {@code true} if it is system, {@code false} if not.
-     */
-    public boolean isSystem() throws SQLException {
+        public boolean isSystem() throws SQLException {
         return database.getSystemSchemas().contains(name);
     }
 
-    /**
-     * Checks whether this schema is default for the current user.
-     *
-     * @return {@code true} if it is default, {@code false} if not.
-     */
-    boolean isDefaultSchemaForUser() throws SQLException {
+        boolean isDefaultSchemaForUser() throws SQLException {
         return name.equals(database.doGetCurrentUser());
     }
 
@@ -97,22 +62,17 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
                     "It must not be changed in any way except by running an Oracle-supplied script!");
         }
 
-        // Disable FBA for schema tables.
         if (database.isFlashbackDataArchiveAvailable()) {
             disableFlashbackArchiveForFbaTrackedTables();
         }
 
-        // Clean Oracle Locator metadata.
         if (database.isLocatorAvailable()) {
             cleanLocatorMetadata();
         }
 
-        // Get existing object types in the schema.
         Set<String> objectTypeNames = getObjectTypeNames(jdbcTemplate, database, this);
 
-        // Define the list of types to process, order is important.
         List<ObjectType> objectTypesToClean = Arrays.asList(
-                // Types to drop.
                 TRIGGER,
                 QUEUE_TABLE,
                 FILE_WATCHER,
@@ -150,11 +110,9 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
                 JAVA_CLASS,
                 JAVA_RESOURCE,
 
-                // Object types with sensitive information (passwords), skip intentionally, print warning if found.
                 DATABASE_LINK,
                 CREDENTIAL,
 
-                // Unsupported types, print warning if found
                 DATABASE_DESTINATION,
                 SCHEDULER_GROUP,
                 CUBE,
@@ -162,7 +120,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
                 CUBE_BUILD_PROCESS,
                 MEASURE_FOLDER,
 
-                // Undocumented types, print warning if found
                 ASSEMBLY,
                 JAVA_DATA
         );
@@ -179,15 +136,7 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
         }
     }
 
-    /**
-     * Executes ALTER statements for all tables that have Flashback Archive enabled.
-     * Flashback Archive is an asynchronous process so we need to wait until it completes, otherwise cleaning the
-     * tables in schema will sometimes fail with ORA-55622 or ORA-55610 depending on the race between
-     * Flashback Archive and Java code.
-     *
-     * @throws SQLException when the statements could not be generated.
-     */
-    private void disableFlashbackArchiveForFbaTrackedTables() throws SQLException {
+        private void disableFlashbackArchiveForFbaTrackedTables() throws SQLException {
         boolean dbaViewAccessible = database.isPrivOrRoleGranted("SELECT ANY DICTIONARY")
                 || database.isDataDictViewAccessible("DBA_FLASHBACK_ARCHIVE_TABLES");
 
@@ -205,7 +154,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
         List<String> tableNames = jdbcTemplate.queryForStringList(queryForFbaTrackedTables, name);
         for (String tableName : tableNames) {
             jdbcTemplate.execute("ALTER TABLE " + database.quote(name, tableName) + " NO FLASHBACK ARCHIVE");
-            //wait until the tables disappear
             while (database.queryReturnsRows(queryForFbaTrackedTables + " AND TABLE_NAME = ?", name, tableName)) {
                 try {
                     LOG.debug("Actively waiting for Flashback cleanup on table: " + database.quote(name, tableName));
@@ -229,23 +177,11 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
         }
     }
 
-    /**
-     * Checks whether Oracle Locator metadata exists for the schema.
-     *
-     * @return {@code true} if it exists, {@code false} if not.
-     * @throws SQLException when checking metadata existence failed.
-     */
-    private boolean locatorMetadataExists() throws SQLException {
+        private boolean locatorMetadataExists() throws SQLException {
         return database.queryReturnsRows("SELECT * FROM ALL_SDO_GEOM_METADATA WHERE OWNER = ?", name);
     }
 
-    /**
-     * Clean Oracle Locator metadata for the schema. Works only for the user's default schema, prints a warning message
-     * to log otherwise.
-     *
-     * @throws SQLException when performing cleaning failed.
-     */
-    private void cleanLocatorMetadata() throws SQLException {
+        private void cleanLocatorMetadata() throws SQLException {
         if (!locatorMetadataExists()) {
             return;
         }
@@ -278,11 +214,7 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
     }
 
 
-    /**
-     * Oracle object types.
-     */
-    public enum ObjectType {
-        // Tables, including XML tables, except for nested tables, IOT overflow tables and other secondary objects.
+        public enum ObjectType {
         TABLE("TABLE", "CASCADE CONSTRAINTS PURGE") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -305,7 +237,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
                             "  SELECT TABLE_NAME, OWNER\n" +
                             "  FROM ALL_XML_TABLES\n" +
                             "  WHERE OWNER = ?\n" +
-                            // ALL_XML_TABLES shows objects in RECYCLEBIN, ignore them
                             "    AND TABLE_NAME NOT LIKE 'BIN$________________________$_'\n");
                 }
 
@@ -313,7 +244,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
                         "SELECT t.TABLE_NAME\n" +
                         "FROM TABLES t\n");
 
-                // Reference partitioned tables should be dropped in child-to-parent order.
                 if (referencePartitionedTablesExist) {
                     tablesQuery.append("  LEFT JOIN ALL_PART_TABLES pt\n" +
                             "    ON t.OWNER = pt.OWNER\n" +
@@ -344,7 +274,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Queue tables, have related objects and should be dropped separately prior to other types.
         QUEUE_TABLE("QUEUE TABLE") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -360,7 +289,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Materialized view logs.
         MATERIALIZED_VIEW_LOG("MATERIALIZED VIEW LOG") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -376,20 +304,17 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // All indexes, except for domain indexes, should be dropped after tables (if any left).
         INDEX("INDEX") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
                 return jdbcTemplate.queryForStringList(
                         "SELECT INDEX_NAME FROM ALL_INDEXES WHERE OWNER = ?" +
-                                //" AND INDEX_NAME NOT LIKE 'SYS_C%'"+
                                 " AND INDEX_TYPE NOT LIKE '%DOMAIN%'",
                         schema.getName()
                 );
             }
         },
 
-        // Domain indexes, have related objects and should be dropped separately prior to tables.
         DOMAIN_INDEX("INDEX", "FORCE") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -400,22 +325,16 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Domain index types.
         DOMAIN_INDEX_TYPE("INDEXTYPE", "FORCE"),
 
-        // Operators.
         OPERATOR("OPERATOR", "FORCE"),
 
-        // Clusters.
         CLUSTER("CLUSTER", "INCLUDING TABLES CASCADE CONSTRAINTS"),
 
-        // Views, including XML views.
         VIEW("VIEW", "CASCADE CONSTRAINTS"),
 
-        // Materialized views, keep tables as they may be referenced.
         MATERIALIZED_VIEW("MATERIALIZED VIEW", "PRESERVE TABLE"),
 
-        // Dimensions.
         DIMENSION("DIMENSION") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -426,18 +345,14 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Local synonyms.
         SYNONYM("SYNONYM", "FORCE"),
 
-        // Sequences, no filtering for identity sequences, since they get dropped along with master tables.
         SEQUENCE("SEQUENCE"),
 
-        // Procedures, functions, packages.
         PROCEDURE("PROCEDURE"),
         FUNCTION("FUNCTION"),
         PACKAGE("PACKAGE"),
 
-        // Contexts, seen in DBA_CONTEXT view, may remain if DBA_CONTEXT is not accessible.
         CONTEXT("CONTEXT") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -453,21 +368,16 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Triggers of all types, should be dropped at first, because invalid DDL triggers may break the whole clean.
         TRIGGER("TRIGGER"),
 
-        // Types.
         TYPE("TYPE", "FORCE"),
 
-        // Java sources, classes, resources.
         JAVA_SOURCE("JAVA SOURCE"),
         JAVA_CLASS("JAVA CLASS"),
         JAVA_RESOURCE("JAVA RESOURCE"),
 
-        // Libraries.
         LIBRARY("LIBRARY"),
 
-        // XML schemas.
         XML_SCHEMA("XML SCHEMA") {
             @Override
             public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
@@ -486,7 +396,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Rewrite equivalences.
         REWRITE_EQUIVALENCE("REWRITE EQUIVALENCE") {
             @Override
             public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
@@ -494,7 +403,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // SQL translation profiles.
         SQL_TRANSLATION_PROFILE("SQL TRANSLATION PROFILE") {
             @Override
             public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
@@ -502,7 +410,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Data mining models, have related objects, should be dropped prior to tables.
 
 
 
@@ -536,7 +443,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Scheduler objects.
         SCHEDULER_JOB("JOB") {
             @Override
             public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
@@ -568,7 +474,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Streams/rule objects.
         RULE_SET("RULE SET") {
             @Override
             public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
@@ -595,10 +500,7 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
         },
 
 
-        /*** Below are unsupported object types. They should be dropped explicitly in callbacks if used. ***/
-
-        // Database links and credentials, contain sensitive information (password) and hence not always can be re-created.
-        // Intentionally skip them and let the clean callbacks handle them if needed.
+        
         DATABASE_LINK("DATABASE LINK") {
             @Override
             public void dropObjects(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) {
@@ -615,7 +517,7 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
 
             @Override
             public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
-                return "DROP " + this.getName() + " " + objectName; // db link name is case-insensitive and needs no owner
+                return "DROP " + this.getName() + " " + objectName; 
             }
         },
         CREDENTIAL("CREDENTIAL") {
@@ -630,7 +532,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Some scheduler types, not supported yet.
         DATABASE_DESTINATION("DESTINATION") {
             @Override
             public void dropObjects(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) {
@@ -654,7 +555,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // OLAP objects, not supported yet.
         CUBE("CUBE") {
             @Override
             public void dropObjects(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) {
@@ -680,7 +580,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // Undocumented objects.
         ASSEMBLY("ASSEMBLY") {
             @Override
             public void dropObjects(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) {
@@ -694,7 +593,6 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             }
         },
 
-        // SYS-owned objects, cannot be dropped when a schema gets cleaned, simply ignore them.
         CAPTURE("CAPTURE"),
         APPLY("APPLY"),
         DIRECTORY("DIRECTORY"),
@@ -706,15 +604,9 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
         AGENT_DESTINATION("DESTINATION"),
         UNIFIED_AUDIT_POLICY("UNIFIED AUDIT POLICY");
 
-        /**
-         * The name of the type as it mentioned in the Data Dictionary and the DROP statement.
-         */
-        private final String name;
+                private final String name;
 
-        /**
-         * The extra options used in the DROP statement to enforce the operation.
-         */
-        private final String dropOptions;
+                private final String dropOptions;
 
         ObjectType(String name, String dropOptions) {
             this.name = name;
@@ -734,33 +626,19 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             return super.toString().replace('_', ' ');
         }
 
-        /**
-         * Returns the list of object names of this type.
-         *
-         * @throws SQLException if retrieving of objects failed.
-         */
-        public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
+                public List<String> getObjectNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
             return jdbcTemplate.queryForStringList(
                     "SELECT DISTINCT OBJECT_NAME FROM ALL_OBJECTS WHERE OWNER = ? AND OBJECT_TYPE = ?",
                     schema.getName(), this.getName()
             );
         }
 
-        /**
-         * Generates the drop statement for the specified object.
-         *
-         */
-        public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
+                public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
             return "DROP " + this.getName() + " " + database.quote(schema.getName(), objectName) +
                     (StringUtils.hasText(dropOptions) ? " " + dropOptions : "");
         }
 
-        /**
-         * Drops all objects of this type in the specified schema.
-         *
-         * @throws SQLException if cleaning failed.
-         */
-        public void dropObjects(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
+                public void dropObjects(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
             for (String objectName : getObjectNames(jdbcTemplate, database, schema)) {
                 jdbcTemplate.execute(generateDropStatement(jdbcTemplate, database, schema, objectName));
             }
@@ -774,13 +652,7 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             warnUnsupported(schemaName, this.toString().toLowerCase() + "s");
         }
 
-        /**
-         * Returns the schema's existing object types.
-         *
-         * @return a set of object type names.
-         * @throws SQLException if retrieving of object types failed.
-         */
-        public static Set<String> getObjectTypeNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
+                public static Set<String> getObjectTypeNames(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
             boolean xmlDbAvailable = database.isXmlDbAvailable();
 
 
@@ -791,29 +663,21 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
 
 
             String query =
-                    // Most object types can be correctly selected from DBA_/ALL_OBJECTS.
                     "SELECT DISTINCT OBJECT_TYPE FROM " + database.dbaOrAll("OBJECTS") + " WHERE OWNER = ? " +
-                            // Materialized view logs.
                             "UNION SELECT '" + MATERIALIZED_VIEW_LOG.getName() + "' FROM DUAL WHERE EXISTS(" +
                             "SELECT * FROM ALL_MVIEW_LOGS WHERE LOG_OWNER = ?) " +
-                            // Dimensions.
                             "UNION SELECT '" + DIMENSION.getName() + "' FROM DUAL WHERE EXISTS(" +
                             "SELECT * FROM ALL_DIMENSIONS WHERE OWNER = ?) " +
-                            // Queue tables.
                             "UNION SELECT '" + QUEUE_TABLE.getName() + "' FROM DUAL WHERE EXISTS(" +
                             "SELECT * FROM ALL_QUEUE_TABLES WHERE OWNER = ?) " +
-                            // Database links.
                             "UNION SELECT '" + DATABASE_LINK.getName() + "' FROM DUAL WHERE EXISTS(" +
                             "SELECT * FROM " + database.dbaOrAll("DB_LINKS") + " WHERE OWNER = ?) " +
-                            // Contexts.
                             "UNION SELECT '" + CONTEXT.getName() + "' FROM DUAL WHERE EXISTS(" +
                             "SELECT * FROM " + database.dbaOrAll("CONTEXT") + " WHERE SCHEMA = ?) " +
-                            // XML schemas.
                             (xmlDbAvailable
                                     ? "UNION SELECT '" + XML_SCHEMA.getName() + "' FROM DUAL WHERE EXISTS(" +
                                     "SELECT * FROM " + database.dbaOrAll("XML_SCHEMAS") + " WHERE OWNER = ?) "
                                     : "") +
-                            // Credentials.
 
 
 
@@ -844,16 +708,9 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
             return new HashSet<>(jdbcTemplate.queryForStringList(query, params));
         }
 
-        /**
-         * Checks whether the specified schema contains object types that can be cleaned.
-         *
-         * @return {@code true} if it contains, {@code false} if not.
-         * @throws SQLException if retrieving of object types failed.
-         */
-        public static boolean supportedTypesExist(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
+                public static boolean supportedTypesExist(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema) throws SQLException {
             Set<String> existingTypeNames = new HashSet<>(getObjectTypeNames(jdbcTemplate, database, schema));
 
-            // Remove unsupported types.
             existingTypeNames.removeAll(Arrays.asList(
                     DATABASE_LINK.getName(),
                     CREDENTIAL.getName(),

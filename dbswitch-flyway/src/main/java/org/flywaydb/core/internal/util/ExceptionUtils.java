@@ -1,40 +1,12 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.util;
 
 import java.sql.SQLException;
 
-/**
- * Utility class for dealing with exceptions.
- */
 public class ExceptionUtils {
-    /**
-     * Prevents instantiation.
-     */
-    private ExceptionUtils() {
-        //Do nothing
+        private ExceptionUtils() {
     }
 
-    /**
-     * Returns the root cause of this throwable.
-     *
-     * @param throwable The throwable to inspect.
-     * @return The root cause or the throwable itself if it doesn't have a cause.
-     */
-    public static Throwable getRootCause(Throwable throwable) {
+        public static Throwable getRootCause(Throwable throwable) {
         if (throwable == null) {
             return null;
         }
@@ -48,13 +20,7 @@ public class ExceptionUtils {
         return cause;
     }
 
-    /**
-     * Retrives the exact location where this exception was thrown.
-     *
-     * @param e The exception.
-     * @return The location, suitable for a debug message.
-     */
-    public static String getThrowLocation(Throwable e) {
+        public static String getThrowLocation(Throwable e) {
         StackTraceElement element = e.getStackTrace()[0];
         int lineNumber = element.getLineNumber();
         return element.getClassName() + "." + element.getMethodName()
@@ -62,13 +28,7 @@ public class ExceptionUtils {
                 + (element.isNativeMethod() ? " [native]" : "");
     }
 
-    /**
-     * Transforms the details of this SQLException into a nice readable message.
-     *
-     * @param e The exception.
-     * @return The message.
-     */
-    public static String toMessage(SQLException e) {
+        public static String toMessage(SQLException e) {
         SQLException cause = e;
         while (cause.getNextException() != null) {
             cause = cause.getNextException();

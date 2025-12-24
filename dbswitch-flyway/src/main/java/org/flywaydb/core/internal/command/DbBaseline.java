@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.command;
 
 import org.flywaydb.core.api.FlywayException;
@@ -24,41 +9,18 @@ import org.flywaydb.core.internal.callback.CallbackExecutor;
 import org.flywaydb.core.internal.schemahistory.AppliedMigration;
 import org.flywaydb.core.internal.schemahistory.SchemaHistory;
 
-/**
- * Handles Flyway's baseline command.
- */
 public class DbBaseline {
     private static final Log LOG = LogFactory.getLog(DbBaseline.class);
 
-    /**
-     * The schema history table.
-     */
-    private final SchemaHistory schemaHistory;
+        private final SchemaHistory schemaHistory;
 
-    /**
-     * The version to tag an existing schema with when executing baseline.
-     */
-    private final MigrationVersion baselineVersion;
+        private final MigrationVersion baselineVersion;
 
-    /**
-     * The description to tag an existing schema with when executing baseline.
-     */
-    private final String baselineDescription;
+        private final String baselineDescription;
 
-    /**
-     * The callback executor.
-     */
-    private final CallbackExecutor callbackExecutor;
+        private final CallbackExecutor callbackExecutor;
 
-    /**
-     * Creates a new DbBaseline.
-     *
-     * @param schemaHistory       The database schema history table.
-     * @param baselineVersion     The version to tag an existing schema with when executing baseline.
-     * @param baselineDescription The description to tag an existing schema with when executing baseline.
-     * @param callbackExecutor    The callback executor.
-     */
-    public DbBaseline(SchemaHistory schemaHistory, MigrationVersion baselineVersion,
+        public DbBaseline(SchemaHistory schemaHistory, MigrationVersion baselineVersion,
                       String baselineDescription, CallbackExecutor callbackExecutor) {
         this.schemaHistory = schemaHistory;
         this.baselineVersion = baselineVersion;
@@ -66,10 +28,7 @@ public class DbBaseline {
         this.callbackExecutor = callbackExecutor;
     }
 
-    /**
-     * Baselines the database.
-     */
-    public void baseline() {
+        public void baseline() {
         callbackExecutor.onEvent(Event.BEFORE_BASELINE);
 
         try {

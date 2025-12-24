@@ -1,18 +1,3 @@
-/*
- * Copyright 2010-2020 Redgate Software Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.flywaydb.core.internal.scanner.classpath;
 
 import org.flywaydb.core.api.Location;
@@ -38,42 +23,22 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
-/**
- * ClassPath scanner.
- */
 public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
     private static final Log LOG = LogFactory.getLog(ClassPathScanner.class);
 
     private final Class<I> implementedInterface;
-    /**
-     * The ClassLoader for loading migrations on the classpath.
-     */
-    private final ClassLoader classLoader;
+        private final ClassLoader classLoader;
     private final Location location;
 
     private final Set<LoadableResource> resources = new TreeSet<>();
 
-    /**
-     * Cache location lookups.
-     */
-    private final Map<Location, List<URL>> locationUrlCache = new HashMap<>();
+        private final Map<Location, List<URL>> locationUrlCache = new HashMap<>();
 
-    /**
-     * Cache location scanners.
-     */
-    private final LocationScannerCache locationScannerCache;
+        private final LocationScannerCache locationScannerCache;
 
-    /**
-     * Cache resource names.
-     */
-    private final ResourceNameCache resourceNameCache;
+        private final ResourceNameCache resourceNameCache;
 
-    /**
-     * Creates a new Classpath scanner.
-     *
-     * @param classLoader The ClassLoader for loading migrations on the classpath.
-     */
-    public ClassPathScanner(Class<I> implementedInterface, ClassLoader classLoader, Charset encoding, Location location,
+        public ClassPathScanner(Class<I> implementedInterface, ClassLoader classLoader, Charset encoding, Location location,
                             ResourceNameCache resourceNameCache,
                             LocationScannerCache locationScannerCache) {
         this.implementedInterface = implementedInterface;
@@ -115,24 +80,12 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
         return classes;
     }
 
-    /**
-     * Converts this resource name to a fully qualified class name.
-     *
-     * @param resourceName The resource name.
-     * @return The class name.
-     */
-    private String toClassName(String resourceName) {
+        private String toClassName(String resourceName) {
         String nameWithDots = resourceName.replace("/", ".");
         return nameWithDots.substring(0, (nameWithDots.length() - ".class".length()));
     }
 
-    /**
-     * Finds the resources names present at this location and below on the classpath starting with this prefix and
-     * ending with this suffix.
-     *
-     * @return The resource names.
-     */
-    private Set<String> findResourceNames() {
+        private Set<String> findResourceNames() {
         Set<String> resourceNames = new TreeSet<>();
 
         List<URL> locationUrls = getLocationUrlsForPath(location);
@@ -164,12 +117,8 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
             }
         }
 
-        // Make an additional attempt at finding resources in jar files in case the URL scanning method above didn't
-        // yield any results.
         boolean locationResolved = !locationUrls.isEmpty();
 
-        // Starting with Java 11, resources at the root of the classpath aren't being found using the URL scanning
-        // method above and we need to revert to Jar file walking.
         boolean isClassPathRoot = location.isClassPath() && "".equals(location.getRootPath());
 
         if (!locationResolved || isClassPathRoot) {
@@ -179,13 +128,11 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
                     if ("file".equals(url.getProtocol())
                             && url.getPath().endsWith(".jar")
                             && !url.getPath().matches(".*" + Pattern.quote("/jre/lib/") + ".*")) {
-                        // All non-system jars on disk
                         JarFile jarFile;
                         try {
                             try {
                                 jarFile = new JarFile(url.toURI().getSchemeSpecificPart());
                             } catch (URISyntaxException ex) {
-                                // Fallback for URLs that are not valid URIs (should hardly ever happen).
                                 jarFile = new JarFile(url.getPath().substring("file:".length()));
                             }
                         } catch (IOException | SecurityException e) {
@@ -206,7 +153,6 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
                             try {
                                 jarFile.close();
                             } catch (IOException e) {
-                                // Ignore
                             }
                         }
                     }
@@ -221,13 +167,7 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
         return resourceNames;
     }
 
-    /**
-     * Gets the physical location urls for this logical path on the classpath.
-     *
-     * @param location The location on the classpath.
-     * @return The underlying physical URLs.
-     */
-    private List<URL> getLocationUrlsForPath(Location location) {
+        private List<URL> getLocationUrlsForPath(Location location) {
         if (locationUrlCache.containsKey(location)) {
             return locationUrlCache.get(location);
         }
@@ -237,7 +177,6 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
         List<URL> locationUrls = new ArrayList<>();
 
         if (classLoader.getClass().getName().startsWith("com.ibm")) {
-            // WebSphere
             Enumeration<URL> urls;
             try {
                 urls = classLoader.getResources(location.getRootPath() + "/flyway.location");
@@ -270,13 +209,7 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
         return locationUrls;
     }
 
-    /**
-     * Creates an appropriate URL resolver scanner for this url protocol.
-     *
-     * @param protocol The protocol of the location url to scan.
-     * @return The url resolver for this protocol.
-     */
-    private UrlResolver createUrlResolver(String protocol) {
+        private UrlResolver createUrlResolver(String protocol) {
         if (new FeatureDetector(classLoader).isJBossVFSv2Available() && protocol.startsWith("vfs")) {
             return new JBossVFSv2UrlResolver();
         }
@@ -284,13 +217,7 @@ public class ClassPathScanner<I> implements ResourceAndClassScanner<I> {
         return new DefaultUrlResolver();
     }
 
-    /**
-     * Creates an appropriate location scanner for this url protocol.
-     *
-     * @param protocol The protocol of the location url to scan.
-     * @return The location scanner or {@code null} if it could not be created.
-     */
-    private ClassPathLocationScanner createLocationScanner(String protocol) {
+        private ClassPathLocationScanner createLocationScanner(String protocol) {
         if (locationScannerCache.containsKey(protocol)) {
             return locationScannerCache.get(protocol);
         }
