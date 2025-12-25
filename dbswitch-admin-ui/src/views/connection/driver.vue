@@ -58,7 +58,7 @@
                :visible.sync="dialogVisible"
                width="40%"
                :before-close="handleClose">
-      <span>请按照驱动路径所在的目录${DBSWITCH_HOME}/drivers下，在数据库类型为名称的目录下，以驱动版本号为名称创建目录并放置对应的驱动jar文件，然后重启即可生效。具体可参考https://gitee.com/inrgihc/dbswitch/tree/master/drivers下的目录结构。</span>
+      <span>请按照驱动路径所在的目录${DBSWITCH_HOME}/drivers下，在数据库类型为名称的目录下，以驱动版本号为名称创建目录并放置对应的驱动jar文件，然后重启即可生效。</span>
       <span></span>
       <span>特殊说明：驱动版本目录下的所有JAR必须无任何外部依赖，否则，也需将其依赖JAR一起放置到对应的目录下。</span>
       <span slot="footer"
