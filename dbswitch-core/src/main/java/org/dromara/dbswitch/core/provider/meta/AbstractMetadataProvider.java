@@ -134,7 +134,6 @@ public abstract class AbstractMetadataProvider
     String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
     List<ColumnDescription> ret = this.querySelectSqlColumnMeta(connection, sql);
 
-    // 补充一下注释信息
     try (ResultSet columns = connection.getMetaData()
         .getColumns(catalogName, schemaName, tableName, null)) {
       while (columns.next()) {
@@ -143,7 +142,6 @@ public abstract class AbstractMetadataProvider
         for (ColumnDescription cd : ret) {
           if (columnName.equals(cd.getFieldName())) {
             cd.setRemarks(remarks);
-            //break out of the loop early
             break;
           }
         }

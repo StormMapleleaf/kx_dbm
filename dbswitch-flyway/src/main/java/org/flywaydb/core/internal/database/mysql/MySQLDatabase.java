@@ -50,7 +50,6 @@ public class MySQLDatabase extends Database<MySQLConnection> {
 
     private static boolean isEventSchedulerQueryable(JdbcTemplate jdbcTemplate) {
         try {
-            // Attempt query
             jdbcTemplate.queryForString("SELECT event_name FROM information_schema.events LIMIT 1");
             return true;
         } catch (SQLException e) {

@@ -186,7 +186,6 @@ public class SQLServerDatabase extends Database<SQLServerConnection> {
     }
 
         boolean supportsTemporalTables() {
-        // SQL Server 2016+, or Azure  (which has different versioning)
         return isAzure() || getVersion().isAtLeast("13.0");
     }
 

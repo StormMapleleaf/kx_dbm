@@ -279,7 +279,6 @@ export default {
         "/dbswitch/admin/api/v1/ops/job/cancel?id=" + jobId
       ).then(res => {
         if (0 === res.data.code) {
-          // 禁用取消按钮
           var cancelButton = document.getElementById('butten_cancel_id');
           cancelButton.value = "已取消"
           cancelButton.disabled = true;

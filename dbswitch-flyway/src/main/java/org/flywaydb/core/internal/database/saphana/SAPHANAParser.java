@@ -47,9 +47,7 @@ public class SAPHANAParser extends Parser {
     protected void adjustBlockDepth(ParserContext context, List<Token> tokens, Token keyword, PeekingReader reader) throws IOException {
         int parensDepth = keyword.getParensDepth();
 
-        // BEGIN, CASE, DO and IF increases block depth
         if ("BEGIN".equals(keyword.getText()) || "CASE".equals(keyword.getText()) || "DO".equals(keyword.getText()) || "IF".equals(keyword.getText())
-                // But not END IF
                 && !lastTokenIs(tokens, parensDepth, "END")) {
             context.increaseBlockDepth();
         } else if (doTokensMatchPattern(tokens, keyword, FUNCTION_OR_PROCEDURE_REGEX)) {

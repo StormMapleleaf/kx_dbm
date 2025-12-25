@@ -40,11 +40,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScheduleService implements InitializingBean, ExceptionHandler {
 
-  /**
-   * @Bean是一个方法级别上的注解，Bean的ID为方法名字。
-   * @Resource默认按照ByName自动注入
-   * @Autowired默认按照类型byType注入
-   */
+
   @Autowired
   private SchedulerFactoryBean schedulerFactoryBean;
 
@@ -84,7 +80,6 @@ public class ScheduleService implements InitializingBean, ExceptionHandler {
   }
 
   public void scheduleTask(Long taskId, ScheduleModeEnum scheduleMode) {
-    /** 准备JobDetail */
     String jobKeyName = UuidUtils.generateUuid() + "@" + taskId.toString();
     String jobGroup = JobExecutorService.GROUP;
     JobKey jobKey = JobKey.jobKey(jobKeyName, jobGroup);
@@ -94,7 +89,6 @@ public class ScheduleService implements InitializingBean, ExceptionHandler {
         .usingJobData(JobExecutorService.TASK_ID, taskId.toString())
         .usingJobData(JobExecutorService.SCHEDULE, scheduleMode.getValue().toString());
 
-    /** 准备TriggerKey，注意这里的triggerName与jobName配置相同 */
     String triggerName = jobKeyName;
     String triggerGroup = JobExecutorService.GROUP;
     TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroup);

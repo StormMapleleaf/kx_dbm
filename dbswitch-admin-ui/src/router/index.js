@@ -64,27 +64,6 @@ const constantRouter = new Router({
             }
           ]
         },
-        // {
-        //   path: '/log',
-        //   name: '审计日志',
-        //   icon: "el-icon-platform-eleme",
-        //   //redirect: '/log/access',
-        //   component: () => import('@/views/log/index'),
-        //   children: [
-        //     {
-        //       path: '/log/access',
-        //       name: '登录日志',
-        //       icon: "el-icon-place",
-        //       component: () => import('@/views/log/access')
-        //     },
-        //     {
-        //       path: '/log/action',
-        //       name: '操作日志',
-        //       icon: "el-icon-s-check",
-        //       component: () => import('@/views/log/action')
-        //     }
-        //   ]
-        // },
         {
           path: '/user/personal',
           name: '个人中心',

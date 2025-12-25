@@ -59,7 +59,6 @@ public class DatabaseFactory {
     private static final Log LOG = LogFactory.getLog(DatabaseFactory.class);
 
         private DatabaseFactory() {
-        //Do nothing
     }
 
         public static Database createDatabase(Configuration configuration, boolean printInfo,

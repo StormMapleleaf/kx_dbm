@@ -37,7 +37,6 @@ public class ParsingContext {
         String catalog = getCatalog(database);
         String currentUser = getCurrentUser(database);
 
-        // cf. Flyway.prepareSchemas()
         if (defaultSchemaName == null) {
             if (schemaNames.length > 0) {
                 defaultSchemaName = schemaNames[0];

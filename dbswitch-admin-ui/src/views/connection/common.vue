@@ -296,19 +296,16 @@ export default {
 
       var flag = false
       if (Object.keys(this.dataform.address).length > 0) {
-        // address
         var address = this.dataform.address
         tplUrl = tplUrl.replaceAll("{host}", address)
         flag = true
       }
       if (Object.keys(this.dataform.port).length > 0) {
-        // port
         var port = this.dataform.port
         tplUrl = tplUrl.replaceAll("{port}", port)
         flag = true
       }
       if (Object.keys(this.dataform.databaseName).length > 0) {
-        // databaseName or filePath
         var databaseName = this.dataform.databaseName
         tplUrl = tplUrl.replaceAll("{database}", databaseName)
         tplUrl = tplUrl.replaceAll("{file}", databaseName)

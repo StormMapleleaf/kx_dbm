@@ -364,7 +364,7 @@ public class OracleSchema extends Schema<OracleDatabase, OracleTable> {
 
             @Override
             public String generateDropStatement(JdbcTemplate jdbcTemplate, OracleDatabase database, OracleSchema schema, String objectName) {
-                return "DROP " + this.getName() + " " + database.quote(objectName); // no owner
+                return "DROP " + this.getName() + " " + database.quote(objectName);  
             }
         },
 

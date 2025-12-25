@@ -172,7 +172,7 @@ export default {
 }
 
 .container > * {
-  float: left; /* 水平排列 */
+  float: left; 
 }
 
 .container .el-card {
@@ -197,7 +197,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrop;
-  cursor: pointer; /*鼠标悬停变小手*/
+  cursor: pointer; 
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
   width: 100%;

@@ -8,7 +8,6 @@ public class LogFactory {
         private static LogCreator fallbackLogCreator;
 
         private LogFactory() {
-        // Do nothing
     }
 
         public static void setLogCreator(LogCreator logCreator) {

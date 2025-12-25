@@ -106,7 +106,6 @@ public class Flyway {
             if (configuration.isBaselineOnMigrate()) {
               doBaseline(schemaHistory, callbackExecutor);
             } else {
-              // Second check for MySQL which is sometimes flaky otherwise
               if (!schemaHistory.exists()) {
                 throw new FlywayException("Found non-empty schema(s) "
                     + StringUtils.collectionToCommaDelimitedString(nonEmptySchemas)
@@ -374,11 +373,9 @@ public class Flyway {
   }
 
   private boolean isDefaultSchemaValid(String defaultSchema, String[] schemas) {
-    // No default schema specified
     if (defaultSchema == null) {
       return true;
     }
-    // Default schema is one of those Flyway is managing
     for (String schema : schemas) {
       if (defaultSchema.equals(schema)) {
         return true;

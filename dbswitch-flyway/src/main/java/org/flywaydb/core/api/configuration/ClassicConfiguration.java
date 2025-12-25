@@ -218,7 +218,6 @@ public class ClassicConfiguration implements Configuration {
 
 
         public ClassicConfiguration() {
-        // Nothing to do.
     }
 
         public ClassicConfiguration(ClassLoader classLoader) {
@@ -951,7 +950,6 @@ public class ClassicConfiguration implements Configuration {
     }
 
         public void configure(Map<String, String> props) {
-        // Make copy to prevent removing elements from the original.
         props = new HashMap<>(props);
 
         String driverProp = props.remove(ConfigUtils.DRIVER);

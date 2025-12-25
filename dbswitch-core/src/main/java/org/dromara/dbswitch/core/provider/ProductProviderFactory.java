@@ -27,17 +27,14 @@ public class ProductProviderFactory {
       throw new RuntimeException(e);
     }
 
-    // Check subclass
     ExamineUtils.check(ProductFactoryProvider.class.isAssignableFrom(clazz),
         "Class '%s' is not a subclass of " +
             "class ProductFactoryProvider", clazz.getName());
 
-    // Check exists
     ExamineUtils.check(!providers.containsKey(type),
         "Exists ProductFactoryProvider: %s (%s)",
         type.name(), providers.get(type.name()));
 
-    // Register class
     providers.put(type, (Class) clazz);
   }
 

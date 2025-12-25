@@ -66,7 +66,7 @@ export default {
 }
 
 .user-dropdown-wrap .user-dropdown-photo img {
-  display: none; /* 隐藏原头像图片 */
+  display: none;
 }
 
 .user-avatar-text {

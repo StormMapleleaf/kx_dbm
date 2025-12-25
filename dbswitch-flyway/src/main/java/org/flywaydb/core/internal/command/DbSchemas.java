@@ -70,7 +70,6 @@ public class DbSchemas {
                     LOG.debug("Schema creation failed. Retrying in 1 sec ...");
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
-                    // Ignore
                 }
             }
         }

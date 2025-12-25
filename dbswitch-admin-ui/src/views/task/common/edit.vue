@@ -1091,7 +1091,6 @@ export default {
           return;
         }
 
-        // 排除表，求差集
         this.preiveSeeTableNameList = JSON.parse(JSON.stringify(this.sourceSchemaTables));
         for (var i = 0; i < this.dataform.sourceTables.length; ++i) {
           var one = this.dataform.sourceTables[i];
@@ -1205,7 +1204,6 @@ export default {
           return;
         }
 
-        // 排除表，求差集
         this.preiveSeeTableNameList = JSON.parse(JSON.stringify(this.sourceSchemaTables));
         for (var i = 0; i < this.dataform.sourceTables.length; ++i) {
           var one = this.dataform.sourceTables[i];
@@ -1217,7 +1215,6 @@ export default {
           })
         }
       }
-      //console.log(this.preiveSeeTableNameList)
       this.preiveTableName = "";
       this.columnNamesMapperData = [];
       this.columnNameMapperDialogVisible = true;

@@ -302,7 +302,6 @@ public abstract class Database<C extends Connection> implements Closeable {
     }
 
         protected void doCleanPreSchemas() throws SQLException {
-        // Default is to do nothing.
     }
 
         public void cleanPostSchemas() {
@@ -314,6 +313,5 @@ public abstract class Database<C extends Connection> implements Closeable {
     }
 
         protected void doCleanPostSchemas() throws SQLException {
-        // Default is to do nothing
     }
 }

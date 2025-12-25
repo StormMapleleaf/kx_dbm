@@ -258,7 +258,6 @@ public class ClickhouseMetadataQueryProvider extends AbstractMetadataProvider {
       case ColumnMetaData.TYPE_NUMBER:
       case ColumnMetaData.TYPE_INTEGER:
       case ColumnMetaData.TYPE_BIGNUMBER:
-        // Integer values...
         if (precision == 0) {
           if (isPk) {
             retval += "UInt64";
@@ -266,7 +265,6 @@ public class ClickhouseMetadataQueryProvider extends AbstractMetadataProvider {
             retval += "Nullable(UInt64)";
           }
         } else {
-          // Floating point values...
           if (isPk) {
             retval += "Float64";
           } else {

@@ -55,8 +55,7 @@ public class HSQLDBParser extends Parser {
         String previousKeywordText = previousKeyword != null ? previousKeyword.getText() : "";
 
         if ("BEGIN".equals(keywordText)
-                || ((("IF".equals(keywordText) && !CONDITIONALLY_CREATABLE_OBJECTS.contains(previousKeywordText))  // excludes the IF in eg. CREATE TABLE IF EXISTS
-                || "FOR".equals(keywordText)
+                || ((("IF".equals(keywordText) && !CONDITIONALLY_CREATABLE_OBJECTS.contains(previousKeywordText)) 
                 || "CASE".equals(keywordText))
                 && previousKeyword != null && !"END".equals(previousKeywordText))) {
             context.increaseBlockDepth();

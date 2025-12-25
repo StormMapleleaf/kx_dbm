@@ -55,7 +55,6 @@ public class PostgreSQLParser extends Parser {
     }
 
     private String readCopyData(PeekingReader reader, Recorder recorder) throws IOException {
-        // Skip end of current line after ;
         reader.readUntilIncluding('\n');
 
         recorder.start();
